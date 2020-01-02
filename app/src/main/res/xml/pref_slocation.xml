@@ -1,0 +1,30 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ListPreference
+        android:title="Country"
+        android:key="countries"/>
+    <Preference android:title="Change Location"
+        android:key="location"
+        app:allowDividerAbove="true">
+        <intent android:action="android.intent.action.VIEW"
+            android:targetPackage="com.spikingacacia.leta"
+            android:targetClass="com.spikingacacia.leta.ui.MapsA" >
+        </intent>
+    </Preference>
+    <!-- A 'parent' preference, which enables/disables child preferences (below)
+        when checked/unchecked. -->
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="online_visibility"
+        android:title="Visible online"
+        android:summary="Do you wish your business to be seen online by customers"
+        app:allowDividerAbove="true"/>
+    <SwitchPreference
+        android:defaultValue="false"
+        android:dependency="online_visibility"
+        android:key="online_delivery"
+        android:title="Delivery"
+        android:summary="Do you make delivery"
+        app:allowDividerAbove="true"/>
+
+</PreferenceScreen>

@@ -1,0 +1,50 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.spikingacacia.leta.ui.SPreferencePic />
+    <EditTextPreference
+        android:defaultValue="Leta"
+        android:inputType="textCapWords"
+        android:key="username"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="Restaurant Name"
+        app:allowDividerAbove="true"/>
+    <EditTextPreference
+        android:enabled="false"
+        android:defaultValue="Leta"
+        android:inputType="text"
+        android:key="email"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="Email Address"
+        app:allowDividerAbove="true"/>
+    <Preference android:key="password"
+        android:title="Change Password"
+        app:allowDividerAbove="true">
+    </Preference>
+    <SeekBarPreference
+        android:key="order_radius"
+        android:defaultValue="10"
+        android:max="50"
+        app:min="2"
+        android:title="Order radius"
+        app:seekBarIncrement="1"
+        app:showSeekBarValue="true"
+        app:updatesContinuously="true"
+        app:adjustable="true"
+        android:summary="@string/pref_order_range"
+        app:allowDividerAbove="true"/>
+    <Preference
+        android:key="number_of_tables"
+        android:title="Number of tables"
+        app:allowDividerAbove="true"/>
+    <Preference  android:key="subscription"
+        android:title="Subscription "
+        android:enabled="false"
+        app:allowDividerAbove="true">
+
+    </Preference>
+
+</PreferenceScreen>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="transparent">#00ffffff</color>
+    <color name="colorAccent">#987171</color>
+
+    <color name="main_background">#666666</color>
+    <color name="secondary_background">#505050</color>
+    <color name="tertiary_background">#464646</color>
+    <color name="button_normal">#987171</color>
+    <color name="button_focused">#ca8888</color>
+    <color name="text">#fafafa</color>
+
+    <color name="graph_1">#5a5f5f</color>
+    <color name="graph_2">#b4beb4</color>
+    <color name="graph_3">#c8bebe</color>
+    <color name="graph_4">#5a6b6b</color>
+    <color name="graph_5">#646e6e</color>
+    <color name="graph_6">#5a5a6b</color>
+    <color name="graph_7">#5a6b6b</color>
+    <color name="graph_8">#788282</color>
+    <color name="graph_9">#82828c</color>
+    <color name="graph_10">#828c82</color>
+    <color name="graph_11">#96a0a0</color>
+    <color name="graph_12">#96a096</color>
+    <color name="graph_13">#a09696</color>
+    <color name="graph_14">#a0b4a0</color>
+</resources>

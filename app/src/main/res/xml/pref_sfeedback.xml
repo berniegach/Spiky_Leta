@@ -1,0 +1,27 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <Preference
+        android:key="feedback_ask"
+        android:title="Ask for a feature"
+        android:summary="Do you feel something is missing in the app that would enhance your productivity even more? Well, feel free to ask."/>
+    <Preference
+        android:key="feedback_report"
+        android:title="Report a problem"
+        android:summary="Is there something not working the way it should?"
+        app:allowDividerAbove="true"/>
+    <!-- A 'parent' preference, which enables/disables child preferences (below)
+        when checked/unchecked. -->
+    <!--
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="online_visibility"
+        android:title="Visible online"
+        android:summary="Do you wish your business to be seen online by customers"/>
+    <SwitchPreference
+        android:defaultValue="false"
+        android:dependency="online_visibility"
+        android:key="online_delivery"
+        android:title="Delivery"
+        android:summary="Do you make delivery"/> -->
+
+</PreferenceScreen>

@@ -1,0 +1,35 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        android:fragment="com.spikingacacia.leta.ui.SSettingsA$GeneralPreferenceFragment"
+        android:icon="@drawable/ic_info"
+        android:title="@string/pref_header_general" />
+
+    <Preference
+        android:fragment="com.spikingacacia.leta.ui.SSettingsA$LocationPreferenceFragment"
+        android:icon="@drawable/ic_location"
+        android:title="@string/pref_header_location"
+        app:allowDividerAbove="true"/>
+    <Preference
+        android:fragment="com.spikingacacia.leta.ui.SSettingsA$FeedBackPreferenceFragment"
+        android:icon="@drawable/ic_feedback"
+        android:title="@string/pref_header_feedback"
+        app:allowDividerAbove="true"/>
+    <Preference
+        android:fragment="com.spikingacacia.leta.ui.SSettingsA$HelpPreferenceFragment"
+        android:icon="@drawable/ic_help"
+        android:title="@string/pref_header_help"
+        app:allowDividerAbove="true"/>
+    <Preference
+        android:fragment="com.spikingacacia.leta.ui.SSettingsA$AccountPreferenceFragment"
+        android:icon="@drawable/ic_account"
+        android:title="@string/pref_header_account"
+        app:allowDividerAbove="true"/>
+    <Preference
+        android:fragment="com.spikingacacia.leta.ui.SSettingsA$AboutPreferenceFragment"
+        android:icon="@drawable/ic_about"
+        android:title="@string/about"
+        app:allowDividerAbove="true"/>
+
+</PreferenceScreen>
