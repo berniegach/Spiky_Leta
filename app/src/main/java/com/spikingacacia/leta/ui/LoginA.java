@@ -60,7 +60,7 @@ public class LoginA extends AppCompatActivity
     public static final String base_url="https://www.spikingacacia.com/leta_project/android/"; //online
     //public static final String base_url="http://10.0.2.2/leta_project/android/"; //localhost no connection for testing user accounts coz it doesnt require subscription checking
     //public static final String base_url="http://192.168.0.10/leta_project/android/"; //localhost
-    //public static final String base_url="http://192.168.43.228/leta_project/android/"; //localhost tablet
+    //public static final String base_url="http://192.168.43.228/leta_project/android/"; //localhost  tablet
     //sellers php files
     private String url_get_s_notifications=base_url+"get_seller_notifications.php";
     private String url_get_s_categories=base_url+"get_seller_categories.php";
