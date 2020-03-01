@@ -28,11 +28,18 @@ import static com.spikingacacia.leta.ui.LoginA.sFinalProgress;
 public class SMenuA extends AppCompatActivity
 implements SMenuF.OnFragmentInteractionListener{
     private boolean runRate=true;
+    private SharedPreferences loginPreferences;
+    private boolean dark_theme_enabled=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.a_smenu);
+        //preference
+        loginPreferences=getBaseContext().getSharedPreferences("loginPrefs",MODE_PRIVATE);
+        //dark theme prefernce
+        dark_theme_enabled=loginPreferences.getBoolean("dark_theme",false);
+
 
         //set the toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -47,6 +54,17 @@ implements SMenuF.OnFragmentInteractionListener{
         FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.base,fragment,"menu");
         transaction.commit();
+        if(!dark_theme_enabled)
+        {
+            setTheme(R.style.AppThemeLight);
+            findViewById(R.id.main).setBackgroundColor(getResources().getColor(R.color.main_background_light));
+            findViewById(R.id.sec_main).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
+            collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.text_light));
+            collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.text_light));
+            ((TextView)findViewById(R.id.who)).setTextColor(getResources().getColor(R.color.text_light));
+            ((TextView)findViewById(R.id.trial)).setTextColor(getResources().getColor(R.color.text_light));
+            ((TextView)findViewById(R.id.welcome)).setTextColor(getResources().getColor(R.color.text_light));
+        }
     }
     @Override
     protected void onPostCreate(Bundle savedInstanceState)

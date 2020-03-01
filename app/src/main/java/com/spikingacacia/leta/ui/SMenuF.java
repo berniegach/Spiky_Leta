@@ -54,7 +54,7 @@ public class SMenuF extends Fragment {
     private String TAG="SMenuF";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private String mParam1;
+    private boolean enable_dark_theme;
     private String mParam2;
     private OnFragmentInteractionListener mListener;
     private JSONParser jsonParser;
@@ -90,7 +90,7 @@ public class SMenuF extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            enable_dark_theme = getArguments().getBoolean(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         jsonParser=new JSONParser();
@@ -195,6 +195,14 @@ public class SMenuF extends Fragment {
             }
         };
         thread.start();
+        if(!enable_dark_theme)
+        {
+            view.findViewById(R.id.inventory).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
+            view.findViewById(R.id.orders).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
+            view.findViewById(R.id.reports).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
+            view.findViewById(R.id.messages).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
+            view.findViewById(R.id.settings).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
+        }
         return view;
     }
     @Override

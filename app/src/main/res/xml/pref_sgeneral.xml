@@ -40,6 +40,12 @@
         android:key="number_of_tables"
         android:title="Number of tables"
         app:allowDividerAbove="true"/>
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="dark_theme"
+        android:title="Dark Theme"
+        android:summary="Enable dark theme"
+        app:allowDividerAbove="true"/>
     <Preference  android:key="subscription"
         android:title="Subscription "
         android:enabled="false"

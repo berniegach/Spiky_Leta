@@ -17,10 +17,12 @@ import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.LoginA;
+import com.spikingacacia.leta.ui.Preferences;
 
 import net.gotev.uploadservice.Logger;
 import net.gotev.uploadservice.MultipartUploadRequest;
@@ -42,11 +44,15 @@ implements SICategoryF.OnListFragmentInteractionListener,
     int whichPhoto;
     int photoId;
     String previousTitle;
+    Preferences preferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.a_siinventory);
+        //preference
+        preferences=new Preferences(getBaseContext());
         //toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -60,6 +66,15 @@ implements SICategoryF.OnListFragmentInteractionListener,
         FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.base,fragment,"Categories");
         transaction.commit();
+        if(!preferences.isDark_theme_enabled())
+        {
+            setTheme(R.style.AppThemeLight);
+            toolbar.setTitleTextColor(getResources().getColor(R.color.text_light));
+            //main_view.setBackgroundColor(getResources().getColor(R.color.main_background_light));
+            findViewById(R.id.main).setBackgroundColor(getResources().getColor(R.color.main_background_light));
+            //((TextView)findViewById(R.id.who)).setTextColor(getResources().getColor(R.color.text_light));
+            //collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.text_light));
+        }
 
     }
     @Override

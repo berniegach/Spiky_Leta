@@ -48,9 +48,9 @@
 
     <!-- Preference Titles -->
 
-    <!-- Messages Preferences -->
+    <!-- Messages com.spikingacacia.leta.ui.Preferences -->
 
-    <!-- Sync Preferences -->
+    <!-- Sync com.spikingacacia.leta.ui.Preferences -->
     <string name="title_activity_srreports">Reports</string>
 
     <!-- restaurants help page-->

@@ -8,11 +8,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 
@@ -22,7 +24,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreference;
+
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.method.PasswordTransformationMethod;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -30,6 +36,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
@@ -72,6 +79,9 @@ public class SSettingsA extends AppCompatActivity
     public static SellerAccount tempSellerAccount;
     public static String permissions;
     public static Bitmap profilePic;
+    private SharedPreferences loginPreferences;
+    private static boolean dark_theme_enabled=false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -104,6 +114,17 @@ public class SSettingsA extends AppCompatActivity
         if (actionBar != null)
         {
             actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        //preference
+        loginPreferences=getBaseContext().getSharedPreferences("loginPrefs",MODE_PRIVATE);
+        //dark theme prefernce
+        dark_theme_enabled=loginPreferences.getBoolean("dark_theme",false);
+        if(!dark_theme_enabled)
+        {
+            setTheme(R.style.NonFullscreenSSettingsLight);
+            Toolbar actionBarToolbar = (Toolbar)findViewById(R.id.action_bar);
+            if (actionBarToolbar != null)
+                actionBarToolbar.setTitleTextColor(getResources().getColor(R.color.text_light));
         }
         ///
         tempSellerAccount =new SellerAccount();
@@ -207,6 +228,8 @@ public class SSettingsA extends AppCompatActivity
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class GeneralPreferenceFragment extends PreferenceFragmentCompat
     {
+        private SharedPreferences loginPreferences;
+        private SharedPreferences.Editor loginPreferencesEditor;
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
         {
@@ -387,6 +410,26 @@ public class SSettingsA extends AppCompatActivity
                     return false;
                 }
             });
+
+            //dark theme
+            final SwitchPreference preference_dark=findPreference("dark_theme");
+            //preference
+            loginPreferences=context.getSharedPreferences("loginPrefs",MODE_PRIVATE);
+            loginPreferencesEditor=loginPreferences.edit();
+            preference_dark.setChecked(loginPreferences.getBoolean("dark_theme",false));
+            preference_dark.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+            {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue)
+                {
+                    boolean choice = (boolean) newValue;
+                    preference_dark.setChecked(choice);
+                    loginPreferencesEditor.putBoolean("dark_theme",choice);
+                    loginPreferencesEditor.commit();
+                    return false;
+                }
+            });
+
 
             //subscription change
             final Preference preference_subscription=findPreference("subscription");

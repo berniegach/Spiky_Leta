@@ -1,6 +1,6 @@
 <resources>
 
-    <!-- Base application theme. -->
+    <!-- Base  dark application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Bridge">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@android:color/transparent</item>
@@ -55,6 +55,65 @@
         <item name="windowActionBarOverlay">false</item>
         <item name="android:fitsSystemWindows">true</item>
         <item name="android:windowBackground">@color/main_background</item>
+    </style>
+
+
+    <!-- Base  light application theme. -->
+    <style name="AppThemeLight" parent="Theme.MaterialComponents.Light.Bridge">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@android:color/transparent</item>
+        <item name="colorPrimaryDark">@android:color/transparent</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBarOverlay">false</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="colorControlNormal">@color/colorAccent</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="android:fontFamily">@font/arima_madurai</item>
+        <item name="android:textColor">@color/text_light</item>
+    </style>
+
+    <style name="AppThemeLight.NoActionBarLight">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppThemeLight.AppBarOverlayLight" parent="Theme.AppCompat.Light">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/text_light</item>
+        <item name="android:fontFamily">@font/amita</item>
+    </style>
+
+    <style name="AppThemeLight.PopupOverlayLight" parent="ThemeOverlay.AppCompat.Light" />
+    <!-- ToolBar -->
+    <!-- CardView -->
+    <style name="CardViewStyleLight" parent="CardView">
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginRight">@dimen/card_view_margin</item>
+        <item name="android:layout_marginLeft">@dimen/card_view_margin</item>
+        <item name="cardCornerRadius">@dimen/card_view_card_corner_radius</item>
+        <item name="cardElevation">@dimen/card_view_card_elevation</item>
+        <item name="cardPreventCornerOverlap">false</item>
+    </style>
+    <!-- Button styles -->
+    <style name="BaseButtonStyleLight" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:layout_width">@dimen/button_width</item>
+        <item name="android:layout_height">@dimen/button_height</item>
+    </style>
+
+    <style name="ButtonStyleLight" parent="BaseButtonStyle">
+        <item name="android:background">@color/button_normal</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:layout_gravity">bottom|end</item>
+    </style>
+
+    <style name="NonFullscreenSSettingsLight" parent="AppThemeLight">
+        <item name="windowActionBarOverlay">false</item>
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="android:windowBackground">@color/main_background_light</item>
     </style>
 
 </resources>

@@ -79,10 +79,10 @@ public class SignInF extends Fragment
     private View mLoginFormView;
     private String username;
     JSONParser jsonParser;
-    private SharedPreferences loginPreferences;
-    private SharedPreferences.Editor loginPreferencesEditor;
+    Preferences preferences;
 
     private OnFragmentInteractionListener mListener;
+    private boolean dark_theme_enabled=false;
 
     public SignInF()
     {
@@ -117,8 +117,7 @@ public class SignInF extends Fragment
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.f_sign_in, container, false);
         //remember me
-        loginPreferences=getContext().getSharedPreferences("loginPrefs",MODE_PRIVATE);
-        loginPreferencesEditor=loginPreferences.edit();
+        preferences=new Preferences(getContext());
         mEmailView =  view.findViewById(R.id.email);
         mPasswordView =  view.findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -192,16 +191,22 @@ public class SignInF extends Fragment
         mLoginFormView = view.findViewById(R.id.login_form);
         mProgressView = view.findViewById(R.id.login_progress);
         username="";
+        //set theme
+        //dark theme prefernce
+        if(!preferences.isDark_theme_enabled())
+        {
+            createaccounttxtview.setTextColor(getResources().getColor(R.color.text_light));
+        }
         return view;
     }
     @Override
     public void onResume()
     {
         super.onResume();
-        if(loginPreferences.getBoolean("rememberme",false)==true)
+        if(preferences.isRemember_me())
         {
-            mEmailView.setText(loginPreferences.getString("email",""));
-            mPasswordView.setText(loginPreferences.getString("password",""));
+            mEmailView.setText(preferences.getEmail_to_remember() );
+            mPasswordView.setText(preferences.getPassword_to_remember());
             if(justStartedLogin)
             {
                 attemptLogin();
@@ -414,11 +419,10 @@ public class SignInF extends Fragment
 
             if (successfull) {
                 username = mEmail;
-                loginPreferencesEditor.putBoolean("rememberme",true);
-                loginPreferencesEditor.putInt("persona",0);
-                loginPreferencesEditor.putString("email",mEmail);
-                loginPreferencesEditor.putString("password",mPassword);
-                loginPreferencesEditor.commit();
+                preferences.setRemember_me(true);
+                preferences.setPersona(0);
+                preferences.setEmail_to_remember(mEmail);
+                preferences.setPassword_to_remember(mPassword);
                 mListener.onSuccesfull();
             }
             else
@@ -517,9 +521,8 @@ public class SignInF extends Fragment
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
                                     Snackbar.make(mEmailView,"Email sent.\nPlease click on the link sent in the email address to continue.",Snackbar.LENGTH_LONG).show();
-                                    loginPreferencesEditor.putBoolean("reset_password",true);
-                                    loginPreferencesEditor.putString("email_reset_password",mEmail);
-                                    loginPreferencesEditor.commit();
+                                    preferences.setReset_password(true);
+                                    preferences.setEmail_to_reset_password(mEmail);
                                     Log.d(TAG, "Email sent.");
                                 }
                             }

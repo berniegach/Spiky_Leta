@@ -2,9 +2,11 @@ package com.spikingacacia.leta.ui.inventory;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
@@ -87,7 +89,17 @@ public class SICategoryF extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // create ContextThemeWrapper from the original Activity Context with the custom theme
+        final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.AppThemeLight);
+        // clone the inflater using the ContextThemeWrapper
+        LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
+
+        // inflate the layout using the cloned inflater, not default inflater
+        //View view= localInflater.inflate(R.layout.f_sicategory_list, container, false);
         View view = inflater.inflate(R.layout.f_sicategory_list, container, false);
+        //getContext().getTheme().applyStyle(R.style.AppThemeLight, true); //blue ripple color
+
+
 
         // Set the adapter
         if (view instanceof RecyclerView) {

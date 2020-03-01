@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -21,6 +22,7 @@ android:background="@color/main_background">
         app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
         <LinearLayout
+            android:id="@+id/sec_main"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:background="@color/secondary_background"
@@ -42,6 +44,7 @@ android:background="@color/main_background">
                     android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/welcome"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
