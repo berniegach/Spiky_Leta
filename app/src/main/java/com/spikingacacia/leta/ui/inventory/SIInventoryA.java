@@ -20,6 +20,7 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.LoginA;
 import com.spikingacacia.leta.ui.Preferences;
@@ -68,12 +69,12 @@ implements SICategoryF.OnListFragmentInteractionListener,
         transaction.commit();
         if(!preferences.isDark_theme_enabled())
         {
-            setTheme(R.style.AppThemeLight);
+            setTheme(R.style.AppThemeLight_NoActionBarLight);
             toolbar.setTitleTextColor(getResources().getColor(R.color.text_light));
-            //main_view.setBackgroundColor(getResources().getColor(R.color.main_background_light));
+            toolbar.setPopupTheme(R.style.AppThemeLight_PopupOverlayLight);
+            AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
+            appBarLayout.getContext().setTheme(R.style.AppThemeLight_AppBarOverlayLight);
             findViewById(R.id.main).setBackgroundColor(getResources().getColor(R.color.main_background_light));
-            //((TextView)findViewById(R.id.who)).setTextColor(getResources().getColor(R.color.text_light));
-            //collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.text_light));
         }
 
     }

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.spikingacacia.leta.R;
+import com.spikingacacia.leta.ui.Preferences;
 import com.spikingacacia.leta.ui.orders.SOOrderF.OnListFragmentInteractionListener;
 import com.spikingacacia.leta.ui.orders.SOOrderC.OrderItem;
 
@@ -28,6 +29,7 @@ public class SOOrderRVA extends RecyclerView.Adapter<SOOrderRVA.ViewHolder>
     private final OnListFragmentInteractionListener mListener;
     private Context mContext;
     private  int mWhichOrder;
+    Preferences preferences;
 
     public SOOrderRVA(List<OrderItem> items, OnListFragmentInteractionListener listener, Context context, int whichOrder)
     {
@@ -37,6 +39,8 @@ public class SOOrderRVA extends RecyclerView.Adapter<SOOrderRVA.ViewHolder>
         itemsCopy.addAll(items);
         mContext=context;
         mWhichOrder=whichOrder;
+        //preference
+        preferences=new Preferences(context);
     }
 
     @Override
@@ -56,6 +60,10 @@ public class SOOrderRVA extends RecyclerView.Adapter<SOOrderRVA.ViewHolder>
         holder.mTableView.setText("Table "+mValues.get(position).tableNumber);
         holder.mUsernameView.setText(mValues.get(position).username);
         holder.mDateView.setText(mValues.get(position).dateAdded);
+        if(!preferences.isDark_theme_enabled())
+        {
+            holder.mView.setBackgroundColor(mContext.getResources().getColor(R.color.secondary_background_light));
+        }
 
         holder.mView.setOnClickListener(new View.OnClickListener()
         {

@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.LoginA;
+import com.spikingacacia.leta.ui.Preferences;
 import com.spikingacacia.leta.ui.database.SOrders;
 
 import java.util.Iterator;
@@ -38,6 +39,7 @@ public class SOOrderOverviewF extends Fragment
     private int mOrderFormat;
     private int mStation;
     private OnFragmentInteractionListener mListener;
+    Preferences preferences;
 
     public SOOrderOverviewF()
     {
@@ -72,6 +74,12 @@ public class SOOrderOverviewF extends Fragment
     {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.f_soorder_overview, container, false);
+        //preference
+        preferences=new Preferences(getContext());
+        if(!preferences.isDark_theme_enabled())
+        {
+            view.findViewById(R.id.sec_main).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
+        }
         ProgressBar progressBar=view.findViewById(R.id.progress);
         LinearLayout l_base=view.findViewById(R.id.orders_base);
         TextView t_date=view.findViewById(R.id.date);

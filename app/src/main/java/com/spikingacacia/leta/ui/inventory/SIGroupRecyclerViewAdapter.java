@@ -29,6 +29,7 @@ import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.CommonHelper;
 import com.spikingacacia.leta.ui.JSONParser;
 import com.spikingacacia.leta.ui.LoginA;
+import com.spikingacacia.leta.ui.Preferences;
 import com.spikingacacia.leta.ui.database.SGroups;
 import com.spikingacacia.leta.ui.inventory.SIGroupC.GroupItem;
 import com.spikingacacia.leta.ui.inventory.SIGroupF.OnListFragmentInteractionListener;
@@ -62,6 +63,7 @@ public class SIGroupRecyclerViewAdapter extends RecyclerView.Adapter<SIGroupRecy
     private List<GroupItem>itemsCopy;
     private final Context mContext;
     private final int mCategoryId;
+    Preferences preferences;
 
     public SIGroupRecyclerViewAdapter(List<GroupItem> items, OnListFragmentInteractionListener listener, Context context,int categoryId) {
         mValues = items;
@@ -71,6 +73,8 @@ public class SIGroupRecyclerViewAdapter extends RecyclerView.Adapter<SIGroupRecy
         mContext=context;
         mCategoryId=categoryId;
         jsonParser=new JSONParser();
+        //preference
+        preferences=new Preferences(context);
     }
 
     @Override
@@ -91,6 +95,10 @@ public class SIGroupRecyclerViewAdapter extends RecyclerView.Adapter<SIGroupRecy
         holder.mPositionView.setText(mValues.get(position).position);
         holder.mGroupView.setText(group);
         holder.mDescriptionView.setText(des);
+        if(!preferences.isDark_theme_enabled())
+        {
+            holder.mView.setBackgroundColor(mContext.getResources().getColor(R.color.secondary_background_light));
+        }
         //get the category photo
         String url= LoginA.base_url+"src/sellers/"+String.format("%s/pics/g_%d", CommonHelper.makeName(LoginA.sellerAccount.getId()), mValues.get(position).id)+".jpg";
         ImageRequest request=new ImageRequest(

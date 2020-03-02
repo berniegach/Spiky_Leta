@@ -79,8 +79,7 @@ public class SSettingsA extends AppCompatActivity
     public static SellerAccount tempSellerAccount;
     public static String permissions;
     public static Bitmap profilePic;
-    private SharedPreferences loginPreferences;
-    private static boolean dark_theme_enabled=false;
+    Preferences preferences;
 
 
     @Override
@@ -116,10 +115,9 @@ public class SSettingsA extends AppCompatActivity
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         //preference
-        loginPreferences=getBaseContext().getSharedPreferences("loginPrefs",MODE_PRIVATE);
+        preferences=new Preferences(getBaseContext());
         //dark theme prefernce
-        dark_theme_enabled=loginPreferences.getBoolean("dark_theme",false);
-        if(!dark_theme_enabled)
+        if(!preferences.isDark_theme_enabled())
         {
             setTheme(R.style.NonFullscreenSSettingsLight);
             Toolbar actionBarToolbar = (Toolbar)findViewById(R.id.action_bar);
@@ -228,8 +226,7 @@ public class SSettingsA extends AppCompatActivity
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class GeneralPreferenceFragment extends PreferenceFragmentCompat
     {
-        private SharedPreferences loginPreferences;
-        private SharedPreferences.Editor loginPreferencesEditor;
+        Preferences preferences;
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
         {
@@ -414,9 +411,8 @@ public class SSettingsA extends AppCompatActivity
             //dark theme
             final SwitchPreference preference_dark=findPreference("dark_theme");
             //preference
-            loginPreferences=context.getSharedPreferences("loginPrefs",MODE_PRIVATE);
-            loginPreferencesEditor=loginPreferences.edit();
-            preference_dark.setChecked(loginPreferences.getBoolean("dark_theme",false));
+            preferences=new Preferences(context);
+            preference_dark.setChecked(preferences.isDark_theme_enabled());
             preference_dark.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
             {
                 @Override
@@ -424,8 +420,7 @@ public class SSettingsA extends AppCompatActivity
                 {
                     boolean choice = (boolean) newValue;
                     preference_dark.setChecked(choice);
-                    loginPreferencesEditor.putBoolean("dark_theme",choice);
-                    loginPreferencesEditor.commit();
+                    preferences.setDark_theme_enabled(choice);
                     return false;
                 }
             });

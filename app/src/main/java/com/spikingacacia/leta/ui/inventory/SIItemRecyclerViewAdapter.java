@@ -30,6 +30,7 @@ import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.CommonHelper;
 import com.spikingacacia.leta.ui.JSONParser;
 import com.spikingacacia.leta.ui.LoginA;
+import com.spikingacacia.leta.ui.Preferences;
 import com.spikingacacia.leta.ui.database.SItems;
 import com.spikingacacia.leta.ui.inventory.SIItemC.InventoryItem;
 import com.spikingacacia.leta.ui.inventory.SIItemF.OnListFragmentInteractionListener;
@@ -64,6 +65,7 @@ public class SIItemRecyclerViewAdapter extends RecyclerView.Adapter<SIItemRecycl
     private final Context mContext;
     private final int mCategoryId;
     private final int mGroupId;
+    Preferences preferences;
 
     public SIItemRecyclerViewAdapter(List<InventoryItem> items, OnListFragmentInteractionListener listener, Context context, int categoryId, int groupId) {
         mValues = items;
@@ -74,6 +76,8 @@ public class SIItemRecyclerViewAdapter extends RecyclerView.Adapter<SIItemRecycl
         mCategoryId=categoryId;
         mGroupId=groupId;
         jsonParser=new JSONParser();
+        //preference
+        preferences=new Preferences(context);
     }
 
     @Override
@@ -96,6 +100,10 @@ public class SIItemRecyclerViewAdapter extends RecyclerView.Adapter<SIItemRecycl
         holder.mItemView.setText(item);
         holder.mPriceView.setText(Double.toString(mValues.get(position).sellingPrice));
         holder.mDescriptionView.setText(des);
+        if(!preferences.isDark_theme_enabled())
+        {
+            holder.mView.setBackgroundColor(mContext.getResources().getColor(R.color.secondary_background_light));
+        }
         //get the category photo
         String url= LoginA.base_url+"src/sellers/"+String.format("%s/pics/i_%d", CommonHelper.makeName(LoginA.sellerAccount.getId()), mValues.get(position).id)+".jpg";
         ImageRequest request=new ImageRequest(

@@ -15,19 +15,20 @@
         android:showDividers="middle">
 
         <LinearLayout
+            android:id="@+id/sec_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/secondary_background"
             android:orientation="vertical">
+
             <TextView
                 android:id="@+id/order_format"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="pay first"
                 android:gravity="end"
                 android:paddingEnd="10dp"
-                android:textStyle="bold"
-                android:textColor="@color/button_normal"/>
+                android:text="pay first"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/main_count"
@@ -71,8 +72,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/text_margin"
-                        android:text="Pending"
-                        android:textColor="@color/text" />
+                        android:text="Pending" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -107,8 +107,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/text_margin"
-                        android:text="In Progress"
-                        android:textColor="@color/text" />
+                        android:text="In Progress" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -154,8 +153,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/text_margin"
-                        android:text="Delivery"
-                        android:textColor="@color/text" />
+                        android:text="Delivery" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -236,8 +234,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/text_margin"
-                        android:text="Finished"
-                        android:textColor="@color/text" />
+                        android:text="Finished" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"

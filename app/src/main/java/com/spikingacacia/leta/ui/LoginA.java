@@ -62,8 +62,8 @@ public class LoginA extends AppCompatActivity
 {
     private static final int OVERLAY_PERMISSION_CODE=541;
     //REMEMBER TO CHANGE THIS WHEN CHANGING BETWEEN ONLINE AND LOCALHOST
-    public static final String base_url="https://www.spikingacacia.com/leta_project/android/"; //online
-    //public static final String base_url="http://10.0.2.2/leta_project/android/"; //localhost no connection for testing user accounts coz it doesnt require subscription checking
+    //public static final String base_url="https://www.spikingacacia.com/leta_project/android/"; //online
+    public static final String base_url="http://10.0.2.2/leta_project/android/"; //localhost no connection for testing user accounts coz it doesnt require subscription checking
     //public static final String base_url="http://192.168.0.10/leta_project/android/"; //localhost
     //public static final String base_url="http://192.168.43.228/leta_project/android/"; //localhost  tablet
     //sellers php files

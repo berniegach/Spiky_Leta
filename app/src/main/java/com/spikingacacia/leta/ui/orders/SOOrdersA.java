@@ -9,10 +9,13 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
 import com.spikingacacia.leta.ui.LoginA;
+import com.spikingacacia.leta.ui.Preferences;
 import com.spikingacacia.leta.ui.database.SOrders;
 
 import org.apache.http.NameValuePair;
@@ -44,16 +47,33 @@ public class SOOrdersA extends AppCompatActivity
     private String TAG_MESSAGE="message";
     private String TAG="SOOrdersA";
     private JSONParser jsonParser;
+    Preferences preferences;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.a_soorders);
         jsonParser=new JSONParser();
+
         //set actionbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle("Orders");
+        //preference
+        preferences=new Preferences(getBaseContext());
+        if(!preferences.isDark_theme_enabled())
+        {
+            setTheme(R.style.AppThemeLight);
+            toolbar.setTitleTextColor(getResources().getColor(R.color.text_light));
+            toolbar.setPopupTheme(R.style.AppThemeLight_PopupOverlayLight);
+            AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
+            appBarLayout.getContext().setTheme(R.style.AppThemeLight_AppBarOverlayLight);
+            findViewById(R.id.main).setBackgroundColor(getResources().getColor(R.color.main_background_light));
+            //findViewById(R.id.sec_main).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
+            //collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.text_light));
+            //collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.text_light));
+            //((TextView)findViewById(R.id.who)).setTextColor(getResources().getColor(R.color.text_light));
+        }
         //set the first base fragment
         Fragment fragment=SOOverviewF.newInstance("","");
         FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();

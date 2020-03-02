@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -24,6 +25,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
 import com.spikingacacia.leta.ui.LoginA;
+import com.spikingacacia.leta.ui.Preferences;
 import com.spikingacacia.leta.ui.database.SOrders;
 
 import org.apache.http.NameValuePair;
@@ -81,8 +83,7 @@ public class SOOverviewF extends Fragment
     private TextView tDeliveryName;
     private TextView tPaymentName;
     private int countToShow=0;
-    private SharedPreferences loginPreferences;
-    private SharedPreferences.Editor loginPreferencesEditor;
+    Preferences preferences;
 
     public SOOverviewF()
     {
@@ -117,8 +118,12 @@ public class SOOverviewF extends Fragment
     {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.f_sooverview, container, false);
-        loginPreferences=getContext().getSharedPreferences("loginPrefs",MODE_PRIVATE);
-        loginPreferencesEditor=loginPreferences.edit();
+        //preference
+        preferences=new Preferences(getContext());
+        if(!preferences.isDark_theme_enabled())
+        {
+            view.findViewById(R.id.sec_main).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
+        }
         //layouts
         lPending = ((LinearLayout)view.findViewById(R.id.pending));
         lInProgress = ((LinearLayout)view.findViewById(R.id.inprogress));
@@ -219,7 +224,7 @@ public class SOOverviewF extends Fragment
         //2. so we can set the texviews after setting the values. if not done here the texviews will show 0 during the initial run
         //3 so we can set the piechart with correct values during the initial run as above 2
         super.onResume();
-        countToShow=loginPreferences.getInt("order_format_to_show_count",0);
+        countToShow=preferences.getOrder_format_to_show_count();
         pendingCount=0;
         inProgressCount=0;
         deliveryCount=0;
@@ -248,12 +253,18 @@ public class SOOverviewF extends Fragment
         {
             if(count==countToShow)
             {
-                layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.secondary_background));
+                if(preferences.isDark_theme_enabled())
+                    layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.secondary_background));
+                else
+                    layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.secondary_background_light));
                 tMainCount.setText(String.valueOf(counts[count]));
             }
             else
             {
-                layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.tertiary_background));
+                if(preferences.isDark_theme_enabled())
+                    layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.tertiary_background));
+                else
+                    layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.tertiary_background_light));
             }
         }
 
@@ -311,15 +322,20 @@ public class SOOverviewF extends Fragment
                                 {
                                     if(count==i)
                                     {
-                                        layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.secondary_background));
+                                        if(preferences.isDark_theme_enabled())
+                                            layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.secondary_background));
+                                        else
+                                            layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.secondary_background_light));
                                         countToShow=i;
-                                        loginPreferencesEditor.putInt("order_format_to_show_count",countToShow);
-                                        loginPreferencesEditor.commit();
+                                        preferences.setOrder_format_to_show_count(i);
                                         tMainCount.setText(String.valueOf(counts[count]));
                                     }
                                     else
                                     {
-                                        layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.tertiary_background));
+                                        if(preferences.isDark_theme_enabled())
+                                            layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.tertiary_background));
+                                        else
+                                            layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.tertiary_background_light));
                                     }
                                 }
                             }
@@ -489,11 +505,17 @@ public class SOOverviewF extends Fragment
                 {
                     if(count==countToShow)
                     {
-                        layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.secondary_background));
+                        if(preferences.isDark_theme_enabled())
+                            layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.secondary_background));
+                        else
+                            layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.secondary_background_light));
                     }
                     else
                     {
-                        layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.tertiary_background));
+                        if(preferences.isDark_theme_enabled())
+                            layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.tertiary_background));
+                        else
+                            layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.tertiary_background_light));
                     }
                 }
             }

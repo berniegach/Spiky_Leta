@@ -19,6 +19,7 @@ public class Preferences
         reset_password = shared_preferences.getBoolean("reset_password",false);
         email_to_remember = shared_preferences.getString("email","");
         password_to_remember = shared_preferences.getString("password","");
+        order_format_to_show_count = shared_preferences.getInt("order_format_to_show_count",0);
     }
     public boolean isDark_theme_enabled()
     {
@@ -116,6 +117,18 @@ public class Preferences
     {
         this.persona = persona;
         preferences_editor.putInt("persona",persona);
+        preferences_editor.commit();
+    }
+    public int getOrder_format_to_show_count()
+    {
+        return order_format_to_show_count;
+    }
+
+    public void setOrder_format_to_show_count(int order_format_to_show_count)
+    {
+        this.order_format_to_show_count = order_format_to_show_count;
+        preferences_editor.putInt("order_format_to_show_count",order_format_to_show_count);
+        preferences_editor.commit();
     }
     private boolean dark_theme_enabled=false;
     private boolean verify_password=false;
@@ -128,5 +141,6 @@ public class Preferences
     private String email_to_remember;
     private String password_to_remember;
     int persona;
+    int order_format_to_show_count;
 
 }
