@@ -20,4 +20,5 @@
     <dimen name="edittext_minimum_height">48dp</dimen>
     <dimen name="button_minimum_height">48dp</dimen>
     <dimen name="appbar_padding">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

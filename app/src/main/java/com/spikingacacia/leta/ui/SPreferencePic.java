@@ -52,6 +52,7 @@ public class SPreferencePic extends Preference
     private static String TAG_SUCCESS="success";
     private static String TAG_MESSAGE="message";
     private FragmentManager fragmentManager;
+    private Preferences preferences;
     public SPreferencePic(Context context)
     {
         super(context);
@@ -59,6 +60,7 @@ public class SPreferencePic extends Preference
         this.context=context;
         fragmentManager=((AppCompatActivity)context).getFragmentManager();
         jsonParser=new JSONParser();
+        preferences = new Preferences(context);
     }
 
     public SPreferencePic(Context context, AttributeSet attrs)
@@ -68,6 +70,7 @@ public class SPreferencePic extends Preference
         this.context=context;
         fragmentManager=((AppCompatActivity)context).getFragmentManager();
         jsonParser=new JSONParser();
+        preferences = new Preferences(context);
     }
     public SPreferencePic(Context context, AttributeSet attrs, int defStyleAttr)
     {
@@ -76,6 +79,7 @@ public class SPreferencePic extends Preference
         this.context=context;
         fragmentManager=((AppCompatActivity)context).getFragmentManager();
         jsonParser=new JSONParser();
+        preferences = new Preferences(context);
 
     }
     @Override
@@ -85,6 +89,10 @@ public class SPreferencePic extends Preference
         imageView=(ImageView)view.findViewById(R.id.imagepic);
         //get the profile pic
         imageView.setImageBitmap(SSettingsA.profilePic);
+        if(!preferences.isDark_theme_enabled())
+        {
+            view.itemView.setBackgroundColor(context.getResources().getColor(R.color.secondary_background_light));
+        }
         view.findViewById(R.id.edit).setOnClickListener(new View.OnClickListener()
         {
             @Override

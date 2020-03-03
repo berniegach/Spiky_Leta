@@ -74,6 +74,7 @@ implements SICategoryF.OnListFragmentInteractionListener,
             toolbar.setPopupTheme(R.style.AppThemeLight_PopupOverlayLight);
             AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
             appBarLayout.getContext().setTheme(R.style.AppThemeLight_AppBarOverlayLight);
+            appBarLayout.setBackgroundColor(getResources().getColor(R.color.main_background_light));
             findViewById(R.id.main).setBackgroundColor(getResources().getColor(R.color.main_background_light));
         }
 

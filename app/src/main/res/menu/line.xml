@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <group android:id="@+id/group"
+        android:checkableBehavior="all">
+    <item
+        android:id="@+id/actionToggleValues"
+        android:title="show values"
+        >
+    </item>
+    <item
+        android:id="@+id/actionToggleCircles"
+        android:title="show points">
+    </item>
+    </group>
+</menu>

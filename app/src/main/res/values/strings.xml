@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">Spiky Leta</string>
+    <string name="app_name">Leta Restaurant</string>
     <string name="app_version">Version 1.0.4</string>
-    <string name="copyright">\u00A9 2019 Spiking Acacia</string>
+    <string name="copyright">\u00A9 2020 Spiking Acacia</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -84,7 +84,15 @@
     <string name="h_8_d"> \u279e Inventory  \u279e  category \u279e  group \u279e long press the item \u279e  image</string>
 
     <string name="h_end">\u20de That\'s it, you now set, customers can now begin to order using the Spiky Leta Customer app</string>
+    <string name="title_activity_main">MainActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
 
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
 
 </resources>

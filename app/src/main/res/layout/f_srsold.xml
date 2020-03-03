@@ -24,8 +24,44 @@
                 android:layout_height="400dp"
                 android:layout_marginTop="60dp"/>
 
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioGroup
+                android:id="@+id/radio_graph_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
 
-
+                android:weightSum="4">
+                <RadioButton
+                    android:id="@+id/check_hourly"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="hourly"/>
+                <RadioButton
+                    android:id="@+id/check_daily"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="daily"/>
+                <RadioButton
+                    android:id="@+id/check_monthly"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="monthly"/>
+                <RadioButton
+                    android:id="@+id/check_yearly"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="yearly"/>
+            </RadioGroup>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"

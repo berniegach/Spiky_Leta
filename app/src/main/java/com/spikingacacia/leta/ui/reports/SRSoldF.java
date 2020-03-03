@@ -12,19 +12,29 @@ import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.IDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.MPPointF;
 import com.spikingacacia.leta.R;
+import com.spikingacacia.leta.ui.Preferences;
 import com.spikingacacia.leta.ui.database.SItems;
 import com.spikingacacia.leta.ui.database.SOrders;
 
@@ -43,7 +53,7 @@ import static com.spikingacacia.leta.ui.LoginA.sOrdersList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SRSoldF extends Fragment
+public class SRSoldF extends Fragment implements OnChartValueSelectedListener
 {
     private PieChart chart;
     private String TAG="SRSoldRateF";
@@ -53,7 +63,7 @@ public class SRSoldF extends Fragment
     private Date start=null;
     private Date end=null;
     private Typeface font;
-
+    private Preferences preferences;
 
     public static SRSoldF newInstance()
     {
@@ -67,6 +77,18 @@ public class SRSoldF extends Fragment
     {
         // Required empty public constructor
     }
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        if (getArguments() != null)
+        {
+            //mParam1 = getArguments().getString(ARG_PARAM1);
+            //mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+        preferences = new Preferences(getContext());
+    }
 
 
     @Override
@@ -75,6 +97,10 @@ public class SRSoldF extends Fragment
     {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.f_srsold, container, false);
+        if(!preferences.isDark_theme_enabled())
+        {
+            view.findViewById(R.id.chart_back).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
+        }
         chart=view.findViewById(R.id.chart);
         //font
         font= ResourcesCompat.getFont(getContext(),R.font.arima_madurai);
@@ -157,6 +183,45 @@ public class SRSoldF extends Fragment
         chart.invalidate();
         return view;
     }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.pie, menu);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case R.id.actionToggleValues: {
+                for (IDataSet<?> set : chart.getData().getDataSets())
+                    set.setDrawValues(!set.isDrawValuesEnabled());
+                item.setChecked(!item.isChecked());
+                chart.invalidate();
+                break;
+            }
+            case R.id.actionToggleHole: {
+                if (chart.isDrawHoleEnabled())
+                    chart.setDrawHoleEnabled(false);
+                else
+                    chart.setDrawHoleEnabled(true);
+                item.setChecked(!item.isChecked());
+                chart.invalidate();
+                break;
+            }
+            case R.id.actionTogglePercent:
+                chart.setUsePercentValues(!chart.isUsePercentValuesEnabled());
+                item.setChecked(!item.isChecked());
+                chart.invalidate();
+                break;
+        }
+        return true;
+    }
+
     private void formData()
 
     {
@@ -200,54 +265,69 @@ public class SRSoldF extends Fragment
     }
     private void setPieChart()
     {
+        if(preferences.isDark_theme_enabled())
+            chart.setBackgroundColor(Color.BLACK);
+        else
+            chart.setBackgroundColor(Color.WHITE);
         chart.setUsePercentValues(true);
         chart.getDescription().setEnabled(false);
-        chart.setExtraOffsets(5,10,5,5);
+        chart.setExtraOffsets(5, 10, 5, 5);
+
         chart.setDragDecelerationFrictionCoef(0.95f);
-        chart.setDrawHoleEnabled(false);
-        //chart.setHoleColor(Color.TRANSPARENT);
+
+        //chart.setCenterTextTypeface(tfLight);
+       // chart.setCenterText(generateCenterSpannableText());
+
+        chart.setDrawHoleEnabled(true);
+        chart.setHoleColor(Color.WHITE);
+
         chart.setTransparentCircleColor(Color.WHITE);
         chart.setTransparentCircleAlpha(110);
-        // chart.setHoleRadius(95f);
+
+        chart.setHoleRadius(58f);
+        chart.setTransparentCircleRadius(61f);
+
+        chart.setDrawCenterText(true);
+
         chart.setRotationAngle(0);
+        // enable rotation of the chart by touch
         chart.setRotationEnabled(true);
         chart.setHighlightPerTapEnabled(true);
-        chart.setEntryLabelColor(Color.WHITE);
-        // chart.setEntryLabelTypeface(getResources().getFont(R.font.arima_madurai));
 
-        Legend legend=chart.getLegend();
-        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
-        legend.setOrientation(Legend.LegendOrientation.VERTICAL);
-        legend.setDrawInside(false);
-        legend.setXEntrySpace(7f);
-        legend.setYEntrySpace(0f);
-        legend.setYOffset(0f);
-        legend.setTextSize(13);
-        legend.setTextColor(Color.WHITE);
-        legend.setTypeface(font);
-        //entry label
-        chart.setEntryLabelColor(Color.WHITE);
-        chart.setEntryLabelTypeface(font);
-        chart.setEntryLabelTextSize(12);
+        // chart.setUnit(" €");
+        // chart.setDrawUnitsInChart(true);
 
+        // add a selection listener
+        chart.setOnChartValueSelectedListener(this);
 
-        chart.invalidate();
+        chart.animateY(1400, Easing.EaseInOutQuad);
+        // chart.spin(2000, 0, 360);
+
+        Legend l = chart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        l.setOrientation(Legend.LegendOrientation.VERTICAL);
+        l.setDrawInside(false);
+        l.setXEntrySpace(7f);
+        l.setYEntrySpace(0f);
+        l.setYOffset(0f);
+
+        // entry label styling
+        if(preferences.isDark_theme_enabled())
+            chart.setEntryLabelColor(Color.WHITE);
+        else
+            chart.setEntryLabelColor(Color.BLACK);
+        //chart.setEntryLabelTypeface(tfRegular);
+        chart.setEntryLabelTextSize(12f);
 
     }
     private void setItemsPie()
     {
+        // NOTE: The order of the entries when being added to the entries array determines their position around the center of
+        // the chart.
         List<PieEntry>entries=new ArrayList<>();
-        //colors
-        List<Integer>colors=new ArrayList<>();
-        List<Integer>tempColors=new ArrayList<>();
-
-        List<Integer>tempColorsRes=new ArrayList<>();
         if(sItemsList.size()==0)
-        {
             entries.add(new PieEntry(1,"Empty"));
-            colors=ColorTemplate.createColors(getResources(),new int[]{R.color.graph_1});
-        }
         else
         {
             int index=0;
@@ -266,68 +346,68 @@ public class SRSoldF extends Fragment
                     continue;
                 }
                 entries.add(new PieEntry(items_count_list.get(index),name));
-                tempColors.add(getColor(index%16));
                 index+=1;
             }
-            int[]tempTempColors=new int[tempColors.size()];
-            for(int count=0; count<tempColors.size(); count+=1 )
-                tempTempColors[count]=tempColors.get(count);
-            colors=ColorTemplate.createColors(getResources(),tempTempColors);
         }
 
-        PieDataSet set=new PieDataSet(entries,"Items Sold");
-        set.setSliceSpace(0f);
-        //colors
-        set.setColors(colors);
-        PieData data=new PieData(set);
-        data.setValueTextColor(Color.WHITE);
-        data.setValueTypeface(font);
-        data.setValueFormatter(new PercentFormatter());
 
+        PieDataSet dataSet = new PieDataSet(entries, "Items sold");
+
+        dataSet.setDrawIcons(false);
+
+        dataSet.setSliceSpace(0f);
+        //dataSet.setIconsOffset(new MPPointF(0, 40));
+        dataSet.setSelectionShift(5f);
+
+        // add a lot of colors
+
+        ArrayList<Integer> colors = new ArrayList<>();
+        for (int c : ColorTemplate.PASTEL_COLORS)
+            colors.add(c);
+        for (int c : ColorTemplate.VORDIPLOM_COLORS)
+            colors.add(c);
+
+        for (int c : ColorTemplate.JOYFUL_COLORS)
+            colors.add(c);
+
+        for (int c : ColorTemplate.COLORFUL_COLORS)
+            colors.add(c);
+
+        for (int c : ColorTemplate.LIBERTY_COLORS)
+            colors.add(c);
+
+
+
+        colors.add(ColorTemplate.getHoloBlue());
+
+        dataSet.setColors(colors);
+        //dataSet.setSelectionShift(0f);
+
+        PieData data = new PieData(dataSet);
+        data.setValueFormatter(new PercentFormatter(chart));
+        data.setValueTextSize(11f);
+        //data.setValueTextColor(Color.BLUE);
+        //data.setValueTypeface(tfLight);
         chart.setData(data);
+
+        // undo all highlights
         chart.highlightValues(null);
+
         chart.invalidate();
     }
-    private int getColor(final int index)
-    {
-        switch(index)
-        {
-            case 0:
-                return R.color.graph_1;
-            case 1:
-                return R.color.graph_2;
-            case 2:
-                return R.color.graph_3;
-            case 3:
-                return R.color.graph_4;
-            case 4:
-                return R.color.graph_5;
-            case 5:
-                return R.color.graph_6;
-            case 6:
-                return R.color.graph_7;
-            case 7:
-                return R.color.graph_8;
-            case 8:
-                return R.color.graph_9;
-            case 9:
-                return R.color.graph_10;
-            case 10:
-                return R.color.graph_11;
-            case 11:
-                return R.color.graph_12;
-            case 12:
-                return R.color.graph_13;
-            case 13:
-                return R.color.graph_14;
-            case 14:
-                return R.color.graph_2;
-            case 15:
-                return R.color.graph_3;
-            default:
-                return R.color.graph_4;
-        }
+    @Override
+    public void onValueSelected(Entry e, Highlight h) {
 
+        if (e == null)
+            return;
+        Log.i("VAL SELECTED",
+                "Value: " + e.getY() + ", index: " + h.getX()
+                        + ", DataSet index: " + h.getDataSetIndex());
+    }
+
+    @Override
+    public void onNothingSelected() {
+        Log.i("PieChart", "nothing selected");
     }
 
 

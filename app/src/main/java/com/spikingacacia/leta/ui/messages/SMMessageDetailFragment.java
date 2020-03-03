@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 import com.spikingacacia.leta.R;
+import com.spikingacacia.leta.ui.Preferences;
 
 
 /**
@@ -30,6 +31,7 @@ public class SMMessageDetailFragment extends Fragment
      */
     private SMMessageContent.MessageItem mItem;
     private String[]content;
+    private Preferences preferences;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -44,6 +46,7 @@ public class SMMessageDetailFragment extends Fragment
     {
         super.onCreate(savedInstanceState);
         content=getArguments().getStringArray("items");
+        preferences = new Preferences(getContext());
 
         /*if (getArguments().containsKey(ARG_ITEM_ID))
         {
@@ -59,6 +62,10 @@ public class SMMessageDetailFragment extends Fragment
                              Bundle savedInstanceState)
     {
         View rootView = inflater.inflate(R.layout.smmessage_detail, container, false);
+        if(!preferences.isDark_theme_enabled())
+        {
+            rootView.findViewById(R.id.main).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
+        }
 
         // Show the dummy content as text in a TextView.
         if (content != null)

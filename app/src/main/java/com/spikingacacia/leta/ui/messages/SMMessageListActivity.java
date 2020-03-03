@@ -16,7 +16,9 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.spikingacacia.leta.R;
+import com.spikingacacia.leta.ui.Preferences;
 
 import java.util.List;
 
@@ -37,12 +39,14 @@ public class SMMessageListActivity extends AppCompatActivity
      */
     private boolean mTwoPane;
     private static Context context;
+    Preferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.a_smmessage_list);
+        preferences = new Preferences(getBaseContext());
 
         if (findViewById(R.id.message_detail_container) != null)
         {
@@ -56,6 +60,16 @@ public class SMMessageListActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Messages");
+        if(!preferences.isDark_theme_enabled())
+        {
+            setTheme(R.style.AppThemeLight_NoActionBarLight);
+            toolbar.setTitleTextColor(getResources().getColor(R.color.text_light));
+            toolbar.setPopupTheme(R.style.AppThemeLight_PopupOverlayLight);
+            AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
+            appBarLayout.getContext().setTheme(R.style.AppThemeLight_AppBarOverlayLight);
+            appBarLayout.setBackgroundColor(getResources().getColor(R.color.main_background_light));
+            findViewById(R.id.main).setBackgroundColor(getResources().getColor(R.color.main_background_light));
+        }
 
         RecyclerView recyclerView = findViewById(R.id.message_list);
         recyclerView.addItemDecoration(new DividerItemDecoration(getBaseContext(),DividerItemDecoration.VERTICAL));
@@ -77,6 +91,7 @@ public class SMMessageListActivity extends AppCompatActivity
         private final SMMessageListActivity mParentActivity;
         private final List<SMMessageContent.MessageItem> mValues;
         private final boolean mTwoPane;
+        Preferences preferences;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener()
         {
             @Override
@@ -120,6 +135,7 @@ public class SMMessageListActivity extends AppCompatActivity
         {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.smmessage_list_content, parent, false);
+            preferences = new Preferences(context);
             return new ViewHolder(view);
         }
 
@@ -147,6 +163,10 @@ public class SMMessageListActivity extends AppCompatActivity
                     message=(mValues.get(position).message).substring(0,40)+"...";
                 else
                     message=mValues.get(position).message;
+            }
+            if(!preferences.isDark_theme_enabled())
+            {
+                holder.itemView.setBackgroundColor(context.getResources().getColor(R.color.secondary_background_light));
             }
             holder.mPositionView.setText(mValues.get(position).position);
             holder.mMessageView.setText(message);

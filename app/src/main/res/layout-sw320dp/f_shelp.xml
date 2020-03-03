@@ -11,7 +11,6 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/secondary_background"
             android:gravity="center"
             android:padding="5dp"
             android:text="@string/h_1"
@@ -20,14 +19,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:padding="10dp"
             android:text="@string/h_1_a" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:padding="10dp"
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
@@ -36,14 +33,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:padding="10dp"
             android:text="@string/h_2_a" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:padding="10dp"
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
@@ -52,14 +47,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:padding="10dp"
             android:text="@string/h_3_a" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:padding="10dp"
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
@@ -68,7 +61,6 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:padding="10dp"
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
@@ -76,7 +68,6 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:padding="10dp"
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
@@ -91,7 +82,6 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/secondary_background"
             android:gravity="center"
             android:padding="5dp"
             android:text="@string/h_2"
@@ -100,14 +90,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:padding="10dp"
             android:text="@string/h_5_a" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:padding="10dp"
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
@@ -116,7 +104,6 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:padding="10dp"
             android:text="@string/h_5_c" />
 
@@ -130,7 +117,6 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/secondary_background"
             android:gravity="center"
             android:padding="5dp"
             android:text="@string/h_3"
@@ -139,73 +125,61 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:padding="10dp"
             android:text="@string/h_6_a" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:padding="10dp"
             android:text="@string/h_6_b" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:padding="10dp"
             android:text="@string/h_6_c" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:padding="10dp"
             android:text="@string/h_6_d" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:padding="10dp"
             android:text="@string/h_7_a" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:padding="10dp"
             android:text="@string/h_7_b" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:padding="10dp"
             android:text="@string/h_7_c" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:padding="10dp"
             android:text="@string/h_7_d" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:padding="10dp"
             android:text="@string/h_8_a" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:padding="10dp"
             android:text="@string/h_8_b" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:padding="10dp"
             android:text="@string/h_8_c" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:padding="10dp"
             android:text="@string/h_8_d" />
 
@@ -218,7 +192,6 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tertiary_background"
             android:gravity="center"
             android:padding="10dp"
             android:text="@string/h_end" />

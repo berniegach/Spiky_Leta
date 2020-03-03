@@ -57,6 +57,7 @@ implements SMenuF.OnFragmentInteractionListener{
             findViewById(R.id.sec_main).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
             collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.text_light));
             collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.text_light));
+            collapsingToolbarLayout.setBackgroundColor(getResources().getColor(R.color.main_background_light));
             ((TextView)findViewById(R.id.who)).setTextColor(getResources().getColor(R.color.text_light));
             ((TextView)findViewById(R.id.trial)).setTextColor(getResources().getColor(R.color.text_light));
             ((TextView)findViewById(R.id.welcome)).setTextColor(getResources().getColor(R.color.text_light));
@@ -202,13 +203,13 @@ implements SMenuF.OnFragmentInteractionListener{
             String message="";
             if(LoginA.sCategoriesList.size()==0)
                 message="Please create the major categories eg food, drinks etc.\nGo to "+
-                        "\\u279e Inventory  \\u279e Options(upper right corner) \\u279e add";
+                        "\u279e Inventory  \u279e Options(upper right corner) \u279e add";
             else if(LoginA.sGroupsList.size()==0)
                 message="Please create the groups eg pizza, burgers etc.\nGo to "+
-                        "\\u279e Inventory  \\u279e  category \\u279e Options(upper right corner) \\u279e add";
+                        "\u279e Inventory  \u279e  category \u279e Options(upper right corner) \u279e add";
             else if(LoginA.sItemsList.size()==0)
                 message="Please create the items eg pepperoni, cheese burger etc.\nGo to "+
-                        " \\u279e Inventory  \\u279e  category \\u279e  group \\u279e Options(upper right corner) \\u279e add";
+                        " \u279e Inventory  \u279e  category \u279e  group \u279e Options(upper right corner) \u279e add";
             if(!message.contentEquals(""))
             {
                 new AlertDialog.Builder(this)

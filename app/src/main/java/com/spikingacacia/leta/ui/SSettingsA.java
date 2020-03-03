@@ -48,6 +48,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.textfield.TextInputLayout;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
@@ -87,6 +88,17 @@ public class SSettingsA extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
+        //preference
+        preferences = new Preferences(getBaseContext());
+        if(!preferences.isDark_theme_enabled())
+        {
+            //setTheme(R.style.AppThemeLight_NoActionBarLight);
+            //toolbar.setTitleTextColor(getResources().getColor(R.color.text_light));
+            //toolbar.setPopupTheme(R.style.AppThemeLight_PopupOverlayLight);
+            //AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
+            //appBarLayout.getContext().setTheme(R.style.AppThemeLight_AppBarOverlayLight);
+            findViewById(R.id.main).setBackgroundColor(getResources().getColor(R.color.main_background_light));
+        }
         if (savedInstanceState == null)
         {
             getSupportFragmentManager()
@@ -114,8 +126,6 @@ public class SSettingsA extends AppCompatActivity
         {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        //preference
-        preferences=new Preferences(getBaseContext());
         //dark theme prefernce
         if(!preferences.isDark_theme_enabled())
         {

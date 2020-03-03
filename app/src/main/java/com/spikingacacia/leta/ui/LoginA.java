@@ -127,6 +127,7 @@ public class LoginA extends AppCompatActivity
             ((TextView)findViewById(R.id.who)).setTextColor(getResources().getColor(R.color.text_light));
             collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.text_light));
             collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.text_light));
+            collapsingToolbarLayout.setBackgroundColor(getResources().getColor(R.color.main_background_light));
         }
 
         //background intent

@@ -27,6 +27,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.spikingacacia.leta.R;
+import com.spikingacacia.leta.ui.Preferences;
 import com.spikingacacia.leta.ui.database.SOrders;
 
 import java.text.ParseException;
@@ -59,6 +60,7 @@ public class SRCountRateF extends Fragment
     private Date start=null;
     private Date end=null;
     private Typeface font;
+    private Preferences preferences;
     public SRCountRateF()
     {
         // Required empty public constructor
@@ -83,6 +85,7 @@ public class SRCountRateF extends Fragment
             //mParam1 = getArguments().getString(ARG_PARAM1);
             //mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        preferences = new Preferences(getContext());
     }
 
     @Override
@@ -91,6 +94,10 @@ public class SRCountRateF extends Fragment
     {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.f_srcount_rate, container, false);
+        if(!preferences.isDark_theme_enabled())
+        {
+            view.findViewById(R.id.chart_back).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
+        }
         chart=view.findViewById(R.id.chart);
         //font
         font= ResourcesCompat.getFont(getContext(),R.font.arima_madurai);
@@ -216,7 +223,7 @@ public class SRCountRateF extends Fragment
         //xAxis.setTextColor(Color.rgb(255, 192, 56));
         xAxis.setCenterAxisLabels(true);
         xAxis.setGranularity(1f); // one hour
-        xAxis.setValueFormatter(new IAxisValueFormatter()
+       /* xAxis.setValueFormatter(new IAxisValueFormatter()
         {
             private final SimpleDateFormat mFormat = new SimpleDateFormat("dd-MM-yy HH:mm", Locale.ENGLISH);
             @Override
@@ -225,7 +232,7 @@ public class SRCountRateF extends Fragment
                 long millis = TimeUnit.HOURS.toMillis((long) value);
                 return mFormat.format(new Date(millis));
             }
-        });
+        });*/
 
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);

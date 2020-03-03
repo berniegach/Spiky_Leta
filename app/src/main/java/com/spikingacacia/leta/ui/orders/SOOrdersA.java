@@ -68,11 +68,8 @@ public class SOOrdersA extends AppCompatActivity
             toolbar.setPopupTheme(R.style.AppThemeLight_PopupOverlayLight);
             AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
             appBarLayout.getContext().setTheme(R.style.AppThemeLight_AppBarOverlayLight);
+            appBarLayout.setBackgroundColor(getResources().getColor(R.color.main_background_light));
             findViewById(R.id.main).setBackgroundColor(getResources().getColor(R.color.main_background_light));
-            //findViewById(R.id.sec_main).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
-            //collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.text_light));
-            //collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.text_light));
-            //((TextView)findViewById(R.id.who)).setTextColor(getResources().getColor(R.color.text_light));
         }
         //set the first base fragment
         Fragment fragment=SOOverviewF.newInstance("","");
