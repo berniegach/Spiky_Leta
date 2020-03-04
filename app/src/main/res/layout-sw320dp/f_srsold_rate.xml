@@ -82,6 +82,7 @@
                 android:padding="5dp"
                 android:gravity="center"
                 android:background="@color/button_normal"
+                android:textColor="@color/text"
                 android:text="Start"/>
             <TextView
                 android:id="@+id/end"
@@ -91,6 +92,7 @@
                 android:padding="5dp"
                 android:gravity="center"
                 android:background="@color/button_normal"
+                android:textColor="@color/text"
                 android:text="End"/>
         </LinearLayout>
     </LinearLayout>

@@ -196,6 +196,7 @@ public class SignInF extends Fragment
         if(!preferences.isDark_theme_enabled())
         {
             createaccounttxtview.setTextColor(getResources().getColor(R.color.text_light));
+            ((TextView)view.findViewById(R.id.forgot_password)).setTextColor(getResources().getColor(R.color.text_light));
         }
         return view;
     }

@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -27,6 +28,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -47,6 +49,7 @@ import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.Preferences;
 import com.spikingacacia.leta.ui.database.SOrders;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -60,6 +63,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import static com.spikingacacia.leta.ui.LoginA.sOrdersList;
@@ -75,6 +79,15 @@ public class SRSoldRateF extends Fragment
     private String TAG="SRSoldRateF";
     private List<String> unique_dates_list;
     private List<Double> prices_list;
+    private List<Date> dates_list_hourly;
+    private List<Double> prices_list_hourly;
+    private List<Date> dates_list_daily;
+    private List<Double> prices_list_daily;
+    private List<Date> dates_list_monthly;
+    private List<Double> prices_list_monthly;
+    private List<Date> dates_list_yearly;
+    private List<Double> prices_list_yearly;
+    private Boolean[] dates_hourly_lists_done={false,false,false,false};
     private double maxPrice=0.0;
     private Date start=null;
     private Date end=null;
@@ -131,24 +144,8 @@ public class SRSoldRateF extends Fragment
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId)
             {
-                SimpleDateFormat mFormat = new SimpleDateFormat("dd-MM-yy HH:mm", Locale.ENGLISH);
-                switch (checkedId)
-                {
-                    case R.id.check_hourly:
-                        mFormat = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
-                        break;
-                    case R.id.check_daily:
-                        mFormat = new SimpleDateFormat("dd-MM-yy", Locale.ENGLISH);
-                        break;
-                    case R.id.check_monthly:
-                        mFormat = new SimpleDateFormat("MM-yy", Locale.ENGLISH);
-                        break;
-                    case R.id.check_yearly:
-                        mFormat = new SimpleDateFormat("yy", Locale.ENGLISH);
-                        break;
-
-                }
-                final SimpleDateFormat f_mFormat=mFormat;
+                graph_radio_checked_id=checkedId;
+                final SimpleDateFormat f_mFormat=get_my_date_format(true);
                 chart.getXAxis().setValueFormatter(new ValueFormatter()
                 {
                     @Override
@@ -158,12 +155,23 @@ public class SRSoldRateF extends Fragment
                         return f_mFormat.format(new Date(millis));
                     }
                 });
-                graph_radio_checked_id=checkedId;
-                formData();
-                setData();
+                //formData();
+                int which=1;
+                if(checkedId==R.id.check_hourly)
+                    which=1;
+                else if(checkedId==R.id.check_daily)
+                    which=2;
+                else if(checkedId==R.id.check_monthly)
+                    which=3;
+                else if(checkedId==R.id.check_yearly)
+                    which=4;
+                if(!dates_hourly_lists_done[which-1])
+                {
+                    Toast.makeText(getContext(), "Please wai for data to load", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                setData(which);
                 chart.invalidate();
-
-
             }
         });
         t_start=view.findViewById(R.id.start);
@@ -190,7 +198,7 @@ public class SRSoldRateF extends Fragment
                                 {
                                     start=mFormat.parse(String.format("%d-%d-%d",day,month,year));
                                     t_start.setText(String.format("%s %d-%d-%d","Start",day,month,year));
-                                    setData();
+                                    setData(1);
                                     chart.invalidate();
                                 }
                                 catch (ParseException e)
@@ -227,7 +235,7 @@ public class SRSoldRateF extends Fragment
                                 {
                                     end=mFormat.parse(String.format("%d-%d-%d",day,month,year));
                                     t_end.setText(String.format("%s %d-%d-%d","End",day,month,year));
-                                    setData();
+                                    setData(1);
                                     chart.invalidate();
                                 }
                                 catch (ParseException e)
@@ -249,12 +257,14 @@ public class SRSoldRateF extends Fragment
         {
             Log.e(TAG,"could not parse date "+e.getMessage());
         }
-        formData();
+        new form_data_task(1).execute((Void)null);
+        new form_data_task(2).execute((Void)null);
+        new form_data_task(3).execute((Void)null);
+        new form_data_task(4).execute((Void)null);
         setLineChart();
-        setData();
+        //setData();
 
         // redraw
-        chart.invalidate();
         return view;
     }
     @Override
@@ -363,196 +373,197 @@ public class SRSoldRateF extends Fragment
         // don't forget to refresh the drawing
         chart.invalidate();
     }
-    private long timeInHours(String dt)
+    private class form_data_task extends AsyncTask<Void, Void, Boolean>
     {
-        SimpleDateFormat mFormat = new SimpleDateFormat("dd-MM-yyyy HH", Locale.ENGLISH);
-        switch (graph_radio_checked_id)
+        int which=1;
+        public form_data_task(int which)
         {
-            case 1:
-            case R.id.check_hourly:
-                mFormat= new SimpleDateFormat("dd-MM-yyyy HH", Locale.ENGLISH);
-                break;
-            case R.id.check_daily:
-                mFormat= new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-                break;
-            case R.id.check_monthly:
-                mFormat= new SimpleDateFormat("MM-yyyy", Locale.ENGLISH);
-                break;
-            case R.id.check_yearly:
-                mFormat= new SimpleDateFormat("yyyy", Locale.ENGLISH);
-                break;
-        }
-        try
-        {
-            Date date=mFormat.parse(dt);
-            long milliseconds=date.getTime();
-            return TimeUnit.MILLISECONDS.toHours(milliseconds);
-        }
-        catch (ParseException e)
-        {
-            Log.e(TAG,"error setting time "+e.getMessage());
-            return 0;
-        }
-
-    }
-    private void formData()
-
-    {
-        List<String> order_dates=new ArrayList<>();
-        Iterator iterator= sOrdersList.entrySet().iterator();
-        int count_date=0;
-        while (iterator.hasNext())
-        {
-            LinkedHashMap.Entry<Integer, SOrders>set=(LinkedHashMap.Entry<Integer, SOrders>) iterator.next();
-            SOrders bOrders=set.getValue();
-            int orderStatus=bOrders.getOrderStatus();
-            String dateChanged=bOrders.getDateChanged();
-            String[] date_pieces=dateChanged.split(":"); // the date is in the form "dd-MM-yyyy HH:mm"
-            if(orderStatus!=5)
-                continue;
-            SimpleDateFormat mFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-            String formatted_date="";
-            try
-            {
-                //start=mFormat.parse(date_pieces[0].split(" ")[0]);
-                switch (graph_radio_checked_id)
-                {
-                    case 1:
-                    case R.id.check_hourly:
-                        mFormat= new SimpleDateFormat("dd-MM-yyyy HH", Locale.ENGLISH);
-                        break;
-                    case R.id.check_daily:
-                        mFormat= new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-                        break;
-                    case R.id.check_monthly:
-                        mFormat= new SimpleDateFormat("MM-yyyy", Locale.ENGLISH);
-                        break;
-                    case R.id.check_yearly:
-                        mFormat= new SimpleDateFormat("yyyy", Locale.ENGLISH);
-                        break;
-                }
-                if(count_date==0)
-                {
-                    start=mFormat.parse(date_pieces[0]);
-                    t_start.setText("Start " + mFormat.format(start));
-                    count_date+=1;
-                }
-                formatted_date=mFormat.format( mFormat.parse(date_pieces[0]));
-            }
-            catch (ParseException e)
-            {
-                Log.e(TAG," could not parse date "+e.getMessage());
-            }
-            order_dates.add(formatted_date);
-        }
-        Set<String> unique_dates=new HashSet<>(order_dates);
-        unique_dates_list=new ArrayList<>(unique_dates);
-        Collections.sort(unique_dates_list);
-        prices_list=new ArrayList<>();
-        //initialize the prices to 0
-        for(int c=0; c<unique_dates_list.size(); c++)
-            prices_list.add(0.0);
-        //get the hourly price total
-        for(int c=0; c<unique_dates_list.size(); c++)
-        {
-            Iterator iterator_prices= sOrdersList.entrySet().iterator();
-            while (iterator_prices.hasNext())
-            {
-                LinkedHashMap.Entry<Integer, SOrders>set=(LinkedHashMap.Entry<Integer, SOrders>) iterator_prices.next();
-                SOrders bOrders=set.getValue();
-                int orderStatus=bOrders.getOrderStatus();
-                double price=bOrders.getPrice();
-                String dateChanged=bOrders.getDateChanged();
-                String[] date_pieces=dateChanged.split(":"); // the date is in the form "dd-MM-yyyy HH:mm"
-                if(orderStatus!=5)
-                    continue;
-                String date_to_compare;
-                switch (graph_radio_checked_id)
-                {
-                    case 1:
-                    case R.id.check_hourly:
-                        date_to_compare=date_pieces[0];
-                        break;
-                    case R.id.check_daily:
-                        date_to_compare=date_pieces[0].split(" ")[0];
-                        break;
-                    case R.id.check_monthly:
-                    {
-                        String[] dates=date_pieces[0].split(" ")[0].split("-");
-                        date_to_compare=dates[1]+"-"+dates[2];
-                        break;
-                    }
-                    case R.id.check_yearly:
-                    {
-                        String[] dates=date_pieces[0].split(" ")[0].split("-");
-                        date_to_compare=dates[2];
-                        break;
-                    }
-                    default:
-                        date_to_compare=date_pieces[0];
-                }
-                if(unique_dates_list.get(c).contentEquals(date_to_compare))
-                    prices_list.set(c,prices_list.get(c)+price);
-                if(prices_list.get(c)>maxPrice)
-                    maxPrice=prices_list.get(c);
-            }
-        }
-        for(int c=0; c<unique_dates_list.size(); c++)
-        {
-            Log.d(TAG,unique_dates_list.get(c));
-            Log.d(TAG,prices_list.get(c).toString());
-        }
-    }
-
-    private void setData()
-    {
-        ArrayList<Entry> values = new ArrayList<>();
-        for(int c=0; c<unique_dates_list.size(); c++)
-        {
-            float time=(float)timeInHours(unique_dates_list.get(c));
-            float price=prices_list.get(c).floatValue();
-            //check if the dates are within range
-            SimpleDateFormat mFormat = new SimpleDateFormat("dd-MM-yyyy HH", Locale.ENGLISH);
-            switch (graph_radio_checked_id)
+            this.which=which;
+            switch (which)
             {
                 case 1:
-                case R.id.check_hourly:
-                    mFormat=new SimpleDateFormat("dd-MM-yyyy HH", Locale.ENGLISH);
+                    dates_list_hourly=new ArrayList<>();
+                    prices_list_hourly=new ArrayList<>();
                     break;
-                case R.id.check_daily:
-                    mFormat=new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+                case 2:
+                    dates_list_daily=new ArrayList<>();
+                    prices_list_daily=new ArrayList<>();
                     break;
-                case R.id.check_monthly:
-                    mFormat=new SimpleDateFormat("MM-yyyy", Locale.ENGLISH);
+                case 3:
+                    dates_list_monthly=new ArrayList<>();
+                    prices_list_monthly=new ArrayList<>();
                     break;
-                case R.id.check_yearly:
-                    mFormat=new SimpleDateFormat("yyyy", Locale.ENGLISH);
-                    break;
-
+                case 4:
+                    dates_list_yearly=new ArrayList<>();
+                    prices_list_yearly=new ArrayList<>();
             }
-
-            if( (start!=null) && (end!=null) )
+        }
+        @Override
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+        }
+        @Override
+        protected Boolean doInBackground(Void... params)
+        {
+            //first get the earlist order date
+            Date earliest_date=null;
+            Iterator iterator= sOrdersList.entrySet().iterator();
+            int count_date=0;
+            while (iterator.hasNext())
             {
-                try
+                LinkedHashMap.Entry<Integer, SOrders> set = (LinkedHashMap.Entry<Integer, SOrders>) iterator.next();
+                SOrders bOrders = set.getValue();
+                int orderStatus = bOrders.getOrderStatus();
+                String dateChanged = bOrders.getDateChanged();
+                String[] date_pieces = dateChanged.split(":"); // the date is in the form "dd-MM-yyyy HH:mm"
+                if (orderStatus != 5)
+                    continue;
+                earliest_date = get_date_from_server_string(dateChanged);
+                if(count_date==0)
+                    break;
+            }
+            //daily
+            Calendar cal_start=Calendar.getInstance(), cal_end=Calendar.getInstance(), cal_count=Calendar.getInstance();
+            cal_start.setTime(earliest_date);
+            for(cal_count=(Calendar)cal_start.clone(); cal_count.before(cal_end) || cal_count.equals(cal_end); cal_count=increment_calender(cal_count,which))
+            {
+
+                double total_price=0;
+                iterator= sOrdersList.entrySet().iterator();
+                while (iterator.hasNext())
                 {
-
-                    Date date= mFormat.parse(unique_dates_list.get(c));
-
-                    if((date.after(start) || date.equals(start)) && (date.before(end) || date.equals(end)) )
+                    LinkedHashMap.Entry<Integer, SOrders> set = (LinkedHashMap.Entry<Integer, SOrders>) iterator.next();
+                    SOrders bOrders = set.getValue();
+                    int orderStatus = bOrders.getOrderStatus();
+                    String dateChanged = bOrders.getDateChanged();
+                    double price=bOrders.getPrice();
+                    String[] date_pieces = dateChanged.split(":"); // the date is in the form "dd-MM-yyyy HH:mm"
+                    if (orderStatus != 5)
+                        continue;
+                    Date date= get_date_from_server_string(dateChanged);
+                    Calendar calendar=Calendar.getInstance();
+                    calendar.setTime(date);
+                    if(calendar.equals(cal_count) || calendar.after(cal_count))
                     {
-                        values.add(new Entry(time, price));
+                        Calendar cal2=(Calendar) cal_count.clone();
+                        cal2=increment_calender(cal2,which);
+                        if(calendar.before(cal2))
+                        {
+                            total_price+=price;
+                        }
+                    }
+                }
+                if(total_price>0)
+                {
+                    switch (which)
+                    {
+                        case 1:
+                            dates_list_hourly.add(cal_count.getTime());
+                            prices_list_hourly.add(total_price);
+                            break;
+                        case 2:
+                            dates_list_daily.add(cal_count.getTime());
+                            prices_list_daily.add(total_price);
+                            break;
+                        case 3:
+                            dates_list_monthly.add(cal_count.getTime());
+                            prices_list_monthly.add(total_price);
+                            break;
+                        case 4:
+                            dates_list_yearly.add(cal_count.getTime());
+                            prices_list_yearly.add(total_price);
+                    }
+                }
+            }
+            return true;
+        }
+        @Override
+        protected void onPostExecute(final Boolean successful)
+        {
+            dates_hourly_lists_done[which-1]=true;
+            if(which==1)
+            {
+                setData(1);
+                chart.invalidate();
+            }
+        }
+    }
+    private void setData(int which)
+    {
+        ArrayList<Entry> values = new ArrayList<>();
+        Calendar c_day_before=Calendar.getInstance();
+        Calendar c_day_after=Calendar.getInstance();
+
+        switch (which)
+        {
+            case 1:
+                for(int c=0; c<dates_list_hourly.size(); c++)
+                {
+                    if(c==0)
+                    {
+                        c_day_before.setTime(dates_list_hourly.get(0));
+                        c_day_before=increment_calender(c_day_before,-1);
+                        values.add(new Entry(c_day_before.getTimeInMillis()/(1000*60*60), 0));
                     }
 
+                    values.add(new Entry(dates_list_hourly.get(c).getTime()/(1000*60*60), prices_list_hourly.get(c).floatValue()));
+                    if(c==dates_list_hourly.size()-1)
+                    {
+                        c_day_after.setTime(dates_list_hourly.get(dates_list_hourly.size()-1));
+                        c_day_after=increment_calender(c_day_after,-1);
+                        values.add(new Entry(c_day_after.getTimeInMillis()/(1000*60*60), 0));
+                    }
                 }
-                catch (ParseException e)
+                break;
+            case 2:
+
+                for(int c=0; c<dates_list_daily.size(); c++)
                 {
-                    Log.e(TAG,"error setting time 2 "+e.getMessage());
+                    if(c==0)
+                    {
+                        c_day_before.setTime(dates_list_daily.get(0));
+                        c_day_before=increment_calender(c_day_before,-1);
+                        values.add(new Entry(c_day_before.getTimeInMillis()/(1000*60*60), 0));
+                    }
+                    values.add(new Entry(dates_list_daily.get(c).getTime()/(1000*60*60), prices_list_daily.get(c).floatValue()));
+                    if(c==dates_list_hourly.size()-1)
+                    {
+                        c_day_after.setTime(dates_list_daily.get(dates_list_daily.size()-1));
+                        c_day_after=increment_calender(c_day_after,-1);
+                        values.add(new Entry(c_day_after.getTimeInMillis()/(1000*60*60), 0));
+                    }
                 }
-            }
-            else
-            {
-                values.add(new Entry(time, price));
-            }
+                break;
+            case 3:
+                for(int c=0; c<dates_list_monthly.size(); c++)
+                {
+                    if(c==0)
+                    {
+                        c_day_before.setTime(dates_list_monthly.get(0));
+                        c_day_before=increment_calender(c_day_before,-1);
+                        values.add(new Entry(c_day_before.getTimeInMillis()/(1000*60*60), 0));
+                    }
+                    values.add(new Entry(dates_list_monthly.get(c).getTime()/(1000*60*60), prices_list_monthly.get(c).floatValue()));
+                    if(c==dates_list_hourly.size()-1)
+                    {
+                        c_day_after.setTime(dates_list_monthly.get(dates_list_monthly.size()-1));
+                        c_day_after=increment_calender(c_day_after,-1);
+                        values.add(new Entry(c_day_after.getTimeInMillis()/(1000*60*60), 0));
+                    }
+                }
+                break;
+            case 4:
+                for(int c=0; c<dates_list_yearly.size(); c++)
+                {
+                    if(c==0)
+                    {
+                        c_day_before.setTime(dates_list_yearly.get(0));
+                        c_day_before=increment_calender(c_day_before,-1);
+                        values.add(new Entry(c_day_before.getTimeInMillis()/(1000*60*60), 0));
+                    }
+                    values.add(new Entry(dates_list_yearly.get(c).getTime()/(1000*60*60), prices_list_yearly.get(c).floatValue()));
+                }
         }
 
         LineDataSet set1 = new LineDataSet(values, "Hourly sales");
@@ -594,6 +605,75 @@ public class SRSoldRateF extends Fragment
             // set data
             chart.setData(data);
         }
+    }
+    /*
+    convert the string stored in the servers to Date
+    @param str, date stored in string in format "dd-MM-yyyy HH:mm"
+    @return Date
+     */
+    public Date get_date_from_server_string(String str)
+    {
+       Date date;
+       SimpleDateFormat mFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.ENGLISH);
+        try
+        {
+            date = mFormat.parse(str);
+            return date;
+        } catch (ParseException e)
+        {
+            Log.e(TAG, "date parse error get_date "+e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
+    private Calendar increment_calender(Calendar calendar_to_add, int which)
+    {
+        switch (which)
+        {
+            case 1:
+                calendar_to_add.add(Calendar.HOUR,1);
+                break;
+            case 2:
+                calendar_to_add.add(Calendar.DAY_OF_MONTH,1);
+                break;
+            case 3:
+                calendar_to_add.add(Calendar.MONTH,1);
+                break;
+            case 4:
+                calendar_to_add.add(Calendar.YEAR,1);
+                break;
+
+        }
+        return calendar_to_add;
+    }
+    /*
+    using the four radiobuttons hourly, daily, monthly and yearly,
+    get the date format to match the checked radio button
+     */
+    private SimpleDateFormat get_my_date_format(boolean for_graph)
+    {
+        SimpleDateFormat mFormat = new SimpleDateFormat("dd-MM-yyyy HH", Locale.ENGLISH);
+        switch (graph_radio_checked_id)
+        {
+            case 1:
+            case R.id.check_hourly:
+                if(for_graph)
+                    mFormat=new SimpleDateFormat("HH:mm",Locale.ENGLISH);
+                else
+                    mFormat=new SimpleDateFormat("dd-MM-yyyy HH", Locale.ENGLISH);
+                break;
+            case R.id.check_daily:
+                mFormat=new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+                break;
+            case R.id.check_monthly:
+                mFormat=new SimpleDateFormat("MM-yyyy", Locale.ENGLISH);
+                break;
+            case R.id.check_yearly:
+                mFormat=new SimpleDateFormat("yyyy", Locale.ENGLISH);
+                break;
+
+        }
+        return mFormat;
     }
 
 }
