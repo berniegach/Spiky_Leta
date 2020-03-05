@@ -182,7 +182,7 @@ public class SMenuF extends Fragment {
                 {
                     while(true)
                     {
-                        sleep(10000);
+                        sleep(2000);
                         refreshOrders();
                         refreshMessages();
                         handler.post(runnable);
@@ -211,6 +211,17 @@ public class SMenuF extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.smenu, menu);
+        final MenuItem waiters=menu.findItem(R.id.action_waiter);
+        waiters.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()
+        {
+            @Override
+            public boolean onMenuItemClick(MenuItem item)
+            {
+                if(mListener!=null)
+                    mListener.onWaitersClicked();
+                return true;
+            }
+        });
         final MenuItem logout=menu.findItem(R.id.action_logout);
         logout.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()
         {
@@ -262,6 +273,7 @@ public class SMenuF extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void onMenuClicked(int id);
+        void onWaitersClicked();
         void onLogOut();
     }
     private int getOrdersCounts()

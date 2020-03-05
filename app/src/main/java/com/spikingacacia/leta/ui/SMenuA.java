@@ -22,6 +22,7 @@ import com.spikingacacia.leta.ui.inventory.SIInventoryA;
 import com.spikingacacia.leta.ui.messages.SMMessageListActivity;
 import com.spikingacacia.leta.ui.orders.SOOrdersA;
 import com.spikingacacia.leta.ui.reports.SRReportsA;
+import com.spikingacacia.leta.ui.waiters.WaitersA;
 
 import static com.spikingacacia.leta.ui.LoginA.loginProgress;
 import static com.spikingacacia.leta.ui.LoginA.sFinalProgress;
@@ -163,6 +164,12 @@ implements SMenuF.OnFragmentInteractionListener{
             Intent intent=new Intent(SMenuA.this,SSettingsA.class);
             startActivity(intent);
         }
+    }
+    @Override
+    public void onWaitersClicked()
+    {
+        Intent intent=new Intent(SMenuA.this, WaitersA.class);
+        startActivity(intent);
     }
     @Override
     public void onLogOut()

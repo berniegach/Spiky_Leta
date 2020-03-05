@@ -6,6 +6,7 @@
     tools:context="com.spikingacacia.leta.ui.SignInF">
 
     <LinearLayout
+        android:id="@+id/base"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_horizontal"

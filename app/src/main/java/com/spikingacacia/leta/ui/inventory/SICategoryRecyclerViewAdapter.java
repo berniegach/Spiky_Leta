@@ -64,7 +64,6 @@ public class SICategoryRecyclerViewAdapter extends RecyclerView.Adapter<SICatego
     private JSONParser jsonParser;
     private List<CategoryItem>itemsCopy;
     private final Context mContext;
-    private static Context mContextStatic;
     private static ImageView imageView;
     private static int mCategoryIdForPhoto;
     Preferences preferences;
@@ -75,7 +74,6 @@ public class SICategoryRecyclerViewAdapter extends RecyclerView.Adapter<SICatego
         itemsCopy.addAll(items);
         mListener = listener;
         mContext=context;
-        mContextStatic=context;
         jsonParser=new JSONParser();
         //preference
         preferences=new Preferences(context);
@@ -511,5 +509,50 @@ public class SICategoryRecyclerViewAdapter extends RecyclerView.Adapter<SICatego
         {
             //mAuthTaskU = null;
         }
+    }
+    private String makeName(int id)
+    {
+        String letters=String.valueOf(id);
+        char[] array=letters.toCharArray();
+        String name="";
+        for(int count=0; count<array.length; count++)
+        {
+            switch (array[count])
+            {
+                case '0':
+                    name+="zero";
+                    break;
+                case '1':
+                    name+="one";
+                    break;
+                case '2':
+                    name+="two";
+                    break;
+                case '3':
+                    name+="three";
+                    break;
+                case '4':
+                    name+="four";
+                    break;
+                case '5':
+                    name+="five";
+                    break;
+                case '6':
+                    name+="six";
+                    break;
+                case '7':
+                    name+="seven";
+                    break;
+                case '8':
+                    name+="eight";
+                    break;
+                case '9':
+                    name+="nine";
+                    break;
+                default :
+                    name+="NON";
+            }
+        }
+        return name;
     }
 }

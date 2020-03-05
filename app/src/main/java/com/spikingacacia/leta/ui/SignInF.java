@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -206,6 +207,7 @@ public class SignInF extends Fragment
         super.onResume();
         if(preferences.isRemember_me())
         {
+            showProgress(true);
             mEmailView.setText(preferences.getEmail_to_remember() );
             mPasswordView.setText(preferences.getPassword_to_remember());
             if(justStartedLogin)
@@ -346,7 +348,7 @@ public class SignInF extends Fragment
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class SellerLoginTask extends AsyncTask<Void, Void, Boolean>
+    public  class SellerLoginTask extends AsyncTask<Void, Void, Boolean>
     {
 
         private final String mEmail;
@@ -416,7 +418,6 @@ public class SignInF extends Fragment
         @Override
         protected void onPostExecute(final Boolean successfull) {
             mAuthTaskC = null;
-            showProgress(false);
 
             if (successfull) {
                 username = mEmail;
@@ -428,6 +429,7 @@ public class SignInF extends Fragment
             }
             else
             {
+                showProgress(false);
                 if (success==-1) {
                     mPasswordView.setError(getString(R.string.error_incorrect_password));
                     mPasswordView.requestFocus();

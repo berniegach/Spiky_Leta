@@ -39,6 +39,7 @@ import com.spikingacacia.leta.ui.database.SOrders;
 import com.spikingacacia.leta.ui.database.SellerAccount;
 import com.spikingacacia.leta.ui.billing.BillingManager;
 import com.spikingacacia.leta.ui.billing.BillingProvider;
+import com.spikingacacia.leta.ui.database.WaitersD;
 import com.spikingacacia.leta.ui.skulist.AcquireFragment;
 
 import org.apache.http.NameValuePair;
@@ -72,6 +73,7 @@ public class LoginA extends AppCompatActivity
     private String url_get_s_groups=base_url+"get_seller_groups.php";
     private String url_get_s_items=base_url+"get_seller_items.php";
     private String url_get_s_orders=base_url+"get_seller_orders.php";
+    private String url_get_s_waiters=base_url+"get_waiters.php";
     private String TAG_SUCCESS="success";
     private String TAG_MESSAGE="message";
     private String TAG="LoginActivity";
@@ -80,7 +82,7 @@ public class LoginA extends AppCompatActivity
     public static int loginProgress;
     public static boolean AppRunningInThisActivity=true;//check if the app is running the in this activity
     //whenever you add a background asynctask make sure to update the finalprogress variables accordingly
-    public static int sFinalProgress=5;
+    public static int sFinalProgress=6;
     //sellers
     public static SellerAccount sellerAccount;
     public static LinkedHashMap<String, SMessages> sMessagesList;
@@ -88,6 +90,7 @@ public class LoginA extends AppCompatActivity
     public static LinkedHashMap<Integer, SGroups> sGroupsList;
     public static LinkedHashMap<Integer, SItems> sItemsList;
     public static LinkedHashMap<Integer, SOrders>sOrdersList;
+    public static LinkedHashMap<Integer, WaitersD> waitersList;
     public static int who;
     public static String currentSubscription="Non";
     //billing
@@ -142,6 +145,7 @@ public class LoginA extends AppCompatActivity
         sGroupsList=new LinkedHashMap<>();
         sItemsList=new LinkedHashMap<>();
         sOrdersList=new LinkedHashMap<>();
+        waitersList=new LinkedHashMap<>();
 
         //firebase links
         if(preferences.isVerify_password() || preferences.isReset_password())
@@ -253,6 +257,7 @@ public class LoginA extends AppCompatActivity
         if(!sGroupsList.isEmpty())sGroupsList.clear();
         if(!sItemsList.isEmpty())sItemsList.clear();
         if(!sOrdersList.isEmpty())sOrdersList.clear();
+        if(!waitersList.isEmpty())waitersList.clear();
         AppRunningInThisActivity=true;
         //billing
         // Note: We query purchases in onResume() to handle purchases completed while the activity
@@ -287,20 +292,6 @@ public class LoginA extends AppCompatActivity
     public boolean isMonthlySubscribed() {
         Log.d(TAG,"subscribed monthly " +mViewController.isMonthlySubscribed());
         LoginA.currentSubscription="Monthly Subscribed";
-       /* if(mViewController.isMonthlySubscribed() && LoginActivity.AppRunningInThisActivity)
-        {
-            Log.d(TAG," Monthly, proceed to menu ");
-            Intent intent=new Intent();
-            intent.putExtra("allow",true);
-            setResult(BILLING_REQUEST_CODE,intent);
-            finish();
-        }*/
-        /*else if(proceedToSubscriptionPurchase==false)
-        {
-            proceedToSubscriptionPurchase=true;
-        }
-        else
-            onSubscriptionPurchase();*/
         return mViewController.isMonthlySubscribed();
     }
 
@@ -513,6 +504,7 @@ public class LoginA extends AppCompatActivity
         new SGroupsTask().execute((Void)null);
         new SItemsTask().execute((Void)null);
         new SOrdersTask().execute((Void)null);
+        new WaitersTask().execute((Void)null);
         Intent intent=new Intent(this, SMenuA.class);
         // intent.putExtra("NOTHING","nothing");
         startActivity(intent);
@@ -906,6 +898,73 @@ public class LoginA extends AppCompatActivity
             catch (JSONException e)
             {
                 Log.e("JSON",""+e.getMessage());
+                return false;
+            }
+        }
+        @Override
+        protected void onPostExecute(final Boolean successful) {
+            Log.d("BORDERS: ","finished...."+"progress: "+String.valueOf(loginProgress));
+            loginProgress+=1;
+            if (loginProgress == sFinalProgress)
+                stopService(intentLoginProgress);
+
+            if (successful)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+    }
+    private class WaitersTask extends AsyncTask<Void, Void, Boolean>
+    {
+        @Override
+        protected void onPreExecute()
+        {
+            Log.d("BORDERS: ","starting....");
+            if(!waitersList.isEmpty())waitersList.clear();
+            super.onPreExecute();
+        }
+        @Override
+        protected Boolean doInBackground(Void... params)
+        {
+            //getting columns list
+            List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
+            info.add(new BasicNameValuePair("seller_id",Integer.toString(sellerAccount.getId())));
+            // making HTTP request
+            JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_waiters,"POST",info);
+            Log.d("sItems",""+jsonObject.toString());
+            try
+            {
+                JSONArray itemsArrayList=null;
+                int success=jsonObject.getInt(TAG_SUCCESS);
+                if(success==1)
+                {
+                    itemsArrayList=jsonObject.getJSONArray("waiters");
+                    for(int count=0; count<itemsArrayList.length(); count+=1)
+                    {
+                        JSONObject json_object_waiters=itemsArrayList.getJSONObject(count);
+                        int id=json_object_waiters.getInt("id");
+                        String email=json_object_waiters.getString("email");
+                        String username=json_object_waiters.getString("username");
+
+                        WaitersD waiter=new WaitersD(id,email,username,0);
+                        waitersList.put(id,waiter);
+                    }
+                    return true;
+                }
+                else
+                {
+                    String message=jsonObject.getString(TAG_MESSAGE);
+                    Log.e(TAG_MESSAGE,""+message);
+                    return false;
+                }
+            }
+            catch (JSONException e)
+            {
+                Log.e(TAG+"JSON"," waiter"+e.getMessage());
                 return false;
             }
         }
