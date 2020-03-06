@@ -72,6 +72,13 @@
                         android:textSize="14sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+                <CheckBox
+                    android:id="@+id/waiter_check"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center"
+                    android:text="Sign in as a waiter"/>
 
                 <Button
                     android:id="@+id/email_sign_in_button"

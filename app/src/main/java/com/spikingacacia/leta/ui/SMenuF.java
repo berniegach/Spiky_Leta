@@ -1,8 +1,13 @@
 package com.spikingacacia.leta.ui;
 
+import android.app.NotificationManager;
 import android.content.Context;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
@@ -62,6 +67,7 @@ public class SMenuF extends Fragment {
     private TextView tMessagesCount;
     private int ordersCount=0;
     private int messagesCount=0;
+    Preferences preferences;
 
     public SMenuF() {
         // Required empty public constructor
@@ -101,6 +107,8 @@ public class SMenuF extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.f_smenu, container, false);
+        //preference
+        preferences=new Preferences(getContext());
         tOrdersCount=view.findViewById(R.id.orders_count);
         tMessagesCount=view.findViewById(R.id.messages_count);
         //inventory
@@ -114,7 +122,8 @@ public class SMenuF extends Fragment {
             }
         });
         //orders
-        ((LinearLayout)view.findViewById(R.id.orders)).setOnClickListener(new View.OnClickListener()
+        final LinearLayout l_orders=((LinearLayout)view.findViewById(R.id.orders));
+        l_orders.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
@@ -153,6 +162,11 @@ public class SMenuF extends Fragment {
                     mListener.onMenuClicked(5);
             }
         });
+        if(sellerAccount.getPersona()==1)
+        {
+            ((LinearLayout)view.findViewById(R.id.reports)).setVisibility(View.GONE);
+            ((LinearLayout)view.findViewById(R.id.messages)).setVisibility(View.GONE);
+        }
         final Handler handler=new Handler();
         final Runnable runnable=new Runnable()
         {
@@ -161,16 +175,47 @@ public class SMenuF extends Fragment {
             {
                 if(ordersCount!=getOrdersCounts())
                 {
+                    if(mListener!=null)
+                        mListener.play_notification();
                     ordersCount=getOrdersCounts();
                     tOrdersCount.setText(String.valueOf(ordersCount));
                     Log.d(TAG,"orders count changed");
                 }
-                if(messagesCount!=sMessagesList.size())
-                {
-                    messagesCount=sMessagesList.size();
-                    tMessagesCount.setText(String.valueOf(messagesCount));
-                    Log.d(TAG,"messages count changed");
-                }
+                if(sellerAccount.getPersona()==0)
+                    if(messagesCount!=sMessagesList.size())
+                    {
+                        if(mListener!=null)
+                            mListener.play_notification();
+                        messagesCount=sMessagesList.size();
+                        tMessagesCount.setText(String.valueOf(messagesCount));
+                        Log.d(TAG,"messages count changed");
+                    }
+                if(sellerAccount.getPersona()==1)
+                    if(SMenuA.within_location)
+                    {
+                        l_orders.setEnabled(true);
+                        if(preferences.isDark_theme_enabled())
+                        {
+                            l_orders.setBackgroundColor(getResources().getColor(R.color.secondary_background));
+                        }
+                        else
+                        {
+                            l_orders.setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
+                        }
+                    }
+                    else
+                    {
+                        l_orders.setEnabled(false);
+                        if(preferences.isDark_theme_enabled())
+                        {
+                            l_orders.setBackgroundColor(getResources().getColor(R.color.tertiary_background));
+                        }
+                        else
+                        {
+                            l_orders.setBackgroundColor(getResources().getColor(R.color.tertiary_background_light));
+                        }
+                    }
+
             }
         };
         Thread thread=new Thread()
@@ -184,7 +229,8 @@ public class SMenuF extends Fragment {
                     {
                         sleep(2000);
                         refreshOrders();
-                        refreshMessages();
+                        if(sellerAccount.getPersona()==0)
+                             refreshMessages();
                         handler.post(runnable);
                     }
                 }
@@ -212,6 +258,8 @@ public class SMenuF extends Fragment {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.smenu, menu);
         final MenuItem waiters=menu.findItem(R.id.action_waiter);
+        if(sellerAccount.getPersona()==1)
+            waiters.setVisible(false);
         waiters.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()
         {
             @Override
@@ -275,6 +323,7 @@ public class SMenuF extends Fragment {
         void onMenuClicked(int id);
         void onWaitersClicked();
         void onLogOut();
+        void play_notification();
     }
     private int getOrdersCounts()
     {
@@ -393,4 +442,6 @@ public class SMenuF extends Fragment {
             Log.e("JSON",""+e.getMessage());
         }
     }
+
+
 }

@@ -45,6 +45,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import static com.spikingacacia.leta.ui.LoginA.base_url;
+import static com.spikingacacia.leta.ui.LoginA.sellerAccount;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link GroupItem} and makes a call to the
@@ -133,7 +134,8 @@ public class SIGroupRecyclerViewAdapter extends RecyclerView.Adapter<SIGroupRecy
                 }
             }
         });
-        holder.mView.setOnLongClickListener(new View.OnLongClickListener()
+        if(sellerAccount.getPersona()==0)
+            holder.mView.setOnLongClickListener(new View.OnLongClickListener()
         {
             @Override
             public boolean onLongClick(View view)

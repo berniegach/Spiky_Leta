@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.spikingacacia.leta.ui.LoginA.base_url;
+import static com.spikingacacia.leta.ui.LoginA.sellerAccount;
 
 /**
  * A fragment representing a list of Items.
@@ -109,6 +110,8 @@ public class SICategoryF extends Fragment {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.sicategory_menu, menu);
         final MenuItem add=menu.findItem(R.id.action_add);
+        if(sellerAccount.getPersona()==1)
+            add.setVisible(false);
         add.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()
         {
             @Override

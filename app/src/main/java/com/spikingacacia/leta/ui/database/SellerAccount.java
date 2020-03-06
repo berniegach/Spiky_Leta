@@ -2,6 +2,7 @@ package com.spikingacacia.leta.ui.database;
 
 public class SellerAccount
 {
+    private int persona=0; // 0= seller, 1= waiter
     private int id;
     private String email;
     private String password;
@@ -16,10 +17,16 @@ public class SellerAccount
     private String dateadded;
     private String datechanged;
     private String dateToday;
+    //these are waiters fields from user account
+    private int waiter_id;
+    private String waiter_names;
 
     public SellerAccount(){}
 
-    public SellerAccount(int id, String email, String password, String username, String country,int online, int deliver, String location, int orderRadius, int orderFormat, int numberOfTables, String dateadded, String datechanged, String dateToday) {
+    public SellerAccount(int persona, int id, String email, String password, String username, String country,int online, int deliver, String location, int orderRadius, int orderFormat,
+                         int numberOfTables, String dateadded, String datechanged, String dateToday,
+                         int waiter_id, String waiter_names) {
+        this.persona=persona;
         this.id = id;
         this.email = email;
         this.password = password;
@@ -35,8 +42,18 @@ public class SellerAccount
         this.dateadded = dateadded;
         this.datechanged = datechanged;
         this.dateToday = dateToday;
+        this.waiter_id=waiter_id;
+        this.waiter_names=waiter_names;
+    }
+    public int getPersona()
+    {
+        return persona;
     }
 
+    public void setPersona(int persona)
+    {
+        this.persona = persona;
+    }
     public int getId() {
         return id;
     }
@@ -152,6 +169,26 @@ public class SellerAccount
 
     public void setDateToday(String dateToday) {
         this.dateToday = dateToday;
+    }
+
+    public int getWaiter_id()
+    {
+        return waiter_id;
+    }
+
+    public void setWaiter_id(int waiter_id)
+    {
+        this.waiter_id = waiter_id;
+    }
+
+    public String getWaiter_names()
+    {
+        return waiter_names;
+    }
+
+    public void setWaiter_names(String waiter_names)
+    {
+        this.waiter_names = waiter_names;
     }
 
 

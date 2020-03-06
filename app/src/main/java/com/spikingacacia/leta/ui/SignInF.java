@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -68,17 +69,20 @@ public class SignInF extends Fragment
     private String TAG_SUCCESS="success";
     private String TAG_MESSAGE="message";
     private String url_get_account_seller =base_url+"get_seller_account.php";
+    private String url_get_account_seller_waiter =base_url+"get_seller_account_waiter.php";
     private String url_confirm_email=base_url+"confirm_seller_account.php";
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private SellerLoginTask mAuthTaskC = null;
+    private SellerLoginWaiterTask mAuthTaskCWaiter = null;
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
     private String username;
+    private CheckBox check_signin_as_waiter_view;
     JSONParser jsonParser;
     Preferences preferences;
 
@@ -121,6 +125,7 @@ public class SignInF extends Fragment
         preferences=new Preferences(getContext());
         mEmailView =  view.findViewById(R.id.email);
         mPasswordView =  view.findViewById(R.id.password);
+        check_signin_as_waiter_view=view.findViewById(R.id.waiter_check);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -210,6 +215,8 @@ public class SignInF extends Fragment
             showProgress(true);
             mEmailView.setText(preferences.getEmail_to_remember() );
             mPasswordView.setText(preferences.getPassword_to_remember());
+            if(preferences.getPersona()==1)
+                check_signin_as_waiter_view.setChecked(true);
             if(justStartedLogin)
             {
                 attemptLogin();
@@ -249,7 +256,7 @@ public class SignInF extends Fragment
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTaskC != null) {
+        if (mAuthTaskC != null && mAuthTaskCWaiter!=null) {
             return;
         }
 
@@ -290,9 +297,18 @@ public class SignInF extends Fragment
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTaskC = new SellerLoginTask(email, password);
-            mAuthTaskC.execute((Void) null);
-
+            Log.d(TAG,"checked "+check_signin_as_waiter_view.isChecked());
+            Log.d(TAG,"persona "+preferences.getPersona());
+            if(check_signin_as_waiter_view.isChecked() || (preferences.getPersona()==1 && preferences.isRemember_me()) )
+            {
+                mAuthTaskCWaiter = new SellerLoginWaiterTask(email,password);
+                mAuthTaskCWaiter.execute((Void)null);
+            }
+            else
+            {
+                mAuthTaskC = new SellerLoginTask(email, password);
+                mAuthTaskC.execute((Void) null);
+            }
         }
     }
     private boolean isEmailValid(String email)
@@ -384,6 +400,7 @@ public class SignInF extends Fragment
                     JSONArray accountArray=jsonObject.getJSONArray("account");
                     JSONObject accountObject=accountArray.getJSONObject(0);
 
+                    sellerAccount.setPersona(0);
                     sellerAccount.setId(accountObject.getInt("id"));
                     sellerAccount.setEmail(accountObject.getString("email"));
                     sellerAccount.setPassword(accountObject.getString("password"));
@@ -423,6 +440,110 @@ public class SignInF extends Fragment
                 username = mEmail;
                 preferences.setRemember_me(true);
                 preferences.setPersona(0);
+                preferences.setEmail_to_remember(mEmail);
+                preferences.setPassword_to_remember(mPassword);
+                mListener.onSuccesfull();
+            }
+            else
+            {
+                showProgress(false);
+                if (success==-1) {
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
+                }
+                else if(success==-2)
+                {
+                    mEmailView.setError("This email is incorrect");
+                    mEmailView.requestFocus();
+                }
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAuthTaskC = null;
+            // showProgress(false);
+        }
+    }
+    public  class SellerLoginWaiterTask extends AsyncTask<Void, Void, Boolean>
+    {
+
+        private final String mEmail;
+        private final String mPassword;
+        private int success=0;
+
+        SellerLoginWaiterTask(String email, String password) {
+            mEmail = email;
+            mPassword = password;
+        }
+        @Override
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            // logIn=handler.LogInContractor(mEmail,mPassword);
+
+            //building parameters
+            List<NameValuePair>info=new ArrayList<NameValuePair>();
+            info.add(new BasicNameValuePair("email",mEmail));
+            info.add(new BasicNameValuePair("password",mPassword));
+            //getting all account details by making HTTP request
+            JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_account_seller_waiter,"POST",info);
+            try
+            {
+                success=jsonObject.getInt(TAG_SUCCESS);
+                if(success==1)
+                {
+                    //seccesful
+                    JSONArray accountArray=jsonObject.getJSONArray("account");
+                    JSONObject accountObject=accountArray.getJSONObject(0);
+
+                    sellerAccount.setPersona(1);
+                    sellerAccount.setId(accountObject.getInt("id"));
+                    sellerAccount.setEmail(accountObject.getString("email"));
+                    sellerAccount.setPassword(accountObject.getString("password"));
+                    sellerAccount.setUsername(accountObject.getString("username"));
+                    sellerAccount.setOnlineVisibility(accountObject.getInt("online"));
+                    sellerAccount.setDeliver(accountObject.getInt("deliver"));
+                    sellerAccount.setCountry(accountObject.getString("country"));
+                    sellerAccount.setLocation(accountObject.getString("location"));
+                    sellerAccount.setOrderRadius(accountObject.getInt("order_radius"));
+                    sellerAccount.setOrderFormat(accountObject.getInt("order_format"));
+                    sellerAccount.setNumberOfTables(accountObject.getInt("number_of_tables"));
+                    sellerAccount.setDateadded(accountObject.getString("dateadded"));
+                    sellerAccount.setDatechanged(accountObject.getString("datechanged"));
+                    sellerAccount.setDateToday(accountObject.getString("today"));
+                    //waiter information
+                    sellerAccount.setWaiter_id(accountObject.getInt("waiter_id"));
+                    sellerAccount.setWaiter_names(accountObject.getString("waiter_names"));
+                    return true;
+                }
+                else
+                {
+                    String message=jsonObject.getString(TAG_MESSAGE);
+                    Log.e(TAG_MESSAGE,""+message);
+                    return false;
+                }
+            }
+            catch (JSONException e)
+            {
+                Log.e("JSON",""+e.getMessage());
+                return false;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean successfull) {
+            mAuthTaskC = null;
+
+            if (successfull) {
+                username = mEmail;
+                preferences.setRemember_me(true);
+                preferences.setPersona(1);
                 preferences.setEmail_to_remember(mEmail);
                 preferences.setPassword_to_remember(mPassword);
                 mListener.onSuccesfull();

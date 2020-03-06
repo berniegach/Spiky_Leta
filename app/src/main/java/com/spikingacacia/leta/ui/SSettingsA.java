@@ -226,6 +226,13 @@ public class SSettingsA extends AppCompatActivity
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
         {
             setPreferencesFromResource(R.xml.pref_sheaders, rootKey);
+            Preference preference_location=findPreference("location");
+            Preference preference_account=findPreference("account");
+            if(LoginA.sellerAccount.getPersona()==1)
+            {
+                preference_location.setVisible(false);
+                preference_account.setVisible(false);
+            }
         }
     }
 
@@ -242,8 +249,24 @@ public class SSettingsA extends AppCompatActivity
         {
             setPreferencesFromResource(R.xml.pref_sgeneral, rootKey);
 
-            //feedback preference click listener
             EditTextPreference preference_est=findPreference("username");
+            EditTextPreference preference_est_type=findPreference("email");
+            final Preference preference_password=findPreference("password");
+            final SeekBarPreference pref_order_radius=findPreference("order_radius");
+            final Preference preference_tables=findPreference("number_of_tables");
+            final SwitchPreference preference_dark=findPreference("dark_theme");
+            final Preference preference_subscription=findPreference("subscription");
+            //check if we have the waiter logged on
+            if(LoginA.sellerAccount.getPersona()==1)
+            {
+                preference_est.setVisible(false);
+                preference_password.setVisible(false);
+                pref_order_radius.setVisible(false);
+                preference_tables.setVisible(false);
+            }
+
+            //feedback preference click listener
+
             preference_est.setSummary(LoginA.sellerAccount.getUsername());
             preference_est.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
             {
@@ -258,11 +281,11 @@ public class SSettingsA extends AppCompatActivity
                 }
             });
             //you cannot change the email
-            EditTextPreference preference_est_type=findPreference("email");
+
             preference_est_type.setSummary(LoginA.sellerAccount.getEmail());
 
             //password change
-            final Preference preference_password=findPreference("password");
+
             preference_password.setSummary(passwordStars(LoginA.sellerAccount.getPassword()));
             preference_password.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
             {
@@ -360,7 +383,7 @@ public class SSettingsA extends AppCompatActivity
                 }
             });
             //order radius
-            final SeekBarPreference pref_order_radius=findPreference("order_radius");
+
             pref_order_radius.setValue(LoginA.sellerAccount.getOrderRadius());
             pref_order_radius.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
             {
@@ -375,7 +398,7 @@ public class SSettingsA extends AppCompatActivity
                 }
             });
             //number of tables change
-            final Preference preference_tables=findPreference("number_of_tables");
+
             preference_tables.setSummary(String.valueOf(LoginA.sellerAccount.getNumberOfTables()));
             preference_tables.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
             {
@@ -419,7 +442,7 @@ public class SSettingsA extends AppCompatActivity
             });
 
             //dark theme
-            final SwitchPreference preference_dark=findPreference("dark_theme");
+
             //preference
             preferences=new Preferences(context);
             preference_dark.setChecked(preferences.isDark_theme_enabled());
@@ -437,7 +460,7 @@ public class SSettingsA extends AppCompatActivity
 
 
             //subscription change
-            final Preference preference_subscription=findPreference("subscription");
+
             preference_subscription.setSummary(LoginA.currentSubscription);
 
 

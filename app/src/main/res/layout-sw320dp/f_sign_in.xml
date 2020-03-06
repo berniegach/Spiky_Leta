@@ -73,7 +73,13 @@
                         android:textSize="14sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
-
+                <CheckBox
+                    android:id="@+id/waiter_check"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center"
+                    android:text="Sign in as a waiter"/>
                 <Button
                     android:id="@+id/email_sign_in_button"
                     style="?android:textAppearanceSmall"
@@ -88,6 +94,7 @@
                     android:textColor="@color/text"
                     android:textStyle="bold" />
 
+
                 <TextView
                     android:id="@+id/forgot_password"
                     android:layout_width="match_parent"
@@ -99,6 +106,7 @@
                     android:gravity="center"
                     android:text="@string/forgotyourpassword"
                     android:textColor="@color/text"/>
+
 
                 <LinearLayout
                     android:layout_width="wrap_content"

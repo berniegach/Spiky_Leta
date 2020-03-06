@@ -7,6 +7,7 @@
         android:title="@string/pref_header_general" />
 
     <Preference
+        android:key="location"
         android:fragment="com.spikingacacia.leta.ui.SSettingsA$LocationPreferenceFragment"
         android:icon="@drawable/ic_location"
         android:title="@string/pref_header_location"
@@ -22,6 +23,7 @@
         android:title="@string/pref_header_help"
         app:allowDividerAbove="true"/>
     <Preference
+        android:key="account"
         android:fragment="com.spikingacacia.leta.ui.SSettingsA$AccountPreferenceFragment"
         android:icon="@drawable/ic_account"
         android:title="@string/pref_header_account"
