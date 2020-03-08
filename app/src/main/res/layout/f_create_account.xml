@@ -46,54 +46,43 @@
                 android:text="Verify Email"
                 android:textColor="@color/text"
                 android:textStyle="bold" />
+            <!-- the password edittext should not be put in a textinputlayout
+               for some reason it doesn't work-->s
+            <EditText
+                android:visibility="gone"
+                android:id="@+id/password"
+                android:layout_width="220dp"
+                android:layout_height="@dimen/edittext_minimum_height"
+                android:background="@drawable/edittext_line"
+                android:fontFamily="@font/arima_madurai"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:hint="@string/prompt_password"
+                android:imeActionId="6"
+                android:imeActionLabel="@string/action_sign_in_short"
+                android:imeOptions="actionUnspecified"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textSize="14sp" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center">
-
-                <EditText
-                    android:visibility="gone"
-                    android:id="@+id/password"
-                    android:layout_width="220dp"
-                    android:layout_height="@dimen/edittext_minimum_height"
-                    android:background="@drawable/edittext_line"
-                    android:fontFamily="@font/arima_madurai"
-                    android:gravity="center"
-                    android:hint="@string/prompt_password"
-                    android:imeActionId="6"
-                    android:imeActionLabel="@string/action_sign_in_short"
-                    android:imeOptions="actionUnspecified"
-                    android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center">
-
-                <EditText
-                    android:visibility="gone"
-                    android:id="@+id/verifypassword"
-                    android:layout_width="220dp"
-                    android:layout_height="@dimen/edittext_minimum_height"
-                    android:background="@drawable/edittext_line"
-                    android:fontFamily="@font/arima_madurai"
-                    android:gravity="center"
-                    android:hint="Verify Password"
-                    android:imeActionId="6"
-                    android:imeActionLabel="@string/action_sign_in_short"
-                    android:imeOptions="actionUnspecified"
-                    android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
-
-            </com.google.android.material.textfield.TextInputLayout>
+            <EditText
+                android:visibility="gone"
+                android:id="@+id/verifypassword"
+                android:layout_width="220dp"
+                android:layout_height="@dimen/edittext_minimum_height"
+                android:background="@drawable/edittext_line"
+                android:fontFamily="@font/arima_madurai"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:hint="Verify Password"
+                android:imeActionId="6"
+                android:imeActionLabel="@string/action_sign_in_short"
+                android:imeOptions="actionUnspecified"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textSize="14sp" />
 
 
             <Button

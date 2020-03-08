@@ -6,6 +6,7 @@
     tools:context="com.spikingacacia.leta.ui.SignInF">
 
     <LinearLayout
+        android:id="@+id/base"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
@@ -50,28 +51,24 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center">
-
-                    <EditText
-                        android:id="@+id/password"
-                        android:layout_width="220dp"
-                        android:layout_height="@dimen/button_minimum_height"
-                        android:background="@drawable/edittext_line"
-                        android:fontFamily="@font/arima_madurai"
-                        android:gravity="center"
-                        android:hint="@string/prompt_password"
-                        android:imeActionId="6"
-                        android:imeActionLabel="@string/action_sign_in_short"
-                        android:imeOptions="actionUnspecified"
-                        android:inputType="textPassword"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:textSize="14sp" />
-
-                </com.google.android.material.textfield.TextInputLayout>
+                <!-- the password edittext should not be put in a textinputlayout
+                for some reason it doesn't work-->
+                <EditText
+                    android:id="@+id/password"
+                    android:layout_width="220dp"
+                    android:layout_height="@dimen/button_minimum_height"
+                    android:background="@drawable/edittext_line"
+                    android:fontFamily="@font/arima_madurai"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:hint="@string/prompt_password"
+                    android:imeActionId="6"
+                    android:imeActionLabel="@string/action_sign_in_short"
+                    android:imeOptions="actionUnspecified"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
                 <CheckBox
                     android:id="@+id/waiter_check"
                     android:layout_width="wrap_content"
@@ -93,6 +90,7 @@
                     android:textColor="@color/text"
                     android:textStyle="bold" />
 
+
                 <TextView
                     android:id="@+id/forgot_password"
                     android:layout_width="match_parent"
@@ -102,8 +100,8 @@
                     android:clickable="true"
                     android:fontFamily="@font/arima_madurai"
                     android:gravity="center"
-                    android:text="@string/forgotyourpassword"
-                    android:textColor="@color/text"/>
+                    android:text="@string/forgotyourpassword" />
+
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -120,8 +118,7 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:fontFamily="@font/amita"
-                        android:text="Sign Up"
-                        android:textColor="#f4eee1" />
+                        android:text="Sign Up" />
                 </LinearLayout>
 
                 <LinearLayout

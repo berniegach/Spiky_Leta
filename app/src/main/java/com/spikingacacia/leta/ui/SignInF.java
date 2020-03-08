@@ -9,6 +9,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -136,6 +138,11 @@ public class SignInF extends Fragment
                 return false;
             }
         });
+        //Show Password
+        //mPasswordView.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+
+        //Hide Password
+        //mPasswordView.setTransformationMethod(PasswordTransformationMethod.getInstance());
         final TextView t_subscription=view.findViewById(R.id.subscription);
         //set the drawablelft programmatically coz of devices under api 21
         CommonHelper.setVectorDrawable(getContext(),mEmailView,R.drawable.ic_email,0,0,0);
@@ -201,8 +208,8 @@ public class SignInF extends Fragment
         //dark theme prefernce
         if(!preferences.isDark_theme_enabled())
         {
-            createaccounttxtview.setTextColor(getResources().getColor(R.color.text_light));
-            ((TextView)view.findViewById(R.id.forgot_password)).setTextColor(getResources().getColor(R.color.text_light));
+           // createaccounttxtview.setTextColor(getResources().getColor(R.color.text_light));
+            //((TextView)view.findViewById(R.id.forgot_password)).setTextColor(getResources().getColor(R.color.text_light));
         }
         return view;
     }
