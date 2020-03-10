@@ -12,8 +12,11 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".ui.waiters.WaitersA"
+            android:name=".ui.board.BoardA"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".ui.waiters.WaitersA"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.reports.SRReportsA"
             android:label="@string/title_activity_srreports"

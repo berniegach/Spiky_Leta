@@ -5,6 +5,10 @@
         app:showAsAction="never"
         android:title="Waiters"/>
     <item
+        android:id="@+id/action_board"
+        app:showAsAction="never"
+        android:title="My board"/>
+    <item
         android:id="@+id/action_logout"
         android:orderInCategory="100"
         app:showAsAction="never"

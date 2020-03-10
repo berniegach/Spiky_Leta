@@ -86,7 +86,9 @@
         <item name="android:fontFamily">@font/amita</item>
     </style>
 
-    <style name="AppThemeLight.PopupOverlayLight" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppThemeLight.PopupOverlayLight" parent="ThemeOverlay.AppCompat.Light" >
+        <item name="android:textColor">@color/text_light</item>
+    </style>
     <!-- ToolBar -->
     <!-- CardView -->
     <style name="CardViewStyleLight" parent="CardView">

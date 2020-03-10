@@ -39,6 +39,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.spikingacacia.leta.R;
+import com.spikingacacia.leta.ui.board.BoardA;
 import com.spikingacacia.leta.ui.inventory.SIInventoryA;
 import com.spikingacacia.leta.ui.messages.SMMessageListActivity;
 import com.spikingacacia.leta.ui.orders.SOOrdersA;
@@ -225,6 +226,14 @@ implements SMenuF.OnFragmentInteractionListener{
         Intent intent=new Intent(SMenuA.this, WaitersA.class);
         startActivity(intent);
     }
+
+    @Override
+    public void onMyBoardClicked()
+    {
+        Intent intent=new Intent(SMenuA.this, BoardA.class);
+        startActivity(intent);
+    }
+
     @Override
     public void onLogOut()
     {

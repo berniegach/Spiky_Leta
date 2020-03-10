@@ -269,6 +269,17 @@ public class SMenuF extends Fragment {
                 return true;
             }
         });
+        final MenuItem board=menu.findItem(R.id.action_board);
+        board.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()
+        {
+            @Override
+            public boolean onMenuItemClick(MenuItem item)
+            {
+                if(mListener!=null)
+                    mListener.onMyBoardClicked();
+                return true;
+            }
+        });
         final MenuItem logout=menu.findItem(R.id.action_logout);
         logout.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()
         {
@@ -321,6 +332,7 @@ public class SMenuF extends Fragment {
     public interface OnFragmentInteractionListener {
         void onMenuClicked(int id);
         void onWaitersClicked();
+        void onMyBoardClicked();
         void onLogOut();
         void play_notification();
     }
