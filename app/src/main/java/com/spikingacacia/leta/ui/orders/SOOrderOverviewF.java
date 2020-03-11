@@ -85,6 +85,7 @@ public class SOOrderOverviewF extends Fragment
         TextView t_date=view.findViewById(R.id.date);
         TextView t_username=view.findViewById(R.id.username);
         TextView t_table=view.findViewById(R.id.table);
+        TextView t_waiter=view.findViewById(R.id.waiter);
         //set the buttons listeners
         Button b_accept=view.findViewById(R.id.accept);
         Button b_decline=view.findViewById(R.id.decline);
@@ -161,6 +162,7 @@ public class SOOrderOverviewF extends Fragment
         int count=0;
         double total_price=0.0;
         String date_to_show="";
+        String waiter="";
         Iterator iterator= LoginA.sOrdersList.entrySet().iterator();
         while (iterator.hasNext())
         {
@@ -177,6 +179,7 @@ public class SOOrderOverviewF extends Fragment
             if(!(date[0]+":"+order_number+":"+orderStatus).contentEquals(mOrder))
                 continue;
             username=sOrders.getUsername();
+            waiter=sOrders.getWaiter_names();
             table=sOrders.getTableNumber();
             if(count==0)
             {
@@ -223,6 +226,7 @@ public class SOOrderOverviewF extends Fragment
         t_date.setText(date_to_show);
         t_username.setText(username);
         t_table.setText("Table "+table);
+        t_waiter.setText(waiter);
         return view;
     }
     @Override

@@ -11,9 +11,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.spikingacacia.leta.R;
+import com.spikingacacia.leta.ui.Preferences;
 import com.spikingacacia.leta.ui.board.advF.OnListFragmentInteractionListener;
 import com.spikingacacia.leta.ui.board.AdsC.AdItem;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -28,13 +33,16 @@ public class advRVA extends RecyclerView.Adapter<advRVA.ViewHolder>
 
     private final List<AdItem> mValues;
     private final OnListFragmentInteractionListener mListener;
+    Preferences preferences;
+    Context mContext;
 
 
     public advRVA(List<AdItem> items, OnListFragmentInteractionListener listener, Context context)
     {
         mValues = items;
         mListener = listener;
-
+        mContext=context;
+        preferences=new Preferences(context);
     }
 
     @Override
@@ -51,11 +59,23 @@ public class advRVA extends RecyclerView.Adapter<advRVA.ViewHolder>
         holder.mItem = mValues.get(position);
         holder.mTitleView.setText(mValues.get(position).title);
         holder.mImageView.setImageBitmap(mValues.get(position).bitmap);
-        holder.mViewsView.setText(mValues.get(position).views);
-        holder.mLikesView.setText(mValues.get(position).likes);
-        holder.mCommentsView.setText(mValues.get(position).comments);
-        holder.mDateView.setText(mValues.get(position).date);
-
+        holder.mViewsView.setText(mValues.get(position).views+" views");
+        holder.mLikesView.setText(mValues.get(position).likes+ " likes");
+        holder.mCommentsView.setText(mValues.get(position).comments+ " comments");
+        //format the date
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        PrettyTime p = new PrettyTime();
+        try
+        {
+            holder.mDateView.setText(p.format(format.parse(mValues.get(position).date)));
+        } catch (ParseException e)
+        {
+            e.printStackTrace();
+        }
+        if(!preferences.isDark_theme_enabled())
+        {
+            holder.mView.setBackgroundColor(mContext.getResources().getColor(R.color.secondary_background_light));
+        }
         holder.mView.setOnClickListener(new View.OnClickListener()
         {
             @Override

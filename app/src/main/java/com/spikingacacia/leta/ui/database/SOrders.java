@@ -10,11 +10,12 @@ public class SOrders
     private String orderName;
     private double price;
     public String username;
+    public String waiter_names;
     public int tableNumber;
     private String dateAdded;
     private String dateChanged;
 
-    public SOrders(int id, int userId, int itemId, int orderNumber, int orderStatus, String orderName, double price, String username, int tableNumber, String dateAdded, String dateChanged)
+    public SOrders(int id, int userId, int itemId, int orderNumber, int orderStatus, String orderName, double price, String username, String waiter_names, int tableNumber, String dateAdded, String dateChanged)
     {
         this.id = id;
         this.userId = userId;
@@ -24,6 +25,7 @@ public class SOrders
         this.orderName = orderName;
         this.price = price;
         this.username=username;
+        this.waiter_names=waiter_names;
         this.tableNumber=tableNumber;
         this.dateAdded = dateAdded;
         this.dateChanged = dateChanged;
@@ -107,6 +109,16 @@ public class SOrders
     public void setUsername(String username)
     {
         this.username = username;
+    }
+
+    public String getWaiter_names()
+    {
+        return waiter_names;
+    }
+
+    public void setWaiter_names(String waiter_names)
+    {
+        this.waiter_names = waiter_names;
     }
 
     public int getTableNumber()

@@ -27,8 +27,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.LoginA;
+import com.spikingacacia.leta.ui.Preferences;
 
 import net.gotev.uploadservice.Logger;
 import net.gotev.uploadservice.MultipartUploadRequest;
@@ -51,6 +53,7 @@ public class BoardA extends AppCompatActivity implements advF.OnListFragmentInte
     private RecyclerView recyclerView;
     public String title;
     public String content;
+    Preferences preferences;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -60,6 +63,18 @@ public class BoardA extends AppCompatActivity implements advF.OnListFragmentInte
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Tasty Board");
+        //preference
+        preferences=new Preferences(getBaseContext());
+        if(!preferences.isDark_theme_enabled())
+        {
+            setTheme(R.style.AppThemeLight);
+            toolbar.setTitleTextColor(getResources().getColor(R.color.text_light));
+            toolbar.setPopupTheme(R.style.AppThemeLight_PopupOverlayLight);
+            AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
+            appBarLayout.getContext().setTheme(R.style.AppThemeLight_AppBarOverlayLight);
+            appBarLayout.setBackgroundColor(getResources().getColor(R.color.main_background_light));
+            findViewById(R.id.main).setBackgroundColor(getResources().getColor(R.color.main_background_light));
+        }
 
         Fragment fragment=advF.newInstance(1);
         FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();

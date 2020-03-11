@@ -126,6 +126,7 @@ public class SOOrderC
         public String orderName;
         public double price;
         public String username;
+        public String waiter_names;
         public int tableNumber;
         public String dateAdded;
         public String dateChanged;

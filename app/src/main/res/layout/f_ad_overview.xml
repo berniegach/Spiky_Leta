@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -68,9 +69,10 @@
     </LinearLayout>
 
     <ScrollView
+        android:id="@+id/scroll_comments"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorAccent">
+        android:padding="5dp">
 
         <LinearLayout
             android:id="@+id/l_comments"

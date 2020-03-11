@@ -879,9 +879,10 @@ public class LoginA extends AppCompatActivity
                         String item=jsonObjectNotis.getString("item");
                         double selling_price=jsonObjectNotis.getDouble("sellingprice");
                         String username=jsonObjectNotis.getString("username");
+                        String waiter_names=jsonObjectNotis.getString("waiter_names");
                         int table_number=jsonObjectNotis.getInt("table_number");
 
-                        SOrders sOrders=new SOrders(id,user_id,item_id,order_number,orderstatus,item,selling_price, username,table_number,dateadded,datechanged);
+                        SOrders sOrders=new SOrders(id,user_id,item_id,order_number,orderstatus,item,selling_price, username,waiter_names,table_number,dateadded,datechanged);
                         sOrdersList.put(id,sOrders);
                     }
                     return true;

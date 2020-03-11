@@ -159,9 +159,12 @@ public class SOOrdersA extends AppCompatActivity
     private class BOrdersFormatUpdateTask extends AsyncTask<Void, Void, Boolean>
     {
         int status;
+        int waiter_id=0;
         public BOrdersFormatUpdateTask(int status)
         {
             this.status=status;
+            if(sellerAccount.getPersona()==1)
+                waiter_id=sellerAccount.getWaiter_id();
         }
         @Override
         protected void onPreExecute()
@@ -173,8 +176,9 @@ public class SOOrdersA extends AppCompatActivity
         {
             //getting columns list
             List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("id",Integer.toString(sellerAccount.getId())));
+            info.add(new BasicNameValuePair("seller_id",Integer.toString(sellerAccount.getId())));
             info.add(new BasicNameValuePair("buyer_id",String.valueOf(buyerId)));
+            info.add(new BasicNameValuePair("waiter_id",Integer.toString(waiter_id)));
             info.add(new BasicNameValuePair("order_id",String.valueOf(orderId)));
             info.add(new BasicNameValuePair("order_number",String.valueOf(orderNumber)));
             info.add(new BasicNameValuePair("status",String.valueOf(status)));
@@ -223,6 +227,8 @@ public class SOOrdersA extends AppCompatActivity
                         }
                         else
                         {
+                            if(sellerAccount.getPersona()==1)
+                                bOrders.setWaiter_names(sellerAccount.getWaiter_names());
                             bOrders.setOrderStatus(status);
                             sOrdersList.put(orderId,bOrders);
                         }

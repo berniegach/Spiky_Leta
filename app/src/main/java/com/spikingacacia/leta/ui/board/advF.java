@@ -39,8 +39,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import static com.spikingacacia.leta.ui.LoginA.base_url;
 import static com.spikingacacia.leta.ui.LoginA.sellerAccount;
@@ -321,6 +327,7 @@ public class advF extends Fragment
                         @Override
                         public void onResponse(Bitmap response)
                         {
+
                             my_advra.add_ads(id,title,response,content,views,likes,comments,date);
                             //profilePic=response;
                             //imageView.setImageBitmap(response);

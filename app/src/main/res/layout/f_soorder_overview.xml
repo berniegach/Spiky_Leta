@@ -18,6 +18,12 @@
             android:text="date"
             android:gravity="end"
             android:layout_marginEnd="10dp"/>
+        <TextView
+            android:id="@+id/waiter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:text="waiter"      />
 
         <ProgressBar
             android:layout_gravity="center"

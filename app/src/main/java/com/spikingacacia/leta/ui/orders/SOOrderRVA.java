@@ -13,7 +13,12 @@ import com.spikingacacia.leta.ui.Preferences;
 import com.spikingacacia.leta.ui.orders.SOOrderF.OnListFragmentInteractionListener;
 import com.spikingacacia.leta.ui.orders.SOOrderC.OrderItem;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -59,7 +64,17 @@ public class SOOrderRVA extends RecyclerView.Adapter<SOOrderRVA.ViewHolder>
         holder.mOrderView.setText("Order "+mValues.get(position).orderNumber);
         holder.mTableView.setText("Table "+mValues.get(position).tableNumber);
         holder.mUsernameView.setText(mValues.get(position).username);
-        holder.mDateView.setText(mValues.get(position).dateAdded);
+        //format the date
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        PrettyTime p = new PrettyTime();
+        try
+        {
+            holder.mDateView.setText(p.format(format.parse(mValues.get(position).dateAdded)));
+        } catch (ParseException e)
+        {
+            e.printStackTrace();
+        }
+
         if(!preferences.isDark_theme_enabled())
         {
             holder.mView.setBackgroundColor(mContext.getResources().getColor(R.color.secondary_background_light));
