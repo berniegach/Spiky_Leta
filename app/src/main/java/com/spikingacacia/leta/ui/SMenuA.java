@@ -17,6 +17,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
@@ -26,9 +27,12 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +47,7 @@ import com.spikingacacia.leta.ui.board.BoardA;
 import com.spikingacacia.leta.ui.inventory.SIInventoryA;
 import com.spikingacacia.leta.ui.messages.SMMessageListActivity;
 import com.spikingacacia.leta.ui.orders.SOOrdersA;
+import com.spikingacacia.leta.ui.qr_code.Encoder;
 import com.spikingacacia.leta.ui.reports.SRReportsA;
 import com.spikingacacia.leta.ui.waiters.WaitersA;
 
@@ -52,10 +57,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static com.spikingacacia.leta.ui.LoginA.base_url;
 import static com.spikingacacia.leta.ui.LoginA.currentSubscription;
@@ -66,6 +76,7 @@ import static com.spikingacacia.leta.ui.LoginA.sellerAccount;
 public class SMenuA extends AppCompatActivity
 implements SMenuF.OnFragmentInteractionListener{
     private static final int PERMISSION_REQUEST_INTERNET=2;
+    private static final int PERMISSION_REQUEST_STORAGE=2;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private String url_get_restaurants=base_url+"get_near_restaurants.php";
     private boolean runRate=true;
@@ -232,6 +243,12 @@ implements SMenuF.OnFragmentInteractionListener{
     {
         Intent intent=new Intent(SMenuA.this, BoardA.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onQRClicked()
+    {
+        show_qr();
     }
 
     @Override
@@ -481,6 +498,62 @@ implements SMenuF.OnFragmentInteractionListener{
                 getSystemService(Context. NOTIFICATION_SERVICE );
         mNotificationManager.notify(( int ) System. currentTimeMillis () ,
                 mBuilder.build());*/
+    }
+    private void show_qr()
+    {
+        final Bitmap bitmap_qr = Encoder.encode(sellerAccount.getEmail());
+        ImageView imageView=new ImageView(this);
+        imageView.setImageBitmap(bitmap_qr);
+        imageView.setLayoutParams(new LinearLayout.LayoutParams(600,600));
+        new AlertDialog.Builder(this)
+                .setTitle("My QR Code")
+                .setView(imageView)
+                .setPositiveButton("Save", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        save_bitmap(bitmap_qr);
+                    }
+                }).create().show();
+    }
+    public void save_bitmap(Bitmap bitmap)
+    {
+        Log.d(TAG, "in ssave bitmap" );
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+        {
+            String root = Environment.getExternalStorageDirectory().toString();
+            File myDir = new File(root + "/leta");
+            myDir.mkdirs();
+            int n = 10000;
+            String fname = "Image_Leta_QR"  + ".jpg";
+            File file = new File(myDir, fname);
+            Log.d(TAG, "" + file);
+            if (file.exists())
+                file.delete();
+            try
+            {
+                Toast.makeText(this,"QR Code saved", Toast.LENGTH_SHORT).show();
+                FileOutputStream out = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                out.flush();
+                out.close();
+            }
+            catch (Exception e)
+            {
+                Log.e(TAG,"error "+e.getMessage());
+            }
+
+            /////
+
+            /////
+        }
+        //request the permission
+        else
+        {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_REQUEST_STORAGE);
+        }
+        //////
     }
 
 }

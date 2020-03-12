@@ -280,6 +280,17 @@ public class SMenuF extends Fragment {
                 return true;
             }
         });
+        final MenuItem qr=menu.findItem(R.id.action_qr);
+        qr.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()
+        {
+            @Override
+            public boolean onMenuItemClick(MenuItem item)
+            {
+                if(mListener!=null)
+                    mListener.onQRClicked();
+                return true;
+            }
+        });
         final MenuItem logout=menu.findItem(R.id.action_logout);
         logout.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()
         {
@@ -333,6 +344,7 @@ public class SMenuF extends Fragment {
         void onMenuClicked(int id);
         void onWaitersClicked();
         void onMyBoardClicked();
+        void onQRClicked();
         void onLogOut();
         void play_notification();
     }

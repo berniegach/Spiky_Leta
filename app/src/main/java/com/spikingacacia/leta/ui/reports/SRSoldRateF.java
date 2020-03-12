@@ -424,6 +424,8 @@ public class SRSoldRateF extends Fragment
                     break;
             }
             //daily
+            if(earliest_date==null)
+                return false;
             Calendar cal_start=Calendar.getInstance(), cal_end=Calendar.getInstance(), cal_count=Calendar.getInstance();
             cal_start.setTime(earliest_date);
             for(cal_count=(Calendar)cal_start.clone(); cal_count.before(cal_end) || cal_count.equals(cal_end); cal_count=increment_calender(cal_count,which))

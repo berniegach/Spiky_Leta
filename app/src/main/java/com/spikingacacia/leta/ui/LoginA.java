@@ -12,7 +12,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -63,8 +62,8 @@ public class LoginA extends AppCompatActivity
 {
     private static final int OVERLAY_PERMISSION_CODE=541;
     //REMEMBER TO CHANGE THIS WHEN CHANGING BETWEEN ONLINE AND LOCALHOST
-    //public static final String base_url="https://www.spikingacacia.com/leta_project/android/"; //online
-    public static final String base_url="http://10.0.2.2/leta_project/android/"; //localhost no connection for testing user accounts coz it doesnt require subscription checking
+    public static final String base_url="https://www.spikingacacia.com/leta_project/android/"; //online
+    //public static final String base_url="http://10.0.2.2/leta_project/android/"; //localhost no connection for testing user accounts coz it doesnt require subscription checking
     //sellers php files
     private String url_get_s_notifications=base_url+"get_seller_notifications.php";
     private String url_get_s_categories=base_url+"get_seller_categories.php";
@@ -146,7 +145,7 @@ public class LoginA extends AppCompatActivity
         waitersList=new LinkedHashMap<>();
 
         //firebase links
-        if(preferences.isVerify_password() || preferences.isReset_password())
+        if(preferences.isVerify_email() || preferences.isReset_password())
         {
             Toast.makeText(getBaseContext(),"Please wait",Toast.LENGTH_SHORT).show();
             FirebaseDynamicLinks.getInstance()
@@ -159,7 +158,7 @@ public class LoginA extends AppCompatActivity
                             if (pendingDynamicLinkData != null)
                             {
                                 deepLink = pendingDynamicLinkData.getLink();
-                                if( preferences.isVerify_password())
+                                if( preferences.isVerify_email())
                                 {
                                     setTitle("Sign Up");
                                     Fragment fragment=CreateAccountF.newInstance(1,preferences.getEmail_to_verify());

@@ -15,6 +15,7 @@
         android:showDividers="middle">
 
         <LinearLayout
+            android:id="@+id/sec_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/secondary_background"
@@ -43,24 +44,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:orientation="vertical"
-            android:divider="?android:listDivider"
-            android:dividerPadding="10dp"
-            android:showDividers="middle">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:weightSum="2"
-                android:orientation="horizontal"
-                android:divider="?android:listDivider"
-                android:dividerPadding="10dp"
-                android:showDividers="middle">
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:id="@+id/pending"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="2dp"
                     android:layout_weight="1"
                     android:background="@color/secondary_background"
                     android:orientation="horizontal">
@@ -69,7 +65,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/text_margin"
-                        android:text="Pending"/>
+                        android:text="Pending" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -104,7 +100,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/text_margin"
-                        android:text="In Progress"/>
+                        android:text="In Progress" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -131,16 +127,15 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
                 android:weightSum="2"
-                android:orientation="horizontal"
-                android:divider="?android:listDivider"
-                android:dividerPadding="10dp"
-                android:showDividers="middle">
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:id="@+id/delivery"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="2dp"
                     android:layout_weight="1"
                     android:background="@color/tertiary_background"
                     android:orientation="horizontal">
@@ -150,7 +145,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/text_margin"
-                        android:text="Delivery" />
+                        android:text="Delivery"/>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -212,11 +207,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
                 android:weightSum="2"
-                android:orientation="horizontal"
-                android:divider="?android:listDivider"
-                android:dividerPadding="10dp"
-                android:showDividers="middle">
+                android:orientation="horizontal">
 
 
                 <LinearLayout
@@ -231,7 +224,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/text_margin"
-                        android:text="Finished"/>
+                        android:text="Finished" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"

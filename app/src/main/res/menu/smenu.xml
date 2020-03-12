@@ -9,6 +9,10 @@
         app:showAsAction="never"
         android:title="My board"/>
     <item
+        android:id="@+id/action_qr"
+        app:showAsAction="never"
+        android:title="My QR Code"/>
+    <item
         android:id="@+id/action_logout"
         android:orderInCategory="100"
         app:showAsAction="never"
