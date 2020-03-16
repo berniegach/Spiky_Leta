@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.spikingacacia.leta.R;
+import com.spikingacacia.leta.ui.GetFilePathFromDevice;
 import com.spikingacacia.leta.ui.LoginA;
 import com.spikingacacia.leta.ui.Preferences;
 
@@ -115,7 +116,7 @@ public class BoardA extends AppCompatActivity implements advF.OnListFragmentInte
             try
             {
 
-                final String path = getPath(uri);
+                final String path= GetFilePathFromDevice.getPath(this,uri);
                 Log.d("path",path);
 
                 if (true)
@@ -150,30 +151,6 @@ public class BoardA extends AppCompatActivity implements advF.OnListFragmentInte
                 Log.e("bitmap", "" + e.getMessage());
             }
         }
-    }
-    private String getPath(Uri uri)
-    {
-        if(uri==null)
-            return null;
-        String res=null;
-
-        if (DocumentsContract.isDocumentUri(getBaseContext(), uri))
-        {
-            //emulator
-            String[] path = uri.getPath().split(":");
-            res = path[1];
-            Log.i("debinf ProdAct", "Real file path on Emulator: "+res);
-        }
-        else {
-            String[] proj = {MediaStore.Images.Media.DATA};
-            Cursor cursor = getBaseContext().getContentResolver().query(uri, proj, null, null, null);
-            if (cursor.moveToFirst()) {
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                res = cursor.getString(column_index);
-            }
-            cursor.close();
-        }
-        return res;
     }
     private boolean uploadPic(final String location, final Bitmap bitmap) {
         boolean ok=true;
@@ -216,6 +193,7 @@ public class BoardA extends AppCompatActivity implements advF.OnListFragmentInte
                                 public void onError(Context context, UploadInfo uploadInfo, ServerResponse serverResponse, Exception exception)
                                 {
                                     Log.e("GOTEV",uploadInfo.toString()+"\n"+exception.toString()+"\n");
+                                    Toast.makeText(getBaseContext(), "There was an error please try again", Toast.LENGTH_SHORT).show();
                                 }
 
                                 @Override

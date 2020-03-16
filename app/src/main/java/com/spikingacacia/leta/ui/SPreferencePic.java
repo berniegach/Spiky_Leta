@@ -135,7 +135,8 @@ public class SPreferencePic extends Preference
                 try
                 {
 
-                    final String path = getPath(uri);
+                    //final String path = getPath(uri);
+                    final String path= GetFilePathFromDevice.getPath(context,uri);
                     Log.d("path",path);
 
                 if (true)
@@ -172,30 +173,6 @@ public class SPreferencePic extends Preference
                 }
             }
             getFragmentManager().beginTransaction().remove(this).commit();
-        }
-        private String getPath(Uri uri)
-        {
-            if(uri==null)
-                return null;
-            String res=null;
-
-            if (DocumentsContract.isDocumentUri(getActivity(), uri))
-            {
-                //emulator
-                String[] path = uri.getPath().split(":");
-                res = path[1];
-                Log.i("debinf ProdAct", "Real file path on Emulator: "+res);
-            }
-            else {
-                String[] proj = {MediaStore.Images.Media.DATA};
-                Cursor cursor = getActivity().getContentResolver().query(uri, proj, null, null, null);
-                if (cursor.moveToFirst()) {
-                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                    res = cursor.getString(column_index);
-                }
-                cursor.close();
-            }
-            return res;
         }
         private boolean uploadPic(final String location) {
             boolean ok=true;
