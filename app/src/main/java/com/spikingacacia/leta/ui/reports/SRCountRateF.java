@@ -94,10 +94,7 @@ public class SRCountRateF extends Fragment
     {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.f_srcount_rate, container, false);
-        if(!preferences.isDark_theme_enabled())
-        {
-            view.findViewById(R.id.chart_back).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
-        }
+
         chart=view.findViewById(R.id.chart);
         //font
         font= ResourcesCompat.getFont(getContext(),R.font.arima_madurai);

@@ -1,13 +1,8 @@
 package com.spikingacacia.leta.ui;
 
-import android.app.NotificationManager;
 import android.content.Context;
-import android.media.MediaPlayer;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
@@ -41,7 +36,7 @@ import java.util.Set;
 import static com.spikingacacia.leta.ui.LoginA.base_url;
 import static com.spikingacacia.leta.ui.LoginA.sMessagesList;
 import static com.spikingacacia.leta.ui.LoginA.sOrdersList;
-import static com.spikingacacia.leta.ui.LoginA.sellerAccount;
+import static com.spikingacacia.leta.ui.LoginA.serverAccount;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -161,7 +156,7 @@ public class SMenuF extends Fragment {
                     mListener.onMenuClicked(5);
             }
         });
-        if(sellerAccount.getPersona()==1)
+        if(serverAccount.getPersona()==1)
         {
             ((LinearLayout)view.findViewById(R.id.reports)).setVisibility(View.GONE);
             ((LinearLayout)view.findViewById(R.id.messages)).setVisibility(View.GONE);
@@ -180,7 +175,7 @@ public class SMenuF extends Fragment {
                     tOrdersCount.setText(String.valueOf(ordersCount));
                     Log.d(TAG,"orders count changed");
                 }
-                if(sellerAccount.getPersona()==0)
+                if(serverAccount.getPersona()==0)
                     if(messagesCount!=sMessagesList.size())
                     {
                         if(mListener!=null)
@@ -189,17 +184,17 @@ public class SMenuF extends Fragment {
                         tMessagesCount.setText(String.valueOf(messagesCount));
                         Log.d(TAG,"messages count changed");
                     }
-                if(sellerAccount.getPersona()==1)
+                if(serverAccount.getPersona()==1)
                     if(SMenuA.within_location)
                     {
                         l_orders.setEnabled(true);
                         if(preferences.isDark_theme_enabled())
                         {
-                            l_orders.setBackgroundColor(getResources().getColor(R.color.secondary_background));
+                            ;//l_orders.setBackgroundColor(getResources().getColor(R.color.secondary_background));
                         }
                         else
                         {
-                            l_orders.setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
+                            ;//l_orders.setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
                         }
                     }
                     else
@@ -207,11 +202,11 @@ public class SMenuF extends Fragment {
                         l_orders.setEnabled(false);
                         if(preferences.isDark_theme_enabled())
                         {
-                            l_orders.setBackgroundColor(getResources().getColor(R.color.tertiary_background));
+                            ;//l_orders.setBackgroundColor(getResources().getColor(R.color.tertiary_background));
                         }
                         else
                         {
-                            l_orders.setBackgroundColor(getResources().getColor(R.color.tertiary_background_light));
+                            ;//l_orders.setBackgroundColor(getResources().getColor(R.color.tertiary_background_light));
                         }
                     }
 
@@ -228,7 +223,7 @@ public class SMenuF extends Fragment {
                     {
                         sleep(2000);
                         refreshOrders();
-                        if(sellerAccount.getPersona()==0)
+                        if(serverAccount.getPersona()==0)
                              refreshMessages();
                         handler.post(runnable);
                     }
@@ -240,14 +235,7 @@ public class SMenuF extends Fragment {
             }
         };
         thread.start();
-        if(!preferences.isDark_theme_enabled())
-        {
-            view.findViewById(R.id.inventory).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
-            view.findViewById(R.id.orders).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
-            view.findViewById(R.id.reports).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
-            view.findViewById(R.id.messages).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
-            view.findViewById(R.id.settings).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
-        }
+
         return view;
     }
     @Override
@@ -257,7 +245,7 @@ public class SMenuF extends Fragment {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.smenu, menu);
         final MenuItem waiters=menu.findItem(R.id.action_waiter);
-        if(sellerAccount.getPersona()==1)
+        if(serverAccount.getPersona()==1)
             waiters.setVisible(false);
         waiters.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()
         {
@@ -378,7 +366,7 @@ public class SMenuF extends Fragment {
     {
         //getting columns list
         List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-        info.add(new BasicNameValuePair("id",Integer.toString(sellerAccount.getId())));
+        info.add(new BasicNameValuePair("id",Integer.toString(serverAccount.getId())));
         // making HTTP request
         JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_notifications,"POST",info);
         //Log.d("sNotis",""+jsonObject.toString());
@@ -424,7 +412,7 @@ public class SMenuF extends Fragment {
     {
         //getting columns list
         List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-        info.add(new BasicNameValuePair("id",Integer.toString(sellerAccount.getId())));
+        info.add(new BasicNameValuePair("id",Integer.toString(serverAccount.getId())));
         // making HTTP request
         JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_orders,"POST",info);
         //Log.d("sItems",""+jsonObject.toString());

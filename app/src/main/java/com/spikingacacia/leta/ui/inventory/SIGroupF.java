@@ -40,8 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.spikingacacia.leta.ui.LoginA.base_url;
-import static com.spikingacacia.leta.ui.LoginA.sGroupsList;
-import static com.spikingacacia.leta.ui.LoginA.sellerAccount;
+import static com.spikingacacia.leta.ui.LoginA.serverAccount;
 
 /**
  * A fragment representing a list of Items.
@@ -108,7 +107,7 @@ public class SIGroupF extends Fragment {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.sigroup_menu, menu);
         final MenuItem add=menu.findItem(R.id.action_add);
-        if(sellerAccount.getPersona()==1)
+        if(serverAccount.getPersona()==1)
             add.setVisible(false);
         add.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()
         {
@@ -246,7 +245,7 @@ public class SIGroupF extends Fragment {
         {
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.sellerAccount.getId())));
+            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.serverAccount.getId())));
             info.add(new BasicNameValuePair("name",name));
             info.add(new BasicNameValuePair("category_id",Integer.toString(mCategoryId)));
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_add_group,"POST",info);
@@ -282,8 +281,8 @@ public class SIGroupF extends Fragment {
                 Toast.makeText(getContext(),"Successful",Toast.LENGTH_SHORT).show();
                 SIGroupRecyclerViewAdapter adapter=(SIGroupRecyclerViewAdapter) recyclerView.getAdapter();
                 SGroups sGroups=new SGroups(id,mCategoryId,name,"null",dateAdded,"null");
-                sGroupsList.put(id,sGroups);
-                adapter.notifyChange(sGroupsList.size(),id,mCategoryId,name,"null",dateAdded,"null");
+                //sGroupsList.put(id,sGroups);
+                //adapter.notifyChange(sGroupsList.size(),id,mCategoryId,name,"null",dateAdded,"null");
 
             }
             else if(success==-2)

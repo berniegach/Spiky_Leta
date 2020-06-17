@@ -32,10 +32,9 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.github.mikephil.charting.utils.MPPointF;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.Preferences;
-import com.spikingacacia.leta.ui.database.SItems;
+import com.spikingacacia.leta.ui.database.DMenu;
 import com.spikingacacia.leta.ui.database.SOrders;
 
 import java.text.ParseException;
@@ -97,10 +96,7 @@ public class SRSoldF extends Fragment implements OnChartValueSelectedListener
     {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.f_srsold, container, false);
-        if(!preferences.isDark_theme_enabled())
-        {
-            view.findViewById(R.id.chart_back).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
-        }
+
         chart=view.findViewById(R.id.chart);
         //font
         font= ResourcesCompat.getFont(getContext(),R.font.arima_madurai);
@@ -232,10 +228,10 @@ public class SRSoldF extends Fragment implements OnChartValueSelectedListener
         Iterator iterator= sItemsList.entrySet().iterator();
         while(iterator.hasNext())
         {
-            LinkedHashMap.Entry<Integer, SItems> set = (LinkedHashMap.Entry<Integer, SItems>) iterator.next();
+            LinkedHashMap.Entry<Integer, DMenu> set = (LinkedHashMap.Entry<Integer, DMenu>) iterator.next();
             //int id = set.getKey();
-            SItems sItems=set.getValue();
-            int id=sItems.getId();
+            DMenu DMenu =set.getValue();
+            int id= DMenu.getId();
             Iterator iterator_orders= sOrdersList.entrySet().iterator();
             while (iterator_orders.hasNext())
             {
@@ -334,11 +330,11 @@ public class SRSoldF extends Fragment implements OnChartValueSelectedListener
             Iterator iterator= sItemsList.entrySet().iterator();
             while (iterator.hasNext())
             {
-                LinkedHashMap.Entry<Integer, SItems> set = (LinkedHashMap.Entry<Integer, SItems>) iterator.next();
+                LinkedHashMap.Entry<Integer, DMenu> set = (LinkedHashMap.Entry<Integer, DMenu>) iterator.next();
                 //int id=set.getKey();
-                SItems sItems=set.getValue();
-                int id=sItems.getId();
-                String name=sItems.getItem();
+                DMenu DMenu =set.getValue();
+                int id= DMenu.getId();
+                String name= DMenu.getItem();
                 name=name.replace("_"," ");
                 if (items_count_list.get(index)==0)
                 {

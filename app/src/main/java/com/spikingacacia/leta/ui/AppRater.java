@@ -70,7 +70,7 @@ public class AppRater
         params2.setMargins(20,2,20,2);
         Button b1 = new Button(mContext);
         b1.setLayoutParams(params2);
-        b1.setBackgroundColor(ContextCompat.getColor(mContext,R.color.button_normal));
+        b1.setBackgroundColor(ContextCompat.getColor(mContext,R.color.colorPrimary));
         b1.setText("Rate " + APP_TITLE);
         b1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -82,7 +82,7 @@ public class AppRater
 
         Button b2 = new Button(mContext);
         b2.setLayoutParams(params2);
-        b2.setBackgroundColor(ContextCompat.getColor(mContext, R.color.button_normal));
+        b2.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
         b2.setText("Remind me later");
         b2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -93,7 +93,7 @@ public class AppRater
 
         Button b3 = new Button(mContext);
         b3.setLayoutParams(params2);
-        b3.setBackgroundColor(ContextCompat.getColor(mContext,R.color.button_normal));
+        b3.setBackgroundColor(ContextCompat.getColor(mContext,R.color.colorPrimary));
         b3.setText("No, thanks");
         b3.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

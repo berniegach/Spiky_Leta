@@ -2,12 +2,10 @@ package com.spikingacacia.leta.ui.orders;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -40,7 +38,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
-import static android.content.Context.MODE_PRIVATE;
 import static com.spikingacacia.leta.ui.LoginA.sOrdersList;
 
 /**
@@ -120,10 +117,7 @@ public class SOOverviewF extends Fragment
         View view= inflater.inflate(R.layout.f_sooverview, container, false);
         //preference
         preferences=new Preferences(getContext());
-        if(!preferences.isDark_theme_enabled())
-        {
-            view.findViewById(R.id.sec_main).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
-        }
+
         //layouts
         lPending = ((LinearLayout)view.findViewById(R.id.pending));
         lInProgress = ((LinearLayout)view.findViewById(R.id.inprogress));
@@ -232,7 +226,7 @@ public class SOOverviewF extends Fragment
         finishedCount=0;
         setCounts();
         //set the formats
-        final int format=LoginA.sellerAccount.getOrderFormat();
+        final int format=LoginA.serverAccount.getOrderFormat();
         if(format==1)
         {
             tInProgressName.setText("In Progress");
@@ -253,18 +247,11 @@ public class SOOverviewF extends Fragment
         {
             if(count==countToShow)
             {
-                if(preferences.isDark_theme_enabled())
-                    layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.secondary_background));
-                else
-                    layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.secondary_background_light));
                 tMainCount.setText(String.valueOf(counts[count]));
             }
             else
             {
-                if(preferences.isDark_theme_enabled())
-                    layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.tertiary_background));
-                else
-                    layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.tertiary_background_light));
+                ;//
             }
         }
 
@@ -311,7 +298,7 @@ public class SOOverviewF extends Fragment
             @Override
             public boolean onMenuItemClick(MenuItem item)
             {
-                final int format=LoginA.sellerAccount.getOrderFormat();
+                final int format=LoginA.serverAccount.getOrderFormat();
                 new AlertDialog.Builder(getContext())
                         .setItems(format==1?strings_format_1:strings_format_2, new DialogInterface.OnClickListener()
                         {
@@ -323,9 +310,9 @@ public class SOOverviewF extends Fragment
                                     if(count==i)
                                     {
                                         if(preferences.isDark_theme_enabled())
-                                            layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.secondary_background));
+                                            ;//layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.secondary_background));
                                         else
-                                            layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.secondary_background_light));
+                                            ;//layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.secondary_background_light));
                                         countToShow=i;
                                         preferences.setOrder_format_to_show_count(i);
                                         tMainCount.setText(String.valueOf(counts[count]));
@@ -333,9 +320,9 @@ public class SOOverviewF extends Fragment
                                     else
                                     {
                                         if(preferences.isDark_theme_enabled())
-                                            layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.tertiary_background));
+                                            ;//layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.tertiary_background));
                                         else
-                                            layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.tertiary_background_light));
+                                            ;//layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.tertiary_background_light));
                                     }
                                 }
                             }
@@ -370,7 +357,7 @@ public class SOOverviewF extends Fragment
     }
     private void setCounts()
     {
-        int format=LoginA.sellerAccount.getOrderFormat();
+        int format=LoginA.serverAccount.getOrderFormat();
         List<String> order_numbers=new ArrayList<>();
         Iterator iterator= sOrdersList.entrySet().iterator();
         while (iterator.hasNext())
@@ -431,7 +418,7 @@ public class SOOverviewF extends Fragment
         {
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.sellerAccount.getId())));
+            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.serverAccount.getId())));
             info.add(new BasicNameValuePair("order_format", Integer.toString(format)));
             //getting all account details by making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_update_order_format,"POST",info);
@@ -461,8 +448,8 @@ public class SOOverviewF extends Fragment
             Log.d("settings","finished");
             if(success)
             {
-                int previous_format=LoginA.sellerAccount.getOrderFormat();
-                LoginA.sellerAccount.setOrderFormat(format);
+                int previous_format=LoginA.serverAccount.getOrderFormat();
+                LoginA.serverAccount.setOrderFormat(format);
                 Snackbar.make(lFinished,"Format updated",Snackbar.LENGTH_SHORT).show();
                 if(format==1)
                 {
@@ -506,16 +493,16 @@ public class SOOverviewF extends Fragment
                     if(count==countToShow)
                     {
                         if(preferences.isDark_theme_enabled())
-                            layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.secondary_background));
+                            ;//layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.secondary_background));
                         else
-                            layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.secondary_background_light));
+                            ;//layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.secondary_background_light));
                     }
                     else
                     {
                         if(preferences.isDark_theme_enabled())
-                            layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.tertiary_background));
+                            ;//layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.tertiary_background));
                         else
-                            layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.tertiary_background_light));
+                            ;//layouts_format[count].setBackgroundColor(ContextCompat.getColor(getContext(),R.color.tertiary_background_light));
                     }
                 }
             }

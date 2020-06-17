@@ -81,7 +81,7 @@ public class MapsA extends FragmentActivity implements
                 {
                     addresses=geocoder.getFromLocation(latMyPos.latitude,latMyPos.longitude,10);
                     SSettingsA.settingsChanged = true;
-                    SSettingsA.tempSellerAccount.setLocation(String.format("%f,%f,%s",latMyPos.latitude,latMyPos.longitude,addresses.get(0).getLocality()));
+                    SSettingsA.tempServerAccount.setLocation(String.format("%f,%f,%s",latMyPos.latitude,latMyPos.longitude,addresses.get(0).getLocality()));
                     for(int c=0; c<addresses.size(); c+=1)
                         Log.d("loc: ",addresses.get(c).getLocality()+"\n");
                     fab.hide();
@@ -134,7 +134,7 @@ public class MapsA extends FragmentActivity implements
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         //marker for business location
-        String pos=LoginA.sellerAccount.getLocation();
+        String pos=LoginA.serverAccount.getLocation();
         if(pos.contentEquals("null"))
         {
             getCurrentLocation(1);
@@ -145,7 +145,7 @@ public class MapsA extends FragmentActivity implements
             latMyPos=new LatLng(Double.parseDouble(myPos[0]),Double.parseDouble(myPos[1]));
             myMarker=mMap.addMarker(new MarkerOptions()
                     .position(latMyPos)
-                    .title(LoginA.sellerAccount.getUsername()).draggable(true)
+                    .title(LoginA.serverAccount.getUsername()).draggable(true)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latMyPos,maxZoomLevel));
         }
@@ -197,7 +197,7 @@ public class MapsA extends FragmentActivity implements
                                     //the position is null and we have no marker therefore we use mylocation
                                     myMarker=mMap.addMarker(new MarkerOptions()
                                             .position(latMyPos)
-                                            .title(LoginA.sellerAccount.getUsername()).draggable(true)
+                                            .title(LoginA.serverAccount.getUsername()).draggable(true)
                                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
                                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latMyPos,maxZoomLevel));
                                 }

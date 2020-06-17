@@ -76,10 +76,7 @@ public class SOOrderOverviewF extends Fragment
         View view= inflater.inflate(R.layout.f_soorder_overview, container, false);
         //preference
         preferences=new Preferences(getContext());
-        if(!preferences.isDark_theme_enabled())
-        {
-            view.findViewById(R.id.sec_main).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
-        }
+
         ProgressBar progressBar=view.findViewById(R.id.progress);
         LinearLayout l_base=view.findViewById(R.id.orders_base);
         TextView t_date=view.findViewById(R.id.date);

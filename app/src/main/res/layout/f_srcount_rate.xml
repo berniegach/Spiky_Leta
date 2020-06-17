@@ -15,7 +15,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/secondary_background"
             android:orientation="vertical"
             android:padding="5dp">
             <com.github.mikephil.charting.charts.LineChart
@@ -44,7 +43,6 @@
                 android:layout_weight="5"
                 android:padding="5dp"
                 android:gravity="center"
-                android:background="@color/button_normal"
                 android:text="Start"/>
             <TextView
                 android:id="@+id/end"
@@ -53,7 +51,6 @@
                 android:layout_weight="5"
                 android:padding="5dp"
                 android:gravity="center"
-                android:background="@color/button_normal"
                 android:text="End"/>
         </LinearLayout>
     </LinearLayout>

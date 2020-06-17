@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.spikingacacia.leta.R;
@@ -30,7 +29,7 @@ import java.util.List;
 
 import static com.spikingacacia.leta.ui.LoginA.base_url;
 import static com.spikingacacia.leta.ui.LoginA.sOrdersList;
-import static com.spikingacacia.leta.ui.LoginA.sellerAccount;
+import static com.spikingacacia.leta.ui.LoginA.serverAccount;
 
 public class SOOrdersA extends AppCompatActivity
     implements SOOverviewF.OnFragmentInteractionListener, SOOrderF.OnListFragmentInteractionListener,
@@ -59,18 +58,7 @@ public class SOOrdersA extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle("Orders");
-        //preference
-        preferences=new Preferences(getBaseContext());
-        if(!preferences.isDark_theme_enabled())
-        {
-            setTheme(R.style.AppThemeLight);
-            toolbar.setTitleTextColor(getResources().getColor(R.color.text_light));
-            toolbar.setPopupTheme(R.style.AppThemeLight_PopupOverlayLight);
-            AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
-            appBarLayout.getContext().setTheme(R.style.AppThemeLight_AppBarOverlayLight);
-            appBarLayout.setBackgroundColor(getResources().getColor(R.color.main_background_light));
-            findViewById(R.id.main).setBackgroundColor(getResources().getColor(R.color.main_background_light));
-        }
+
         //set the first base fragment
         Fragment fragment=SOOverviewF.newInstance("","");
         FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
@@ -96,7 +84,7 @@ public class SOOrdersA extends AppCompatActivity
     public void onChoiceClicked(int which)
     {
         mWhichOrder=which;
-        final int format= sellerAccount.getOrderFormat();
+        final int format= serverAccount.getOrderFormat();
         switch(which)
         {
             case 1:
@@ -126,7 +114,7 @@ public class SOOrdersA extends AppCompatActivity
      * */
     public void onListFragmentInteraction(SOOrderC.OrderItem item)
     {
-        final int format= sellerAccount.getOrderFormat();
+        final int format= serverAccount.getOrderFormat();
         buyerId=item.userId;
         orderId=item.id;
         orderNumber=item.orderNumber;
@@ -147,7 +135,7 @@ public class SOOrdersA extends AppCompatActivity
     @Override
     public void onAcceptDecline(int which, int status)
     {
-        final int format= sellerAccount.getOrderFormat();
+        final int format= serverAccount.getOrderFormat();
         int new_status=1;
         if(status==1)
             new_status=which==1?2:0;
@@ -163,8 +151,8 @@ public class SOOrdersA extends AppCompatActivity
         public BOrdersFormatUpdateTask(int status)
         {
             this.status=status;
-            if(sellerAccount.getPersona()==1)
-                waiter_id=sellerAccount.getWaiter_id();
+            if(serverAccount.getPersona()==1)
+                waiter_id= serverAccount.getWaiter_id();
         }
         @Override
         protected void onPreExecute()
@@ -176,7 +164,7 @@ public class SOOrdersA extends AppCompatActivity
         {
             //getting columns list
             List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("seller_id",Integer.toString(sellerAccount.getId())));
+            info.add(new BasicNameValuePair("seller_id",Integer.toString(serverAccount.getId())));
             info.add(new BasicNameValuePair("buyer_id",String.valueOf(buyerId)));
             info.add(new BasicNameValuePair("waiter_id",Integer.toString(waiter_id)));
             info.add(new BasicNameValuePair("order_id",String.valueOf(orderId)));
@@ -227,8 +215,8 @@ public class SOOrdersA extends AppCompatActivity
                         }
                         else
                         {
-                            if(sellerAccount.getPersona()==1)
-                                bOrders.setWaiter_names(sellerAccount.getWaiter_names());
+                            if(serverAccount.getPersona()==1)
+                                bOrders.setWaiter_names(serverAccount.getWaiter_names());
                             bOrders.setOrderStatus(status);
                             sOrdersList.put(orderId,bOrders);
                         }

@@ -2,13 +2,10 @@ package com.spikingacacia.leta.ui.inventory;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
-import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -32,7 +29,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
 import com.spikingacacia.leta.ui.LoginA;
-import com.spikingacacia.leta.ui.database.SCategories;
+import com.spikingacacia.leta.ui.database.Categories;
 import com.spikingacacia.leta.ui.inventory.SICategoryC.CategoryItem;
 
 import org.apache.http.NameValuePair;
@@ -44,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.spikingacacia.leta.ui.LoginA.base_url;
-import static com.spikingacacia.leta.ui.LoginA.sellerAccount;
+import static com.spikingacacia.leta.ui.LoginA.serverAccount;
 
 /**
  * A fragment representing a list of Items.
@@ -110,7 +107,7 @@ public class SICategoryF extends Fragment {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.sicategory_menu, menu);
         final MenuItem add=menu.findItem(R.id.action_add);
-        if(sellerAccount.getPersona()==1)
+        if(serverAccount.getPersona()==1)
             add.setVisible(false);
         add.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()
         {
@@ -248,7 +245,7 @@ public class SICategoryF extends Fragment {
         {
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.sellerAccount.getId())));
+            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.serverAccount.getId())));
             info.add(new BasicNameValuePair("name",name));
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_add_category,"POST",info);
             try
@@ -282,9 +279,9 @@ public class SICategoryF extends Fragment {
                 Log.d("adding new category", "done...");
                 Toast.makeText(getContext(),"Successful",Toast.LENGTH_SHORT).show();
                 SICategoryRecyclerViewAdapter adapter=(SICategoryRecyclerViewAdapter) recyclerView.getAdapter();
-                SCategories sCategories=new SCategories(id,name,"null", dateAdded,"null");
-                LoginA.sCategoriesList.put(id,sCategories);
-                adapter.notifyChange(LoginA.sCategoriesList.size(),id,name,"null",dateAdded,"null");
+                //Categories categories =new Categories(id,name,"null", dateAdded,"null");
+                //LoginA.sCategoriesList.put(id, categories);
+                //adapter.notifyChange(LoginA.sCategoriesList.size(),id,name,"null",dateAdded,"null");
 
             }
             else if(success==-2)

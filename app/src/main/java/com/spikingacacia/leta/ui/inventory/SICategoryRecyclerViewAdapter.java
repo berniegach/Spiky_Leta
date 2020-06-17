@@ -30,7 +30,7 @@ import com.spikingacacia.leta.ui.CommonHelper;
 import com.spikingacacia.leta.ui.JSONParser;
 import com.spikingacacia.leta.ui.LoginA;
 import com.spikingacacia.leta.ui.Preferences;
-import com.spikingacacia.leta.ui.database.SCategories;
+import com.spikingacacia.leta.ui.database.Categories;
 import com.spikingacacia.leta.ui.inventory.SICategoryF.OnListFragmentInteractionListener;
 import com.spikingacacia.leta.ui.inventory.SICategoryC.CategoryItem;
 
@@ -45,7 +45,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import static com.spikingacacia.leta.ui.LoginA.base_url;
-import static com.spikingacacia.leta.ui.LoginA.sellerAccount;
+import static com.spikingacacia.leta.ui.LoginA.serverAccount;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link CategoryItem} and makes a call to the
@@ -98,13 +98,9 @@ public class SICategoryRecyclerViewAdapter extends RecyclerView.Adapter<SICatego
         holder.mPositionView.setText(mValues.get(position).position);
         holder.mCategoryView.setText(cat);
         holder.mDescriptionView.setText(des);
-        if(!preferences.isDark_theme_enabled())
-        {
-            holder.mView.setBackgroundColor(mContext.getResources().getColor(R.color.secondary_background_light));
-        }
 
         //get the category photo
-        String url= LoginA.base_url+"src/sellers/"+String.format("%s/pics/c_%d", CommonHelper.makeName(LoginA.sellerAccount.getId()), mValues.get(position).id)+".jpg";
+        String url= LoginA.base_url+"src/sellers/"+String.format("%s/pics/c_%d", CommonHelper.makeName(LoginA.serverAccount.getId()), mValues.get(position).id)+".jpg";
         ImageRequest request=new ImageRequest(
                 url,
                 new Response.Listener<Bitmap>()
@@ -137,7 +133,7 @@ public class SICategoryRecyclerViewAdapter extends RecyclerView.Adapter<SICatego
                 }
             }
         });
-        if(sellerAccount.getPersona()==0)
+        if(serverAccount.getPersona()==0)
             holder.mView.setOnLongClickListener(new View.OnLongClickListener()
         {
             @Override
@@ -363,7 +359,7 @@ public class SICategoryRecyclerViewAdapter extends RecyclerView.Adapter<SICatego
             //logIn=handler.LogInStaff(mEmail,mPassword);
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.sellerAccount.getId())));
+            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.serverAccount.getId())));
             info.add(new BasicNameValuePair("category_id", Integer.toString(mId)));
             info.add(new BasicNameValuePair("name", mName));
             info.add(new BasicNameValuePair("description", mDescription));
@@ -397,30 +393,30 @@ public class SICategoryRecyclerViewAdapter extends RecyclerView.Adapter<SICatego
             if (successful)
             {
                 Toast.makeText(mContext,"Successful",Toast.LENGTH_SHORT).show();
-                Iterator iterator= LoginA.sCategoriesList.entrySet().iterator();
+                /*Iterator iterator= LoginA.sCategoriesList.entrySet().iterator();
                 while (iterator.hasNext())
                 {
-                    LinkedHashMap.Entry<Integer, SCategories> set = (LinkedHashMap.Entry<Integer, SCategories>) iterator.next();
+                    LinkedHashMap.Entry<Integer, Categories> set = (LinkedHashMap.Entry<Integer, Categories>) iterator.next();
                     int id = set.getKey();
-                    SCategories sCategories = set.getValue();
+                    Categories categories = set.getValue();
 
                     if(id==mId)
                     {
-                        sCategories.setDatechanged(dateChanged);
-                        if (!sCategories.getCategory().contentEquals(mName))
-                            sCategories.setCategory(mName);
-                        if (!sCategories.getDescription().contentEquals(mDescription))
-                            sCategories.setDescription(mDescription);
+                        categories.setDatechanged(dateChanged);
+                        if (!categories.getCategory().contentEquals(mName))
+                            categories.setCategory(mName);
+                        if (!categories.getDescription().contentEquals(mDescription))
+                            categories.setDescription(mDescription);
                         SICategoryC content = new SICategoryC();
-                        mValues.set(mPosition, content.createItem(mPosition +1, id, mName, mDescription, sCategories.getDateadded(), dateChanged));
+                        mValues.set(mPosition, content.createItem(mPosition +1, id, mName, mDescription, categories.getDateadded(), dateChanged));
                         notifyDataSetChanged();
                         //iterator.remove();
-                        LoginA.sCategoriesList.put(id, sCategories);
+                        LoginA.sCategoriesList.put(id, categories);
                         break;
                     }
 
 
-                }
+                }*/
             }
             else
             {
@@ -456,7 +452,7 @@ public class SICategoryRecyclerViewAdapter extends RecyclerView.Adapter<SICatego
             //logIn=handler.LogInStaff(mEmail,mPassword);
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.sellerAccount.getId())));
+            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.serverAccount.getId())));
             info.add(new BasicNameValuePair("category_id",Integer.toString(mId)));
             //getting all account details by making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_delete_category,"POST",info);
@@ -487,10 +483,10 @@ public class SICategoryRecyclerViewAdapter extends RecyclerView.Adapter<SICatego
             if (successful)
             {
                 Toast.makeText(mContext,"Deleted Successfully",Toast.LENGTH_SHORT).show();
-                Iterator iterator= LoginA.sCategoriesList.entrySet().iterator();
+               /* Iterator iterator= LoginA.sCategoriesList.entrySet().iterator();
                 while (iterator.hasNext())
                 {
-                    LinkedHashMap.Entry<Integer, SCategories>set=(LinkedHashMap.Entry<Integer, SCategories>) iterator.next();
+                    LinkedHashMap.Entry<Integer, Categories>set=(LinkedHashMap.Entry<Integer, Categories>) iterator.next();
                     int id=set.getKey();
                     if(id==mId )
                     {
@@ -499,7 +495,7 @@ public class SICategoryRecyclerViewAdapter extends RecyclerView.Adapter<SICatego
                         notifyDataSetChanged();
                         break;
                     }
-                }
+                }*/
             }
             else
             {

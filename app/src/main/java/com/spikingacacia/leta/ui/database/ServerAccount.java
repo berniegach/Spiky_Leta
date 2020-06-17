@@ -1,0 +1,195 @@
+package com.spikingacacia.leta.ui.database;
+
+public class ServerAccount
+{
+    private int persona=0; // 0= seller, 1= waiter
+    private int id;
+    private String email;
+    private String password;
+    private String username;
+    private int onlineVisibility;
+    private int deliver;
+    private String country;
+    private String location;
+    private int orderRadius;
+    private int orderFormat;
+    private int numberOfTables;
+    private String dateadded;
+    private String datechanged;
+    private String dateToday;
+    //these are waiters fields from user account
+    private int waiter_id;
+    private String waiter_names;
+
+    public ServerAccount(){}
+
+    public ServerAccount(int persona, int id, String email, String password, String username, String country, int online, int deliver, String location, int orderRadius, int orderFormat,
+                         int numberOfTables, String dateadded, String datechanged, String dateToday,
+                         int waiter_id, String waiter_names) {
+        this.persona=persona;
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.username = username;
+        this.onlineVisibility=online;
+        this.deliver=deliver;
+        this.country = country;
+        this.location = location;
+        this.orderRadius=orderRadius;
+        this.orderRadius=orderRadius;
+        this.orderFormat=orderFormat;
+        this.numberOfTables=numberOfTables;
+        this.dateadded = dateadded;
+        this.datechanged = datechanged;
+        this.dateToday = dateToday;
+        this.waiter_id=waiter_id;
+        this.waiter_names=waiter_names;
+    }
+    public int getPersona()
+    {
+        return persona;
+    }
+
+    public void setPersona(int persona)
+    {
+        this.persona = persona;
+    }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public int getDeliver() {
+        return deliver;
+    }
+
+    public void setDeliver(int deliver) {
+        this.deliver = deliver;
+    }
+
+    public int getOnlineVisibility() {
+        return onlineVisibility;
+    }
+
+    public void setOnlineVisibility(int onlineVisibility) {
+        this.onlineVisibility = onlineVisibility;
+    }
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public int getOrderRadius()
+    {
+        return orderRadius;
+    }
+
+    public void setOrderRadius(int orderRadius)
+    {
+        this.orderRadius = orderRadius;
+    }
+
+    public int getOrderFormat()
+    {
+        return orderFormat;
+    }
+
+    public void setOrderFormat(int orderFormat)
+    {
+        this.orderFormat = orderFormat;
+    }
+
+    public int getNumberOfTables()
+    {
+        return numberOfTables;
+    }
+
+    public void setNumberOfTables(int numberOfTables)
+    {
+        this.numberOfTables = numberOfTables;
+    }
+
+    public String getDateadded() {
+        return dateadded;
+    }
+
+    public void setDateadded(String dateadded) {
+        this.dateadded = dateadded;
+    }
+
+    public String getDatechanged() {
+        return datechanged;
+    }
+
+    public void setDatechanged(String datechanged) {
+        this.datechanged = datechanged;
+    }
+
+    public String getDateToday() {
+        return dateToday;
+    }
+
+    public void setDateToday(String dateToday) {
+        this.dateToday = dateToday;
+    }
+
+    public int getWaiter_id()
+    {
+        return waiter_id;
+    }
+
+    public void setWaiter_id(int waiter_id)
+    {
+        this.waiter_id = waiter_id;
+    }
+
+    public String getWaiter_names()
+    {
+        return waiter_names;
+    }
+
+    public void setWaiter_names(String waiter_names)
+    {
+        this.waiter_names = waiter_names;
+    }
+
+
+}

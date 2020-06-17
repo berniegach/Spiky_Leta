@@ -1,7 +1,7 @@
 package com.spikingacacia.leta.ui.inventory;
 
 import com.spikingacacia.leta.ui.LoginA;
-import com.spikingacacia.leta.ui.database.SCategories;
+import com.spikingacacia.leta.ui.database.Categories;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,19 +27,19 @@ public class SICategoryC
     public SICategoryC()
     {
         int pos=1;
-        Iterator iterator= LoginA.sCategoriesList.entrySet().iterator();
+        /*Iterator iterator= LoginA.sCategoriesList.entrySet().iterator();
         while(iterator.hasNext())
         {
-            LinkedHashMap.Entry<Integer, SCategories>set=(LinkedHashMap.Entry<Integer, SCategories>) iterator.next();
+            LinkedHashMap.Entry<Integer, Categories>set=(LinkedHashMap.Entry<Integer, Categories>) iterator.next();
             int id=set.getKey();
-            SCategories sCategories=set.getValue();
-            String category=sCategories.getCategory();
-            String description=sCategories.getDescription();
-            String date_added=sCategories.getDateadded();
-            String date_changed=sCategories.getDatechanged();
+            Categories categories =set.getValue();
+            String category= categories.getCategory();
+            String description= categories.getDescription();
+            String date_added= categories.getDateadded();
+            String date_changed= categories.getDatechanged();
             addItem(createItem(pos,id,category,description,date_added,date_changed));
             pos+=1;
-        }
+        }*/
     }
 
 

@@ -38,9 +38,5 @@ public class About extends Preference
     public void onBindViewHolder(PreferenceViewHolder view)
     {
         super.onBindViewHolder(view);
-        if(!preferences.isDark_theme_enabled())
-        {
-            view.itemView.setBackgroundColor(context.getResources().getColor(R.color.secondary_background_light));
-        }
     }
 }

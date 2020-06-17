@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.board.BoardA"
-    android:background="@color/main_background"
     android:fitsSystemWindows="true">
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar_layout"

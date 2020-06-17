@@ -28,8 +28,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
 import com.spikingacacia.leta.ui.LoginA;
-import com.spikingacacia.leta.ui.database.SItems;
-import com.spikingacacia.leta.ui.inventory.SIGroupC.GroupItem;
+import com.spikingacacia.leta.ui.database.DMenu;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -41,7 +40,7 @@ import java.util.List;
 
 import static com.spikingacacia.leta.ui.LoginA.base_url;
 import static com.spikingacacia.leta.ui.LoginA.sItemsList;
-import static com.spikingacacia.leta.ui.LoginA.sellerAccount;
+import static com.spikingacacia.leta.ui.LoginA.serverAccount;
 
 /**
  * A fragment representing a list of Items.
@@ -54,7 +53,6 @@ public class SIItemF extends Fragment {
     private static final String ARG_CATEGORY_ID = "category_id";
     private static final String ARG_GROUP_ID = "group_id";
     // TODO: Customize parameters
-    private String url_add_item = base_url+"create_seller_item.php";
     private int mCategoryId;
     private int mGroupId;
     private OnListFragmentInteractionListener mListener;
@@ -111,7 +109,7 @@ public class SIItemF extends Fragment {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.siitem_menu, menu);
         final MenuItem add=menu.findItem(R.id.action_add);
-        if(sellerAccount.getPersona()==1)
+        if(serverAccount.getPersona()==1)
             add.setVisible(false);
         add.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()
         {
@@ -163,7 +161,7 @@ public class SIItemF extends Fragment {
 
                                 else
                                 {
-                                    new CreateItemTask(name).execute((Void)null);
+                                    //new CreateItemTask(name).execute((Void)null);
                                     dialog.dismiss();
                                 }
                             }
@@ -230,72 +228,5 @@ public class SIItemF extends Fragment {
         //void onItemClicked(GroupItem item);
         void onItemPhotoEdit(int id);
     }
-    public class CreateItemTask extends AsyncTask<Void, Void, Boolean>
-    {
-        private String name;
-        private int success;
-        private int id=-1;
-        private String dateAdded="null";
-        CreateItemTask(final String name)
-        {
-            Toast.makeText(getContext(),"Adding item started. Please wait...",Toast.LENGTH_SHORT).show();
-            String name_temp=name.toLowerCase();
-            name_temp=name_temp.replace(" ","_");
-            this.name=name_temp;
-            Log.d("CRATEITEM"," started...");
-        }
-        @Override
-        protected Boolean doInBackground(Void... params)
-        {
-            //building parameters
-            List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.sellerAccount.getId())));
-            info.add(new BasicNameValuePair("name",name));
-            info.add(new BasicNameValuePair("category_id",Integer.toString(mCategoryId)));
-            info.add(new BasicNameValuePair("group_id",Integer.toString(mGroupId)));
-            JSONObject jsonObject= jsonParser.makeHttpRequest(url_add_item,"POST",info);
-            try
-            {
-                success=jsonObject.getInt(TAG_SUCCESS);
-                if(success==1)
-                {
-                    id=jsonObject.getInt("id");
-                    dateAdded=jsonObject.getString("dateadded");
-                    return true;
-                }
-                else
-                {
-                    String message=jsonObject.getString(TAG_MESSAGE);
-                    Log.e(TAG_MESSAGE,""+message);
-                    return false;
-                }
-            }
-            catch (JSONException e)
-            {
-                Log.e("JSON",""+e.getMessage());
-                return false;
-            }
-        }
-        @Override
-        protected void onPostExecute(final Boolean successful)
-        {
-            if(successful)
-            {
 
-                Log.d("adding new item", "done...");
-                Toast.makeText(getContext(),"Successful",Toast.LENGTH_SHORT).show();
-                SIItemRecyclerViewAdapter adapter=(SIItemRecyclerViewAdapter) recyclerView.getAdapter();
-                SItems sItems=new SItems(id, mCategoryId,mGroupId,name,"null",0.0,1,dateAdded,"null");
-                sItemsList.put(id,sItems);
-                adapter.notifyChange(sItemsList.size(),id, mCategoryId,mGroupId,name,"null",0.0,1,dateAdded,"null");
-
-            }
-            else if(success==-2)
-            {
-                Log.e("adding item", "error");
-                Toast.makeText(getContext(),"Item already defined",Toast.LENGTH_SHORT).show();
-            }
-
-        }
-    }
 }

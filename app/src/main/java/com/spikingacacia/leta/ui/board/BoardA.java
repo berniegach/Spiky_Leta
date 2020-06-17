@@ -13,11 +13,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -27,22 +25,27 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.appbar.AppBarLayout;
 import com.spikingacacia.leta.R;
-import com.spikingacacia.leta.ui.GetFilePathFromDevice;
 import com.spikingacacia.leta.ui.LoginA;
 import com.spikingacacia.leta.ui.Preferences;
+import com.spikingacacia.leta.ui.main.home.ItemDialog;
+import com.spikingacacia.leta.ui.util.GetFilePathFromDevice;
+import com.spikingacacia.leta.ui.util.VolleyMultipartRequest;
 
-import net.gotev.uploadservice.Logger;
-import net.gotev.uploadservice.MultipartUploadRequest;
-import net.gotev.uploadservice.ServerResponse;
-import net.gotev.uploadservice.UploadInfo;
-import net.gotev.uploadservice.UploadNotificationConfig;
-import net.gotev.uploadservice.UploadStatusDelegate;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static com.spikingacacia.leta.ui.LoginA.base_url;
@@ -64,18 +67,6 @@ public class BoardA extends AppCompatActivity implements advF.OnListFragmentInte
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Tasty Board");
-        //preference
-        preferences=new Preferences(getBaseContext());
-        if(!preferences.isDark_theme_enabled())
-        {
-            setTheme(R.style.AppThemeLight);
-            toolbar.setTitleTextColor(getResources().getColor(R.color.text_light));
-            toolbar.setPopupTheme(R.style.AppThemeLight_PopupOverlayLight);
-            AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
-            appBarLayout.getContext().setTheme(R.style.AppThemeLight_AppBarOverlayLight);
-            appBarLayout.setBackgroundColor(getResources().getColor(R.color.main_background_light));
-            findViewById(R.id.main).setBackgroundColor(getResources().getColor(R.color.main_background_light));
-        }
 
         Fragment fragment=advF.newInstance(1);
         FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
@@ -133,7 +124,6 @@ public class BoardA extends AppCompatActivity implements advF.OnListFragmentInte
                         Log.d("uploading","1");
                         try
                         {
-                            Logger.setLogLevel(Logger.LogLevel.DEBUG);
                             confirm_upload(path,bitmap);
                             //uploadPic(path, bitmap);
 
@@ -152,112 +142,55 @@ public class BoardA extends AppCompatActivity implements advF.OnListFragmentInte
             }
         }
     }
-    private boolean uploadPic(final String location, final Bitmap bitmap) {
-        boolean ok=true;
-        if(ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
-        {
-            //getting name for the image
-            String name="photo";
-            //getting the actual path of the image
-            // String path=getPath(certUri[index]);
-            String path=location;
-            if (path == null)
-            {
-                Log.e("upload cert","its null");
-            }
-            else
-            {
-                //Uploading code
-                try
+    private void uploadBitmap(final Bitmap bitmap)
+    {
+        String url_upload_profile_pic= LoginA.base_url+"upload_inventory_pic.php";
+        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url_upload_profile_pic,
+                new Response.Listener<NetworkResponse>()
                 {
-                    final String tag="GOTEV";
-                    String uploadId = UUID.randomUUID().toString();
-                    //Creating a multi part request
-                    new MultipartUploadRequest(getBaseContext(), uploadId, url_add_advert)
-                            .addFileToUpload(path, "jpg") //Adding file
-                            .addParameter("name", name) //Adding text parameter to the request
-                            .addParameter("seller_id",String.valueOf(LoginA.sellerAccount.getId()))
-                            .addParameter("title",title)
-                            .addParameter("content",content)
-                            .setNotificationConfig(new UploadNotificationConfig())
-                            .setMaxRetries(2)
-                            .setDelegate(new UploadStatusDelegate()
-                            {
-                                @Override
-                                public void onProgress(Context context, UploadInfo uploadInfo)
-                                {
-                                    Log.d("GOTEV",uploadInfo.toString());
-                                }
-
-                                @Override
-                                public void onError(Context context, UploadInfo uploadInfo, ServerResponse serverResponse, Exception exception)
-                                {
-                                    Log.e("GOTEV",uploadInfo.toString()+"\n"+exception.toString()+"\n");
-                                    Toast.makeText(getBaseContext(), "There was an error please try again", Toast.LENGTH_SHORT).show();
-                                }
-
-                                @Override
-                                public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse)
-                                {
-                                    String response=serverResponse.getBodyAsString();
-                                    //sometimes the last } is missing
-                                    if(!response.endsWith("}"))
-                                        response+="}";
-                                    Log.d("GOTEV",response);
-                                    try
-                                    {
-                                        JSONObject jsonObject=new JSONObject(response);
-                                        if(jsonObject.getInt("success")==1)
-                                        {
-                                            int id=jsonObject.getInt("id");
-                                            String date=jsonObject.getString("date");
-                                            advRVA adapter=(advRVA) recyclerView.getAdapter();
-                                            adapter.notifyChange(id,title,bitmap,content,0,0,0,date);
-                                            Toast.makeText(getBaseContext(), "successful", Toast.LENGTH_SHORT).show();
-                                        }
-                                        else
-                                        {
-                                            String message=jsonObject.getString("message");
-                                            Log.e(tag,""+message);
-                                        }
-                                    } catch (JSONException e)
-                                    {
-                                        Log.e(tag,"error "+e.getMessage());
-                                        e.printStackTrace();
-                                    }
-
-                                }
-
-                                @Override
-                                public void onCancelled(Context context, UploadInfo uploadInfo)
-                                {
-                                    Log.d("GOTEV","cancelled"+uploadInfo.toString());
-                                }
-                            })
-                            .startUpload(); //Starting the upload
-                }
-                catch (Exception e)
+                    @Override
+                    public void onResponse(NetworkResponse response)
+                    {
+                        //weve uploaded the image therefore its okay to proceed with adding the new item in the server
+                        int statusCode = response.statusCode;
+                    }
+                },
+                new Response.ErrorListener()
                 {
-                    Log.e("image upload",""+e.getMessage());
-                    e.printStackTrace();
-                    ok=false;
-                }
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getBaseContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.e("GotError",""+error.getMessage());
+                    }
+                }) {
+
+
+            @Override
+            protected Map<String, DataPart> getByteData() {
+                Map<String, DataPart> params = new HashMap<>();
+                long imagename = System.currentTimeMillis();
+                params.put("png", new DataPart(imagename + ".png", getFileDataFromDrawable(bitmap)));
+                return params;
             }
-        }
-        //request the permission
-        else
-        {
-            Log.d("fjhgsdjfgd","jsjgdjsgds");
-            ok=false;
-            if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.READ_EXTERNAL_STORAGE))
+
+
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError
             {
-
+                Map<String , String >params = new HashMap<>();
+                params.put("name", "name"); //Adding text parameter to the request
+                //params.put("id",String.valueOf(getCategoryId(category_title)));
+                return params;
             }
-            else
-                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},PERMISSION_REQUEST_INTERNET);
-        }
+        };
 
-        return ok;
+        //adding the request to volley
+        Volley.newRequestQueue(getBaseContext()).add(volleyMultipartRequest);
+    }
+    public byte[] getFileDataFromDrawable(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
     }
     private void confirm_upload(final String location, final Bitmap bitmap)
     {
@@ -301,7 +234,7 @@ public class BoardA extends AppCompatActivity implements advF.OnListFragmentInte
                     @Override
                     public void onClick(View view)
                     {
-                        uploadPic(location,bitmap);
+                        //uploadPic(location,bitmap);
                         dialog.dismiss();
                     }
                 });

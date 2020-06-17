@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +21,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 import com.spikingacacia.leta.R;
-import com.spikingacacia.leta.ui.CommonHelper;
 import com.spikingacacia.leta.ui.JSONParser;
 import com.spikingacacia.leta.ui.LoginA;
 import com.spikingacacia.leta.ui.Preferences;
@@ -82,10 +80,7 @@ public class WaiterRVA extends RecyclerView.Adapter<WaiterRVA.ViewHolder>
     public void onBindViewHolder(final ViewHolder holder, final int position)
     {
         holder.mItem = mValues.get(position);
-        if(!preferences.isDark_theme_enabled())
-        {
-            holder.mView.setBackgroundColor(mContext.getResources().getColor(R.color.secondary_background_light));
-        }
+
         holder.mPosView.setText(mValues.get(position).pos);
         holder.mNamesView.setText(mValues.get(position).names);
         holder.mEmailView.setText(mValues.get(position).email);
@@ -238,7 +233,7 @@ public class WaiterRVA extends RecyclerView.Adapter<WaiterRVA.ViewHolder>
             //logIn=handler.LogInStaff(mEmail,mPassword);
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("seller_id",Integer.toString(LoginA.sellerAccount.getId())));
+            info.add(new BasicNameValuePair("seller_id",Integer.toString(LoginA.serverAccount.getId())));
             info.add(new BasicNameValuePair("waiter_id",Integer.toString(waiter_id)));
             //getting all account details by making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_delete_waiter,"POST",info);

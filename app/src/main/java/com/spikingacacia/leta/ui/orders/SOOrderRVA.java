@@ -75,10 +75,6 @@ public class SOOrderRVA extends RecyclerView.Adapter<SOOrderRVA.ViewHolder>
             e.printStackTrace();
         }
 
-        if(!preferences.isDark_theme_enabled())
-        {
-            holder.mView.setBackgroundColor(mContext.getResources().getColor(R.color.secondary_background_light));
-        }
 
         holder.mView.setOnClickListener(new View.OnClickListener()
         {

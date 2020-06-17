@@ -1,7 +1,7 @@
 package com.spikingacacia.leta.ui.inventory;
 
 import com.spikingacacia.leta.ui.LoginA;
-import com.spikingacacia.leta.ui.database.SItems;
+import com.spikingacacia.leta.ui.database.DMenu;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,22 +30,22 @@ public class SIItemC
         Iterator iterator= LoginA.sItemsList.entrySet().iterator();
         while(iterator.hasNext())
         {
-            LinkedHashMap.Entry<Integer, SItems>set=(LinkedHashMap.Entry<Integer, SItems>) iterator.next();
+            LinkedHashMap.Entry<Integer, DMenu>set=(LinkedHashMap.Entry<Integer, DMenu>) iterator.next();
             int id=set.getKey();
-            SItems sItems=set.getValue();
-            int category=sItems.getCategory();
-            int group=sItems.getGroup();
-            String item=sItems.getItem();
-            String description=sItems.getDescription();
-            double selling_price=sItems.getSellingPrice();
-            int available=sItems.getAvailable();
-            String date_added=sItems.getDateadded();
-            String date_changed=sItems.getDatechanged();
-            if(groupId==group && category==categoryId)
+            DMenu DMenu =set.getValue();
+            /*int category= DMenu.getCategory();
+            int group= DMenu.getGroup();
+            String item= DMenu.getItem();
+            String description= DMenu.getDescription();
+            double selling_price= DMenu.getSellingPrice();
+            int available= DMenu.getAvailable();
+            String date_added= DMenu.getDateadded();*/
+            String date_changed= DMenu.getDatechanged();
+           /* if(groupId==group && category==categoryId)
             {
                 addItem(createItem(pos,id,category,group,item,description,selling_price,available,date_added,date_changed));
                 pos+=1;
-            }
+            }*/
         }
     }
 

@@ -72,10 +72,6 @@ public class advRVA extends RecyclerView.Adapter<advRVA.ViewHolder>
         {
             e.printStackTrace();
         }
-        if(!preferences.isDark_theme_enabled())
-        {
-            holder.mView.setBackgroundColor(mContext.getResources().getColor(R.color.secondary_background_light));
-        }
         holder.mView.setOnClickListener(new View.OnClickListener()
         {
             @Override

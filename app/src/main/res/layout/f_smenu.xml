@@ -16,7 +16,6 @@ tools:context=".ui.SMenuF">
     android:layout_height="60dp"
     android:layout_marginTop="2dp"
     android:layout_marginBottom="2dp"
-    android:background="@color/secondary_background"
     android:orientation="horizontal">
 
     <ImageView
@@ -25,7 +24,7 @@ tools:context=".ui.SMenuF">
         android:layout_gravity="center_vertical"
         android:layout_marginStart="20dp"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/ic_inventory" />
+        android:src="@drawable/ic_inventory" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -42,7 +41,6 @@ tools:context=".ui.SMenuF">
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:layout_marginBottom="2dp"
-    android:background="@color/secondary_background"
     android:orientation="horizontal">
 
     <ImageView
@@ -51,7 +49,7 @@ tools:context=".ui.SMenuF">
         android:layout_gravity="center_vertical"
         android:layout_marginStart="20dp"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/ic_orders" />
+        android:src="@drawable/ic_orders" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -74,7 +72,6 @@ tools:context=".ui.SMenuF">
             android:background="@drawable/circle"
             android:gravity="center"
             android:text="0"
-            android:textColor="@color/text"
             android:textSize="14sp" />
     </LinearLayout>
 
@@ -87,7 +84,6 @@ tools:context=".ui.SMenuF">
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:layout_marginBottom="2dp"
-    android:background="@color/secondary_background"
     android:orientation="horizontal">
 
     <ImageView
@@ -96,7 +92,7 @@ tools:context=".ui.SMenuF">
         android:layout_gravity="center_vertical"
         android:layout_marginStart="20dp"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/ic_reports" />
+        android:src="@drawable/ic_reports" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -114,7 +110,6 @@ tools:context=".ui.SMenuF">
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:layout_marginBottom="2dp"
-    android:background="@color/secondary_background"
     android:orientation="horizontal">
 
     <ImageView
@@ -123,7 +118,7 @@ tools:context=".ui.SMenuF">
         android:layout_gravity="center_vertical"
         android:layout_marginStart="20dp"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/ic_messages" />
+        android:src="@drawable/ic_messages" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -146,7 +141,6 @@ tools:context=".ui.SMenuF">
             android:background="@drawable/circle"
             android:gravity="center"
             android:text="0"
-            android:textColor="@color/text"
             android:textSize="14sp" />
     </LinearLayout>
 
@@ -158,7 +152,6 @@ tools:context=".ui.SMenuF">
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:layout_marginBottom="2dp"
-    android:background="@color/secondary_background"
     android:orientation="horizontal">
 
     <ImageView
@@ -167,7 +160,7 @@ tools:context=".ui.SMenuF">
         android:layout_gravity="center_vertical"
         android:layout_marginStart="20dp"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/ic_settings" />
+        android:src="@drawable/ic_settings" />
 
     <TextView
         android:layout_width="wrap_content"

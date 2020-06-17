@@ -4,15 +4,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -39,7 +36,6 @@ import android.widget.Toast;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.spikingacacia.leta.R;
@@ -58,20 +54,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static com.spikingacacia.leta.ui.LoginA.base_url;
 import static com.spikingacacia.leta.ui.LoginA.currentSubscription;
 import static com.spikingacacia.leta.ui.LoginA.loginProgress;
 import static com.spikingacacia.leta.ui.LoginA.sFinalProgress;
-import static com.spikingacacia.leta.ui.LoginA.sellerAccount;
+import static com.spikingacacia.leta.ui.LoginA.serverAccount;
 
 public class SMenuA extends AppCompatActivity
 implements SMenuF.OnFragmentInteractionListener{
@@ -112,22 +105,7 @@ implements SMenuF.OnFragmentInteractionListener{
         FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.base,fragment,"menu");
         transaction.commit();
-        if(!preferences.isDark_theme_enabled())
-        {
-            setTheme(R.style.AppThemeLight);
-            findViewById(R.id.main).setBackgroundColor(getResources().getColor(R.color.main_background_light));
-            findViewById(R.id.sec_main).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
-            collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.text_light));
-            collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.text_light));
-            collapsingToolbarLayout.setBackgroundColor(getResources().getColor(R.color.main_background_light));
-            ((TextView)findViewById(R.id.who)).setTextColor(getResources().getColor(R.color.text_light));
-            ((TextView)findViewById(R.id.trial)).setTextColor(getResources().getColor(R.color.text_light));
-            ((TextView)findViewById(R.id.welcome)).setTextColor(getResources().getColor(R.color.text_light));
-            toolbar.setTitleTextColor(getResources().getColor(R.color.text_light));
-            toolbar.setPopupTheme(R.style.AppThemeLight_PopupOverlayLight);
-            AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
-            appBarLayout.getContext().setTheme(R.style.AppThemeLight_AppBarOverlayLight);
-        }
+
     }
     @Override
     protected void onPostCreate(Bundle savedInstanceState)
@@ -140,15 +118,15 @@ implements SMenuF.OnFragmentInteractionListener{
         super.onResume();
         //set the welcome text
         //we set it in onResume to factor in the possibility of the username changing in the settings
-        if(LoginA.sellerAccount.getUsername().length()<2 || LoginA.sellerAccount.getUsername().contentEquals("null"))
+        if(LoginA.serverAccount.getUsername().length()<2 || LoginA.serverAccount.getUsername().contentEquals("null"))
         {
             tWho.setText("Please go to settings and set the business name...");
         }
         else
-            if(sellerAccount.getPersona()==1)
-                tWho.setText(sellerAccount.getUsername()+" : "+ sellerAccount.getWaiter_names());
+            if(serverAccount.getPersona()==1)
+                tWho.setText(serverAccount.getUsername()+" : "+ serverAccount.getWaiter_names());
             else
-                tWho.setText(sellerAccount.getUsername());
+                tWho.setText(serverAccount.getUsername());
         if(currentSubscription.length()>10)
             ((TextView)findViewById(R.id.trial)).setText(currentSubscription);
         else
@@ -159,37 +137,11 @@ implements SMenuF.OnFragmentInteractionListener{
             AppRater.app_launched(this);
             runRate=false;
         }
-        if(sellerAccount.getPersona()==1)
+        if(serverAccount.getPersona()==1)
             check_if_within_location();
 
     }
-    @Override
-    public void onBackPressed()
-    {
-        //super.onBackPressed();
-        new AlertDialog.Builder(SMenuA.this)
-                .setTitle("Quit")
-                .setMessage("Are you sure you want to exit?")
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        dialog.dismiss();
-                    }
-                })
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        finishAffinity();
-                        //Intent intent=new Intent(Intent.ACTION_MAIN);
-                        // intent.addCategory(Intent.CATEGORY_HOME);
-                        // startActivity(intent);
-                    }
-                }).create().show();
-    }
+
     /**implementation of CMenuFragment.java**/
     @Override
     public void onMenuClicked(int id)
@@ -288,7 +240,7 @@ implements SMenuF.OnFragmentInteractionListener{
         if (loginProgress >= sFinalProgress)
         {
             String message="";
-            if(LoginA.sCategoriesList.size()==0)
+           /* if(LoginA.sCategoriesList.size()==0)
                 message="Please create the major categories eg food, drinks etc.\nGo to "+
                         "\u279e Inventory  \u279e Options(upper right corner) \u279e add";
             else if(LoginA.sGroupsList.size()==0)
@@ -296,7 +248,7 @@ implements SMenuF.OnFragmentInteractionListener{
                         "\u279e Inventory  \u279e  category \u279e Options(upper right corner) \u279e add";
             else if(LoginA.sItemsList.size()==0)
                 message="Please create the items eg pepperoni, cheese burger etc.\nGo to "+
-                        " \u279e Inventory  \u279e  category \u279e  group \u279e Options(upper right corner) \u279e add";
+                        " \u279e Inventory  \u279e  category \u279e  group \u279e Options(upper right corner) \u279e add";*/
             if(!message.contentEquals(""))
             {
                 new AlertDialog.Builder(this)
@@ -449,7 +401,7 @@ implements SMenuF.OnFragmentInteractionListener{
                         int order_radius=jsonObject_restaurants.getInt("order_radius");
                         int tables = jsonObject_restaurants.getInt("number_of_tables");
 
-                        if(id==sellerAccount.getId())
+                        if(id== serverAccount.getId())
                             return true;
                     }
                     return false;
@@ -501,7 +453,7 @@ implements SMenuF.OnFragmentInteractionListener{
     }
     private void show_qr()
     {
-        final Bitmap bitmap_qr = Encoder.encode(sellerAccount.getEmail());
+        final Bitmap bitmap_qr = Encoder.encode(serverAccount.getEmail());
         ImageView imageView=new ImageView(this);
         imageView.setImageBitmap(bitmap_qr);
         imageView.setLayoutParams(new LinearLayout.LayoutParams(600,600));

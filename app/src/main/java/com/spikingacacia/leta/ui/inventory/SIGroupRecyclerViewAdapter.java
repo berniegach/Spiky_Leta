@@ -45,7 +45,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import static com.spikingacacia.leta.ui.LoginA.base_url;
-import static com.spikingacacia.leta.ui.LoginA.sellerAccount;
+import static com.spikingacacia.leta.ui.LoginA.serverAccount;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link GroupItem} and makes a call to the
@@ -96,12 +96,8 @@ public class SIGroupRecyclerViewAdapter extends RecyclerView.Adapter<SIGroupRecy
         holder.mPositionView.setText(mValues.get(position).position);
         holder.mGroupView.setText(group);
         holder.mDescriptionView.setText(des);
-        if(!preferences.isDark_theme_enabled())
-        {
-            holder.mView.setBackgroundColor(mContext.getResources().getColor(R.color.secondary_background_light));
-        }
         //get the category photo
-        String url= LoginA.base_url+"src/sellers/"+String.format("%s/pics/g_%d", CommonHelper.makeName(LoginA.sellerAccount.getId()), mValues.get(position).id)+".jpg";
+        String url= LoginA.base_url+"src/sellers/"+String.format("%s/pics/g_%d", CommonHelper.makeName(LoginA.serverAccount.getId()), mValues.get(position).id)+".jpg";
         ImageRequest request=new ImageRequest(
                 url,
                 new Response.Listener<Bitmap>()
@@ -134,7 +130,7 @@ public class SIGroupRecyclerViewAdapter extends RecyclerView.Adapter<SIGroupRecy
                 }
             }
         });
-        if(sellerAccount.getPersona()==0)
+        if(serverAccount.getPersona()==0)
             holder.mView.setOnLongClickListener(new View.OnLongClickListener()
         {
             @Override
@@ -358,7 +354,7 @@ public class SIGroupRecyclerViewAdapter extends RecyclerView.Adapter<SIGroupRecy
             //logIn=handler.LogInStaff(mEmail,mPassword);
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.sellerAccount.getId())));
+            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.serverAccount.getId())));
             info.add(new BasicNameValuePair("category_id", Integer.toString(mCategoryId)));
             info.add(new BasicNameValuePair("group_id", Integer.toString(mId)));
             info.add(new BasicNameValuePair("name", mName));
@@ -393,7 +389,7 @@ public class SIGroupRecyclerViewAdapter extends RecyclerView.Adapter<SIGroupRecy
             if (successful)
             {
                 Toast.makeText(mContext,"Successful",Toast.LENGTH_SHORT).show();
-                Iterator iterator= LoginA.sGroupsList.entrySet().iterator();
+                /*Iterator iterator= LoginA.sGroupsList.entrySet().iterator();
                 while (iterator.hasNext())
                 {
                     LinkedHashMap.Entry<Integer, SGroups> set = (LinkedHashMap.Entry<Integer, SGroups>) iterator.next();
@@ -415,7 +411,7 @@ public class SIGroupRecyclerViewAdapter extends RecyclerView.Adapter<SIGroupRecy
                     }
 
 
-                }
+                }*/
             }
             else
             {
@@ -451,7 +447,7 @@ public class SIGroupRecyclerViewAdapter extends RecyclerView.Adapter<SIGroupRecy
             //logIn=handler.LogInStaff(mEmail,mPassword);
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.sellerAccount.getId())));
+            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.serverAccount.getId())));
             info.add(new BasicNameValuePair("group_id",Integer.toString(mId)));
             //getting all account details by making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_delete_group,"POST",info);
@@ -482,7 +478,7 @@ public class SIGroupRecyclerViewAdapter extends RecyclerView.Adapter<SIGroupRecy
             if (successful)
             {
                 Toast.makeText(mContext,"Deleted Successfully",Toast.LENGTH_SHORT).show();
-                Iterator iterator= LoginA.sGroupsList.entrySet().iterator();
+                /*Iterator iterator= LoginA.sGroupsList.entrySet().iterator();
                 while (iterator.hasNext())
                 {
                     LinkedHashMap.Entry<Integer, SGroups>set=(LinkedHashMap.Entry<Integer, SGroups>) iterator.next();
@@ -494,7 +490,7 @@ public class SIGroupRecyclerViewAdapter extends RecyclerView.Adapter<SIGroupRecy
                         notifyDataSetChanged();
                         break;
                     }
-                }
+                }*/
             }
             else
             {

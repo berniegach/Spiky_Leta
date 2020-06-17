@@ -39,17 +39,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import static com.spikingacacia.leta.ui.LoginA.base_url;
-import static com.spikingacacia.leta.ui.LoginA.sellerAccount;
+import static com.spikingacacia.leta.ui.LoginA.serverAccount;
 
 public class advF extends Fragment
 {
@@ -260,7 +254,7 @@ public class advF extends Fragment
         {
             //getting columns list
             List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("seller_id",Integer.toString(sellerAccount.getId())));
+            info.add(new BasicNameValuePair("seller_id",Integer.toString(serverAccount.getId())));
             info.add(new BasicNameValuePair("last_id",Integer.toString(last_id)));
             // making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_ads,"POST",info);

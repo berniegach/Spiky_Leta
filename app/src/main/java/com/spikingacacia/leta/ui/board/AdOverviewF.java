@@ -127,11 +127,6 @@ public class AdOverviewF extends Fragment
     {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.f_ad_overview, container, false);
-        if(!preferences.isDark_theme_enabled())
-        {
-            view.findViewById(R.id.main).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
-            view.findViewById(R.id.scroll_comments).setBackgroundColor(getResources().getColor(R.color.tertiary_background_light));
-        }
         ((TextView)view.findViewById(R.id.title)).setText(title);
         ((ImageView)view.findViewById(R.id.image)).setImageBitmap(bitmap);
         ((TextView)view.findViewById(R.id.content)).setText(content);

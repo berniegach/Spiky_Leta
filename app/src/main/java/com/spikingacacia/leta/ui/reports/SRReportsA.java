@@ -29,19 +29,7 @@ public class SRReportsA extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle("Revenue");
-        //preference
-        preferences=new Preferences(getBaseContext());
-        if(!preferences.isDark_theme_enabled())
-        {
-            setTheme(R.style.AppThemeLight_NoActionBarLight);
-            findViewById(R.id.main).setBackgroundColor(getResources().getColor(R.color.main_background_light));
-            toolbar.setTitleTextColor(getResources().getColor(R.color.text_light));
-            toolbar.setPopupTheme(R.style.AppThemeLight_PopupOverlayLight);
-            AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
-            appBarLayout.getContext().setTheme(R.style.AppThemeLight_AppBarOverlayLight);
-            appBarLayout.setBackgroundColor(getResources().getColor(R.color.main_background_light));
-            findViewById(R.id.main).setBackgroundColor(getResources().getColor(R.color.main_background_light));
-        }
+
         //set the first base fragment
         Fragment fragment=SRSoldRateF.newInstance();
         FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();

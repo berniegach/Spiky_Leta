@@ -18,8 +18,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/CardViewStyle"
     android:layout_height="@dimen/sku_details_row_height"
-    android:layout_marginTop="2dp"
-    app:cardBackgroundColor="@color/secondary_background">
+    android:layout_marginTop="2dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -84,12 +83,11 @@
         </LinearLayout>
 
         <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/state_button"
-            style="@style/ButtonStyle"
             android:layout_marginTop="@dimen/single_padding"
-            android:background="@color/button_normal"
-            android:contentDescription="@string/button_buy"
-            android:fontFamily="@font/amita" />
+            android:contentDescription="@string/button_buy" />
 
     </LinearLayout>
 

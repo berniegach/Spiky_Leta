@@ -27,7 +27,7 @@ public class SIGroupC
     public SIGroupC(int categoryId)
     {
         int pos=1;
-        Iterator iterator= LoginA.sGroupsList.entrySet().iterator();
+        /*Iterator iterator= LoginA.sGroupsList.entrySet().iterator();
         while(iterator.hasNext())
         {
             LinkedHashMap.Entry<Integer, SGroups>set=(LinkedHashMap.Entry<Integer, SGroups>) iterator.next();
@@ -43,7 +43,7 @@ public class SIGroupC
                 addItem(createItem(pos,id,category,group,description,date_added,date_changed));
                 pos+=1;
             }
-        }
+        }*/
     }
 
 

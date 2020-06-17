@@ -114,11 +114,18 @@ public class Preferences
         preferences_editor.putString("password",password_to_remember);
         preferences_editor.commit();
     }
+    /*
+     * persona 1 is admin,
+     * persona 2 is waiter
+     */
     public int getPersona()
     {
         return persona;
     }
-
+/*
+* persona 1 is admin,
+* persona 2 is waiter
+ */
     public void setPersona(int persona)
     {
         this.persona = persona;

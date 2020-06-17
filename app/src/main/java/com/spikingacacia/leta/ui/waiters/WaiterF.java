@@ -259,7 +259,7 @@ public class WaiterF extends Fragment
         {
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("seller_id",Integer.toString(LoginA.sellerAccount.getId())));
+            info.add(new BasicNameValuePair("seller_id",Integer.toString(LoginA.serverAccount.getId())));
             info.add(new BasicNameValuePair("waiter_username", email));
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_add_waiter,"POST",info);
             try

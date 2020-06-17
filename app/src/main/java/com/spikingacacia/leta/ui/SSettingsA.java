@@ -5,10 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -22,13 +19,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreference;
 
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.method.PasswordTransformationMethod;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -36,7 +29,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
@@ -48,12 +40,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.textfield.TextInputLayout;
 import com.spikingacacia.leta.R;
-import com.spikingacacia.leta.ui.JSONParser;
-import com.spikingacacia.leta.ui.LoginA;
-import com.spikingacacia.leta.ui.database.SellerAccount;
+import com.spikingacacia.leta.ui.database.ServerAccount;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -77,7 +66,7 @@ public class SSettingsA extends AppCompatActivity
     public static boolean settingsChanged;
     public static boolean permissionsChanged;
     static private Context context;
-    public static SellerAccount tempSellerAccount;
+    public static ServerAccount tempServerAccount;
     public static String permissions;
     public static Bitmap profilePic;
     Preferences preferences;
@@ -88,17 +77,7 @@ public class SSettingsA extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
-        //preference
-        preferences = new Preferences(getBaseContext());
-        if(!preferences.isDark_theme_enabled())
-        {
-            //setTheme(R.style.AppThemeLight_NoActionBarLight);
-            //toolbar.setTitleTextColor(getResources().getColor(R.color.text_light));
-            //toolbar.setPopupTheme(R.style.AppThemeLight_PopupOverlayLight);
-            //AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
-            //appBarLayout.getContext().setTheme(R.style.AppThemeLight_AppBarOverlayLight);
-            findViewById(R.id.main).setBackgroundColor(getResources().getColor(R.color.main_background_light));
-        }
+
         if (savedInstanceState == null)
         {
             getSupportFragmentManager()
@@ -126,17 +105,10 @@ public class SSettingsA extends AppCompatActivity
         {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        //dark theme prefernce
-        if(!preferences.isDark_theme_enabled())
-        {
-            setTheme(R.style.NonFullscreenSSettingsLight);
-            Toolbar actionBarToolbar = (Toolbar)findViewById(R.id.action_bar);
-            if (actionBarToolbar != null)
-                actionBarToolbar.setTitleTextColor(getResources().getColor(R.color.text_light));
-        }
+
         ///
-        tempSellerAccount =new SellerAccount();
-        tempSellerAccount =LoginA.sellerAccount;
+        tempServerAccount =new ServerAccount();
+        tempServerAccount =LoginA.serverAccount;
         permissionsChanged=false;
         permissions="";
         jsonParser=new JSONParser();
@@ -144,7 +116,7 @@ public class SSettingsA extends AppCompatActivity
         settingsChanged=false;
         context=this;
         //get the profile pic
-        String url= LoginA.base_url+"src/sellers/"+String.format("%s/pics/prof_pic",makeName(LoginA.sellerAccount.getId()))+".jpg";
+        String url= LoginA.base_url+"src/sellers/"+String.format("%s/pics/prof_pic",makeName(LoginA.serverAccount.getId()))+".jpg";
         ImageRequest request=new ImageRequest(
                 url,
                 new Response.Listener<Bitmap>()
@@ -228,7 +200,7 @@ public class SSettingsA extends AppCompatActivity
             setPreferencesFromResource(R.xml.pref_sheaders, rootKey);
             Preference preference_location=findPreference("location");
             Preference preference_account=findPreference("account");
-            if(LoginA.sellerAccount.getPersona()==1)
+            if(LoginA.serverAccount.getPersona()==1)
             {
                 preference_location.setVisible(false);
                 preference_account.setVisible(false);
@@ -243,7 +215,7 @@ public class SSettingsA extends AppCompatActivity
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class GeneralPreferenceFragment extends PreferenceFragmentCompat
     {
-        Preferences preferences;
+        private Preferences preferences;
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
         {
@@ -257,7 +229,7 @@ public class SSettingsA extends AppCompatActivity
             final SwitchPreference preference_dark=findPreference("dark_theme");
             final Preference preference_subscription=findPreference("subscription");
             //check if we have the waiter logged on
-            if(LoginA.sellerAccount.getPersona()==1)
+            if(LoginA.serverAccount.getPersona()==1)
             {
                 preference_est.setVisible(false);
                 preference_password.setVisible(false);
@@ -267,14 +239,14 @@ public class SSettingsA extends AppCompatActivity
 
             //feedback preference click listener
 
-            preference_est.setSummary(LoginA.sellerAccount.getUsername());
+            preference_est.setSummary(LoginA.serverAccount.getUsername());
             preference_est.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
             {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object o)
                 {
                     String name = o.toString();
-                    tempSellerAccount.setUsername(name);
+                    tempServerAccount.setUsername(name);
                     settingsChanged=true;
                     preference.setSummary(name);
                     return false;
@@ -282,11 +254,11 @@ public class SSettingsA extends AppCompatActivity
             });
             //you cannot change the email
 
-            preference_est_type.setSummary(LoginA.sellerAccount.getEmail());
+            preference_est_type.setSummary(LoginA.serverAccount.getEmail());
 
             //password change
 
-            preference_password.setSummary(passwordStars(LoginA.sellerAccount.getPassword()));
+            preference_password.setSummary(passwordStars(LoginA.serverAccount.getPassword()));
             preference_password.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
             {
                 @Override
@@ -355,7 +327,7 @@ public class SSettingsA extends AppCompatActivity
                                     String old=oldPassword.getText().toString();
                                     String newPass=newPassword.getText().toString();
                                     String confirm=confirmPassword.getText().toString();
-                                    if(!old.contentEquals(LoginA.sellerAccount.getPassword()))
+                                    if(!old.contentEquals(LoginA.serverAccount.getPassword()))
                                     {
                                         oldPassword.setError("Incorrect old password");
                                     }
@@ -369,7 +341,7 @@ public class SSettingsA extends AppCompatActivity
                                     }
                                     else
                                     {
-                                        tempSellerAccount.setPassword(newPass);
+                                        tempServerAccount.setPassword(newPass);
                                         settingsChanged=true;
                                         preference_password.setSummary(passwordStars(newPass));
                                         dialog.dismiss();
@@ -384,7 +356,7 @@ public class SSettingsA extends AppCompatActivity
             });
             //order radius
 
-            pref_order_radius.setValue(LoginA.sellerAccount.getOrderRadius());
+            pref_order_radius.setValue(LoginA.serverAccount.getOrderRadius());
             pref_order_radius.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
             {
                 @Override
@@ -392,14 +364,14 @@ public class SSettingsA extends AppCompatActivity
                 {
                     int range=(int)newValue;
                     pref_order_radius.setValue(range);
-                    tempSellerAccount.setOrderRadius(range);
+                    tempServerAccount.setOrderRadius(range);
                     settingsChanged=true;
                     return false;
                 }
             });
             //number of tables change
 
-            preference_tables.setSummary(String.valueOf(LoginA.sellerAccount.getNumberOfTables()));
+            preference_tables.setSummary(String.valueOf(LoginA.serverAccount.getNumberOfTables()));
             preference_tables.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
             {
                 @Override
@@ -411,7 +383,7 @@ public class SSettingsA extends AppCompatActivity
                     final NumberPicker numberPicker=new NumberPicker(context);
                     numberPicker.setMinValue(1);
                     numberPicker.setMaxValue(500);
-                    numberPicker.setValue(LoginA.sellerAccount.getNumberOfTables());
+                    numberPicker.setValue(LoginA.serverAccount.getNumberOfTables());
                     builderPass.setView(numberPicker);
                     builderPass.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
                     {
@@ -427,10 +399,10 @@ public class SSettingsA extends AppCompatActivity
                         public void onClick(DialogInterface dialog, int which)
                         {
                             int tableNumber=numberPicker.getValue();
-                            if(tableNumber!=LoginA.sellerAccount.getNumberOfTables())
+                            if(tableNumber!=LoginA.serverAccount.getNumberOfTables())
                             {
                                 preference_tables.setSummary(String.valueOf(tableNumber));
-                                tempSellerAccount.setNumberOfTables(tableNumber);
+                                tempServerAccount.setNumberOfTables(tableNumber);
                                 settingsChanged=true;
                             }
                         }
@@ -492,7 +464,7 @@ public class SSettingsA extends AppCompatActivity
             //bindPreferenceSummaryToValue(findPreference("online_visibility"));
             //bindPreferenceSummaryToValue(findPreference("online_delivery"));
             //countries
-            String countryCode= LoginA.sellerAccount.getCountry();
+            String countryCode= LoginA.serverAccount.getCountry();
             ListPreference pref_countries=( findPreference("countries"));
             pref_countries.setEntries(getCountriesList());
             pref_countries.setEntryValues(getCountriesListValues());
@@ -503,19 +475,19 @@ public class SSettingsA extends AppCompatActivity
                 public boolean onPreferenceChange(Preference preference, Object o)
                 {
                     String s=o.toString();
-                    tempSellerAccount.setCountry(s);
+                    tempServerAccount.setCountry(s);
                     settingsChanged=true;
                     preference.setSummary(getCountryFromCode(s));
                     return false;
                 }
             });
             //location
-            String[] pos=LoginA.sellerAccount.getLocation().split(",");
+            String[] pos=LoginA.serverAccount.getLocation().split(",");
             final Preference pref_location=findPreference("location");
             pref_location.setSummary(pos.length==3?pos[2]:"Please set your location");
 
             //visible online
-            int online=LoginA.sellerAccount.getOnlineVisibility();
+            int online=LoginA.serverAccount.getOnlineVisibility();
             final SwitchPreference pref_visible_online= (SwitchPreference) findPreference("online_visibility");
             pref_visible_online.setChecked(online==1);
             pref_visible_online.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
@@ -526,20 +498,20 @@ public class SSettingsA extends AppCompatActivity
                     if(pref_visible_online.isChecked())
                     {
                         pref_visible_online.setChecked(false);
-                        LoginA.sellerAccount.setOnlineVisibility(0);
+                        LoginA.serverAccount.setOnlineVisibility(0);
                         settingsChanged=true;
                     }
                     else
                     {
                         pref_visible_online.setChecked(true);
-                        LoginA.sellerAccount.setOnlineVisibility(1);
+                        LoginA.serverAccount.setOnlineVisibility(1);
                         settingsChanged=true;
                     }
                     return false;
                 }
             });
             //deliver
-            int deliver=LoginA.sellerAccount.getDeliver();
+            int deliver=LoginA.serverAccount.getDeliver();
             final SwitchPreference pref_deliver= (SwitchPreference) findPreference("online_delivery");
             pref_deliver.setChecked(deliver==1);
             pref_deliver.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
@@ -550,13 +522,13 @@ public class SSettingsA extends AppCompatActivity
                     if(pref_deliver.isChecked())
                     {
                         pref_deliver.setChecked(false);
-                        LoginA.sellerAccount.setDeliver(0);
+                        LoginA.serverAccount.setDeliver(0);
                         settingsChanged=true;
                     }
                     else
                     {
                         pref_deliver.setChecked(true);
-                        LoginA.sellerAccount.setDeliver(1);
+                        LoginA.serverAccount.setDeliver(1);
                         settingsChanged=true;
                     }
                     return false;
@@ -728,7 +700,7 @@ public class SSettingsA extends AppCompatActivity
                                 public void onClick(DialogInterface dialog, int which)
                                 {
                                     String pass=password.getText().toString();
-                                    if(!pass.contentEquals(LoginA.sellerAccount.getPassword()))
+                                    if(!pass.contentEquals(LoginA.serverAccount.getPassword()))
                                     {
                                         password.setError("Incorrect password");
                                         Toast.makeText(context,"Incorrect password.",Toast.LENGTH_SHORT).show();
@@ -777,7 +749,7 @@ public class SSettingsA extends AppCompatActivity
             {
                 //building parameters
                 List<NameValuePair>info=new ArrayList<NameValuePair>();
-                info.add(new BasicNameValuePair("id",String.valueOf(LoginA.sellerAccount.getId())));
+                info.add(new BasicNameValuePair("id",String.valueOf(LoginA.serverAccount.getId())));
                 JSONObject jsonObject= jsonParser.makeHttpRequest(url_delete_account,"POST",info);
                 Log.d("jsonaccountdelete",jsonObject.toString());
                 try
@@ -948,15 +920,15 @@ public class SSettingsA extends AppCompatActivity
         {
             //building parameters
             List<NameValuePair>info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("id",Integer.toString(tempSellerAccount.getId())));
-            info.add(new BasicNameValuePair("password", tempSellerAccount.getPassword()));
-            info.add(new BasicNameValuePair("username", tempSellerAccount.getUsername()));
-            info.add(new BasicNameValuePair("online", Integer.toString(tempSellerAccount.getOnlineVisibility())));
-            info.add(new BasicNameValuePair("deliver", Integer.toString(tempSellerAccount.getDeliver())));
-            info.add(new BasicNameValuePair("country", tempSellerAccount.getCountry()));
-            info.add(new BasicNameValuePair("location", tempSellerAccount.getLocation()));
-            info.add(new BasicNameValuePair("order_range", Integer.toString(tempSellerAccount.getOrderRadius())));
-            info.add(new BasicNameValuePair("number_of_tables", Integer.toString(tempSellerAccount.getNumberOfTables())));
+            info.add(new BasicNameValuePair("id",Integer.toString(tempServerAccount.getId())));
+            info.add(new BasicNameValuePair("password", tempServerAccount.getPassword()));
+            info.add(new BasicNameValuePair("username", tempServerAccount.getUsername()));
+            info.add(new BasicNameValuePair("online", Integer.toString(tempServerAccount.getOnlineVisibility())));
+            info.add(new BasicNameValuePair("deliver", Integer.toString(tempServerAccount.getDeliver())));
+            info.add(new BasicNameValuePair("country", tempServerAccount.getCountry()));
+            info.add(new BasicNameValuePair("location", tempServerAccount.getLocation()));
+            info.add(new BasicNameValuePair("order_range", Integer.toString(tempServerAccount.getOrderRadius())));
+            info.add(new BasicNameValuePair("number_of_tables", Integer.toString(tempServerAccount.getNumberOfTables())));
             //getting all account details by making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_update_account,"POST",info);
             try
@@ -986,7 +958,7 @@ public class SSettingsA extends AppCompatActivity
             if(success)
             {
                 Log.d("settings", "update done");
-                LoginA.sellerAccount= tempSellerAccount;
+                LoginA.serverAccount = tempServerAccount;
                 settingsChanged=false;
             }
             else

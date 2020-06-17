@@ -2,17 +2,11 @@ package com.spikingacacia.leta.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -20,25 +14,28 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.android.billingclient.api.BillingClient;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
-import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.spikingacacia.leta.R;
-import com.spikingacacia.leta.ui.database.SCategories;
-import com.spikingacacia.leta.ui.database.SGroups;
-import com.spikingacacia.leta.ui.database.SItems;
+import com.spikingacacia.leta.ui.database.DMenu;
 import com.spikingacacia.leta.ui.database.SMessages;
 import com.spikingacacia.leta.ui.database.SOrders;
-import com.spikingacacia.leta.ui.database.SellerAccount;
+import com.spikingacacia.leta.ui.database.ServerAccount;
 import com.spikingacacia.leta.ui.billing.BillingManager;
 import com.spikingacacia.leta.ui.billing.BillingProvider;
 import com.spikingacacia.leta.ui.database.WaitersD;
+import com.spikingacacia.leta.ui.main.MainActivity;
 import com.spikingacacia.leta.ui.skulist.AcquireFragment;
 
 import org.apache.http.NameValuePair;
@@ -58,34 +55,23 @@ import java.util.concurrent.TimeUnit;
 import static com.spikingacacia.leta.ui.billing.BillingManager.BILLING_MANAGER_NOT_INITIALIZED;
 
 public class LoginA extends AppCompatActivity
-    implements BillingProvider,  SignInF.OnFragmentInteractionListener, CreateAccountF.OnFragmentInteractionListener
+    implements BillingProvider,View.OnClickListener
 {
     private static final int OVERLAY_PERMISSION_CODE=541;
     //REMEMBER TO CHANGE THIS WHEN CHANGING BETWEEN ONLINE AND LOCALHOST
-    public static final String base_url="https://www.spikingacacia.com/leta_project/android/"; //online
-    //public static final String base_url="http://10.0.2.2/leta_project/android/"; //localhost no connection for testing user accounts coz it doesnt require subscription checking
-    //sellers php files
-    private String url_get_s_notifications=base_url+"get_seller_notifications.php";
-    private String url_get_s_categories=base_url+"get_seller_categories.php";
-    private String url_get_s_groups=base_url+"get_seller_groups.php";
-    private String url_get_s_items=base_url+"get_seller_items.php";
-    private String url_get_s_orders=base_url+"get_seller_orders.php";
-    private String url_get_s_waiters=base_url+"get_waiters.php";
-    private String TAG_SUCCESS="success";
-    private String TAG_MESSAGE="message";
+    //public static final String base_url="https://www.spikingacacia.com/leta_project/android/"; //online
+    public static final String base_url="http://10.0.2.2/leta_project/android/"; //localhost no connection for testing user accounts coz it doesnt require subscription checking
+
     private String TAG="LoginActivity";
-    private JSONParser jsonParser;
     private Intent intentLoginProgress;
     public static int loginProgress;
     public static boolean AppRunningInThisActivity=true;//check if the app is running the in this activity
     //whenever you add a background asynctask make sure to update the finalprogress variables accordingly
     public static int sFinalProgress=6;
     //sellers
-    public static SellerAccount sellerAccount;
+    public static ServerAccount serverAccount;
     public static LinkedHashMap<String, SMessages> sMessagesList;
-    public static LinkedHashMap<Integer, SCategories> sCategoriesList;
-    public static LinkedHashMap<Integer, SGroups> sGroupsList;
-    public static LinkedHashMap<Integer, SItems> sItemsList;
+    public static LinkedHashMap<Integer, DMenu> sItemsList;
     public static LinkedHashMap<Integer, SOrders>sOrdersList;
     public static LinkedHashMap<Integer, WaitersD> waitersList;
     public static int who;
@@ -102,116 +88,50 @@ public class LoginA extends AppCompatActivity
     // Default sample's package name to check if you changed it
     private static final String DEFAULT_PACKAGE_PREFIX = "com.example";
     Preferences preferences;
+    public static GoogleSignInClient mGoogleSignInClient;
+    private int RC_SIGN_IN = 21;
+    static public GoogleSignInAccount account;
+    private RadioButton radioAdmin;
+    private RadioButton radioWaiter;
+    private ProgressBar progressBar;
+    private View mainView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.a_login);
+        setTitle("Login");
+        preferences = new Preferences(getBaseContext());
+        progressBar = findViewById(R.id.progress);
+        mainView = findViewById(R.id.container);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        CollapsingToolbarLayout collapsingToolbarLayout=findViewById(R.id.collapsingToolbar);
-        final Typeface tf= ResourcesCompat.getFont(this,R.font.amita);
-        collapsingToolbarLayout.setCollapsedTitleTypeface(tf);
-        collapsingToolbarLayout.setExpandedTitleTypeface(tf);
-        setSupportActionBar(toolbar);
-        //preference
-        preferences=new Preferences(getBaseContext());
-        //dark theme prefernce
-        View main_view=findViewById(R.id.main);
-        if(!preferences.isDark_theme_enabled())
-        {
-            setTheme(R.style.AppThemeLight);
-            main_view.setBackgroundColor(getResources().getColor(R.color.main_background_light));
-            findViewById(R.id.sec_main).setBackgroundColor(getResources().getColor(R.color.secondary_background_light));
-            ((TextView)findViewById(R.id.who)).setTextColor(getResources().getColor(R.color.text_light));
-            collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.text_light));
-            collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.text_light));
-            collapsingToolbarLayout.setBackgroundColor(getResources().getColor(R.color.main_background_light));
-        }
+        // Set the dimensions of the sign-in button.
+        SignInButton signInButton = findViewById(R.id.sign_in_button);
+        signInButton.setSize(SignInButton.SIZE_WIDE);
+        signInButton.setOnClickListener(this);
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        // Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        radioAdmin = findViewById(R.id.radio_admin);
+        radioWaiter = findViewById(R.id.radio_waiter);
 
         //background intent
         intentLoginProgress=new Intent(LoginA.this,ProgressView.class);
         loginProgress=0;
-        jsonParser=new JSONParser();
         //initialize the containers
         //sellers
-        sellerAccount=new SellerAccount();
+        serverAccount =new ServerAccount();
         sMessagesList=new LinkedHashMap<>();
-        sCategoriesList=new LinkedHashMap<>();
-        sGroupsList=new LinkedHashMap<>();
         sItemsList=new LinkedHashMap<>();
         sOrdersList=new LinkedHashMap<>();
         waitersList=new LinkedHashMap<>();
 
-        //firebase links
-        if(preferences.isVerify_email() || preferences.isReset_password())
-        {
-            Toast.makeText(getBaseContext(),"Please wait",Toast.LENGTH_SHORT).show();
-            FirebaseDynamicLinks.getInstance()
-                    .getDynamicLink(getIntent())
-                    .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
-                        @Override
-                        public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
-                            // Get deep link from result (may be null if no link is found)
-                            Uri deepLink = null;
-                            if (pendingDynamicLinkData != null)
-                            {
-                                deepLink = pendingDynamicLinkData.getLink();
-                                if( preferences.isVerify_email())
-                                {
-                                    setTitle("Sign Up");
-                                    Fragment fragment=CreateAccountF.newInstance(1,preferences.getEmail_to_verify());
-                                    FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
-                                    transaction.replace(R.id.loginbase,fragment,"createnewaccount");
-                                    transaction.addToBackStack("createaccount");
-                                    transaction.commit();
-                                }
-                                else if(preferences.isReset_password())
-                                {
-                                    setTitle("Reset Password");
-                                    Fragment fragment=CreateAccountF.newInstance(2,preferences.getEmail_to_reset_password());
-                                    FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
-                                    transaction.replace(R.id.loginbase,fragment,"createnewaccount");
-                                    transaction.addToBackStack("createaccount");
-                                    transaction.commit();
-                                }
-
-                            }
-
-
-                            // Handle the deep link. For example, open the linked
-                            // content, or apply promotional credit to the user's
-                            // account.
-                            // ...
-
-                            // ...
-                        }
-                    })
-                    .addOnFailureListener(this, new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "getDynamicLink:onFailure", e);
-                        }
-                    });
-        }
-
-        //fragment manager
-        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener()
-        {
-            @Override
-            public void onBackStackChanged()
-            {
-                int count=getSupportFragmentManager().getBackStackEntryCount();
-                if(count==0)
-                    setTitle("Sign In");
-            }
-        });
-        setTitle("Sign In");
-        Fragment fragment=SignInF.newInstance("","");
-        FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.loginbase,fragment,"signin");
-        transaction.commit();
 
         //billing
         mContext=this;
@@ -231,6 +151,35 @@ public class LoginA extends AppCompatActivity
         mBillingManager = new BillingManager(this, mViewController.getUpdateListener());
     }
     @Override
+    public void onStart()
+    {
+
+        super.onStart();
+        // Check for existing Google Sign In account, if the user is already signed in
+        // the GoogleSignInAccount will be non-null.
+        account = GoogleSignIn.getLastSignedInAccount(this);
+        //proceed to sign in
+        if(account!=null)
+        {
+            showProgress(true);
+            new RegisterTask(account.getEmail(),"null").execute((Void)null);
+        }
+
+    }
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.sign_in_button:
+                signIn();
+                break;
+            // ...
+        }
+    }
+    private void signIn() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+    @Override
     protected void onDestroy()
     {
         //super.onDestroy();
@@ -243,6 +192,35 @@ public class LoginA extends AppCompatActivity
         super.onDestroy();
     }
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            // The Task returned from this call is always completed, no need to attach
+            // a listener.
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
+        }
+    }
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask)
+    {
+        try {
+            account = completedTask.getResult(ApiException.class);
+            // Signed in successfully, show authenticated UI.
+            if(account!=null)
+            {
+                Log.d(TAG, "email: " + account.getEmail());
+                new RegisterTask(account.getEmail(),"null").execute((Void)null);
+            }
+        } catch (ApiException e) {
+            // The ApiException status code indicates the detailed failure reason.
+            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
+        }
+    }
+    @Override
     protected void onResume()
     {
         super.onResume();
@@ -250,8 +228,6 @@ public class LoginA extends AppCompatActivity
         loginProgress=0;
         //sellers
         if(!sMessagesList.isEmpty())sMessagesList.clear();
-        if(!sCategoriesList.isEmpty())sCategoriesList.clear();
-        if(!sGroupsList.isEmpty())sGroupsList.clear();
         if(!sItemsList.isEmpty())sItemsList.clear();
         if(!sOrdersList.isEmpty())sOrdersList.clear();
         if(!waitersList.isEmpty())waitersList.clear();
@@ -264,19 +240,6 @@ public class LoginA extends AppCompatActivity
         if (mBillingManager != null
                 && mBillingManager.getBillingClientResponseCode() == BillingClient.BillingResponse.OK) {
             mBillingManager.queryPurchases();
-        }
-    }
-    @Override
-    protected void onActivityResult(int requestCode,int resultCode,Intent data)
-    {
-        super.onActivityResult(requestCode,resultCode,data);
-        if(requestCode==OVERLAY_PERMISSION_CODE)
-        {
-            if(Settings.canDrawOverlays(this))
-            {
-                startService(intentLoginProgress);
-            }
-            startBackgroundTasks();
         }
     }
     /**
@@ -352,177 +315,370 @@ public class LoginA extends AppCompatActivity
     public boolean isAcquireFragmentShown() {
         return mAcquireFragment != null && mAcquireFragment.isVisible();
     }
-
-    /** Implementation of SignInFragment.java**/
-    @Override
-    public void onSuccesfull()
+    void showProgress(boolean show)
     {
-        //start the floating service
-        if(Build.VERSION.SDK_INT>=23)
-        {
-            if(!Settings.canDrawOverlays(this))
-            {
-                //open permissions page
-                Intent intent=new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:"+getPackageName()));
-                startActivityForResult(intent,OVERLAY_PERMISSION_CODE);
-                //return;
-            }
-            else
-            {
-                //REMEMBER TO CHANGE THIS WHEN CHANGING BETWEEN ONLINE AND LOCALHOST
-                //if(true)
-                if(isMonthlySubscribed()||isYearlySubscribed())
-                    startBackgroundTasks();
-                else
-                {
-                    try
-                    {
-                        //check if the one month since registration has ended
-                        //the date added is in the form "d-m-Y H:i"
-                        String date_added=sellerAccount.getDateadded();
-                        String date_now=sellerAccount.getDateToday();
-                        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy HH:mm");
-                        Date date_add= simpleDateFormat.parse(date_added);
-                        Date date_n=simpleDateFormat.parse(date_now);
-                        long difference=date_n.getTime()-date_add.getTime();
-                        long days= TimeUnit.DAYS.convert(difference,TimeUnit.MILLISECONDS);
-                        Log.d(TAG,"days "+days);
-                        if(days>30)
-                        {
-                            String message="Your trial period of 30 days has ended.\nWould you like to proceed to the subscriptions purchase?";
-                            new AlertDialog.Builder(this)
-                                    .setTitle("Kazi 1 month trial")
-                                    .setMessage(message)
-                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-                                    {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i)
-                                        {
-                                            dialogInterface.dismiss();
-                                        }
-                                    })
-                                    .setPositiveButton("Proceed", new DialogInterface.OnClickListener()
-                                    {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i)
-                                        {
-                                            onSubscriptionPurchase();
-                                        }
-                                    })
-                                    .create().show();
-                        }
-                        else
-                        {
-                            startBackgroundTasks();
-                            currentSubscription="Trial period remaining "+(30-days)+" days";
-                        }
-                    }
-                    catch (ParseException e)
-                    {
-                        Log.e(TAG,"exception "+e.getMessage());
-                    }
-
-
-                    Log.d(TAG, "NO subscriptions");
-
-                }
-
-            }
-        }
-        else
-        {
-            if(isMonthlySubscribed()||isYearlySubscribed())
-                startBackgroundTasks();
-            else
-            {
-                try
-                {
-                    //check if the one month since registration has ended
-                    //the date added is in the form "d-m-Y H:i"
-                    String date_added=sellerAccount.getDateadded();
-                    String date_now=sellerAccount.getDateToday();
-                    SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy HH:mm");
-                    Date date_add= simpleDateFormat.parse(date_added);
-                    Date date_n=simpleDateFormat.parse(date_now);
-                    long difference=date_n.getTime()-date_add.getTime();
-                    long days= TimeUnit.DAYS.convert(difference,TimeUnit.MILLISECONDS);
-                    if(days>30)
-                    {
-                        String message="Your trial period of 30 days has ended.\nWould you like to proceed to the subscriptions purchase?";
-                        new AlertDialog.Builder(this)
-                                .setTitle("Kazi 1 month trial")
-                                .setMessage(message)
-                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-                                {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i)
-                                    {
-                                        dialogInterface.dismiss();
-                                    }
-                                })
-                                .setPositiveButton("Proceed", new DialogInterface.OnClickListener()
-                                {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i)
-                                    {
-                                        onSubscriptionPurchase();
-                                    }
-                                })
-                                .create().show();
-                    }
-                    else
-                    {
-                        startBackgroundTasks();
-                        currentSubscription="Trial period remaining "+(30-days)+" days";
-                    }
-                }
-                catch (ParseException e)
-                {
-                    Log.e(TAG,"exception "+e.getMessage());
-                }
-
-
-                Log.d(TAG, "NO subscriptions");
-            }
-
-        }
+        progressBar.setVisibility(show? View.VISIBLE : View.GONE);
+        mainView.setVisibility( show? View.INVISIBLE :View.VISIBLE);
     }
-    @Override
-    public void purchaseSubscription()
+    private void proceedToLogin()
     {
-        onSubscriptionPurchase();
-    }
-    private void startBackgroundTasks()
-    {
-        startService(intentLoginProgress);
-        new SMessagesTask().execute((Void)null);
-        new SCategoriesTask().execute((Void)null);
-        new SGroupsTask().execute((Void)null);
-        new SItemsTask().execute((Void)null);
-        new SOrdersTask().execute((Void)null);
-        new WaitersTask().execute((Void)null);
-        Intent intent=new Intent(this, SMenuA.class);
-        // intent.putExtra("NOTHING","nothing");
+        Intent intent=new Intent(LoginA.this, MainActivity.class);
+        //prevent this activity from flickering as we call the next one
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
     }
-    @Override
-    public void createAccount()
+    public void onSuccesfullLogin()
     {
-        setTitle("Sign Up");
-        Fragment fragment=CreateAccountF.newInstance(0,"");
-        FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.loginbase,fragment,"createnewaccount");
-        transaction.addToBackStack("createaccount");
-        transaction.commit();
+        //REMEMBER TO CHANGE THIS WHEN CHANGING BETWEEN ONLINE AND LOCALHOST
+        //if(true)
+        if(isMonthlySubscribed()||isYearlySubscribed())
+            startBackgroundTasks();
+        else
+        {
+            try
+            {
+                //check if the one month since registration has ended
+                //the date added is in the form "d-m-Y H:i"
+                String date_added= serverAccount.getDateadded();
+                String date_now= serverAccount.getDateToday();
+                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                Date date_add= simpleDateFormat.parse(date_added);
+                Date date_n=simpleDateFormat.parse(date_now);
+                long difference=date_n.getTime()-date_add.getTime();
+                long days= TimeUnit.DAYS.convert(difference,TimeUnit.MILLISECONDS);
+                Log.d(TAG,"days "+days);
+                if(days>30)
+                {
+                    String message="Your trial period of 30 days has ended.\nWould you like to proceed to the subscriptions purchase?";
+                    new AlertDialog.Builder(this)
+                            .setTitle("Kazi 1 month trial")
+                            .setMessage(message)
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i)
+                                {
+                                    dialogInterface.dismiss();
+                                }
+                            })
+                            .setPositiveButton("Proceed", new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i)
+                                {
+                                    onSubscriptionPurchase();
+                                }
+                            })
+                            .create().show();
+                }
+                else
+                {
+                    startBackgroundTasks();
+                    currentSubscription="Trial period remaining "+(30-days)+" days";
+                }
+            }
+            catch (ParseException e)
+            {
+                Log.e(TAG,"exception "+e.getMessage());
+                showProgress(false);
+            }
+            showProgress(false);
+
+            Log.d(TAG, "NO subscriptions");
+
+        }
     }
-    /** Implementation of CreateAccountF.java**/
-    @Override
-    public  void onRegisterFinished()
+
+    private void startBackgroundTasks()
     {
-        setTitle("Sign In");
-        onBackPressed();
+        showProgress(false);
+        //new SMessagesTask().execute((Void)null);
+        //new SOrdersTask().execute((Void)null);
+        //new WaitersTask().execute((Void)null);
+        proceedToLogin();
     }
+    public class RegisterTask extends AsyncTask<Void, Void, Boolean>
+    {
+        private String url_create_account_seller =LoginA.base_url+"create_seller_account.php";
+        private String TAG_SUCCESS="success";
+        private String TAG_MESSAGE="message";
+        private JSONParser jsonParser;
+        private final String mEmail;
+        private final String mPassword;
+        private int success;
+
+        RegisterTask(String email, String password) {
+            mEmail = email;
+            mPassword = password;
+            jsonParser = new JSONParser();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params)
+        {
+            //building parameters
+            List<NameValuePair>info=new ArrayList<NameValuePair>();
+            info.add(new BasicNameValuePair("email",mEmail));
+            info.add(new BasicNameValuePair("password",mPassword));
+            //getting the json object using post method
+            JSONObject jsonObject=jsonParser.makeHttpRequest(url_create_account_seller,"POST",info);
+            Log.d("Create response",""+jsonObject.toString());
+            try
+            {
+                success=jsonObject.getInt(TAG_SUCCESS);
+                if(success==1)
+                    return true;
+                else
+                {
+                    String message=jsonObject.getString(TAG_MESSAGE);
+                    Log.e(TAG_MESSAGE,""+message);
+                    return false;
+                }
+            }
+            catch (JSONException e)
+            {
+                Log.e("JSON",""+e.getMessage());
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean successful) {
+            if (successful)
+            {
+                Toast.makeText(getBaseContext(), "Successfully registered", Toast.LENGTH_SHORT).show();
+                //proceed to login
+                if(radioAdmin.isClickable())
+                    new LoginTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
+                else
+                    new LoginWaiterTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
+            }
+            else if(success==-1)
+            {
+                //email already there do nothing
+                Log.d(TAG,"email already there");
+                //proceed to login
+                // we have already set the persona so...
+                if(preferences.getPersona()==2)
+                    new LoginWaiterTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
+                else
+                    new LoginTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
+
+            }
+            else
+            {
+                showProgress(false);
+                Toast.makeText(getBaseContext(), "Registration failed", Toast.LENGTH_SHORT).show();
+                mGoogleSignInClient.signOut().addOnCompleteListener(LoginA.this, new OnCompleteListener<Void>()
+                {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task)
+                    {
+                        Log.d(TAG,"gmail signed out");
+                    }
+                });
+            }
+
+        }
+    }
+    public  class LoginTask extends AsyncTask<Void, Void, Boolean>
+    {
+        private String url_get_account_seller =base_url+"get_seller_account.php";
+        private String TAG_SUCCESS="success";
+        private String TAG_MESSAGE="message";
+        private final String mEmail;
+        private  JSONParser jsonParser;
+        private final String mPassword;
+        private int success=0;
+
+        LoginTask(String email, String password) {
+            mEmail = email;
+            mPassword = password;
+            jsonParser = new JSONParser();
+        }
+        @Override
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            // logIn=handler.LogInContractor(mEmail,mPassword);
+
+            //building parameters
+            List<NameValuePair>info=new ArrayList<NameValuePair>();
+            info.add(new BasicNameValuePair("email",mEmail));
+            info.add(new BasicNameValuePair("password",mPassword));
+            //getting all account details by making HTTP request
+            JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_account_seller,"POST",info);
+            try
+            {
+                success=jsonObject.getInt(TAG_SUCCESS);
+                if(success==1)
+                {
+                    //seccesful
+                    JSONArray accountArray=jsonObject.getJSONArray("account");
+                    JSONObject accountObject=accountArray.getJSONObject(0);
+
+                    serverAccount.setPersona(0);
+                    serverAccount.setId(accountObject.getInt("id"));
+                    serverAccount.setEmail(accountObject.getString("email"));
+                    serverAccount.setPassword(accountObject.getString("password"));
+                    serverAccount.setUsername(accountObject.getString("username"));
+                    serverAccount.setOnlineVisibility(accountObject.getInt("online"));
+                    serverAccount.setDeliver(accountObject.getInt("deliver"));
+                    serverAccount.setCountry(accountObject.getString("country"));
+                    serverAccount.setLocation(accountObject.getString("location"));
+                    serverAccount.setOrderRadius(accountObject.getInt("order_radius"));
+                    serverAccount.setOrderFormat(accountObject.getInt("order_format"));
+                    serverAccount.setNumberOfTables(accountObject.getInt("number_of_tables"));
+                    serverAccount.setDateadded(accountObject.getString("dateadded"));
+                    serverAccount.setDatechanged(accountObject.getString("datechanged"));
+                    serverAccount.setDateToday(accountObject.getString("today"));
+                    return true;
+                }
+                else
+                {
+                    String message=jsonObject.getString(TAG_MESSAGE);
+                    Log.e(TAG_MESSAGE,""+message);
+                    return false;
+                }
+            }
+            catch (JSONException e)
+            {
+                Log.e("JSON",""+e.getMessage());
+                return false;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean successfull)
+        {
+
+            if (successfull) {
+                Log.d(TAG,"successful login admin");
+                preferences.setPersona(1);
+                onSuccesfullLogin();
+            }
+            else
+            {
+                showProgress(false);
+                Toast.makeText(getBaseContext(), "Sign in failed", Toast.LENGTH_SHORT).show();
+                mGoogleSignInClient.signOut().addOnCompleteListener(LoginA.this, new OnCompleteListener<Void>()
+                {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task)
+                    {
+                        Log.d(TAG,"gmail signed out");
+                    }
+                });
+            }
+        }
+
+    }
+    public  class LoginWaiterTask extends AsyncTask<Void, Void, Boolean>
+    {
+        private String url_get_account_seller_waiter =base_url+"get_seller_account_waiter.php";
+        private String TAG_SUCCESS="success";
+        private String TAG_MESSAGE="message";
+        private final String mEmail;
+        private  JSONParser jsonParser;
+        private final String mPassword;
+        private int success=0;
+
+        LoginWaiterTask(String email, String password) {
+            mEmail = email;
+            mPassword = password;
+            jsonParser = new JSONParser();
+        }
+        @Override
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            // logIn=handler.LogInContractor(mEmail,mPassword);
+
+            //building parameters
+            List<NameValuePair>info=new ArrayList<NameValuePair>();
+            info.add(new BasicNameValuePair("email",mEmail));
+            info.add(new BasicNameValuePair("password",mPassword));
+            //getting all account details by making HTTP request
+            JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_account_seller_waiter,"POST",info);
+            try
+            {
+                success=jsonObject.getInt(TAG_SUCCESS);
+                if(success==1)
+                {
+                    //seccesful
+                    JSONArray accountArray=jsonObject.getJSONArray("account");
+                    JSONObject accountObject=accountArray.getJSONObject(0);
+
+                    serverAccount.setPersona(1);
+                    serverAccount.setId(accountObject.getInt("id"));
+                    serverAccount.setEmail(accountObject.getString("email"));
+                    serverAccount.setPassword(accountObject.getString("password"));
+                    serverAccount.setUsername(accountObject.getString("username"));
+                    serverAccount.setOnlineVisibility(accountObject.getInt("online"));
+                    serverAccount.setDeliver(accountObject.getInt("deliver"));
+                    serverAccount.setCountry(accountObject.getString("country"));
+                    serverAccount.setLocation(accountObject.getString("location"));
+                    serverAccount.setOrderRadius(accountObject.getInt("order_radius"));
+                    serverAccount.setOrderFormat(accountObject.getInt("order_format"));
+                    serverAccount.setNumberOfTables(accountObject.getInt("number_of_tables"));
+                    serverAccount.setDateadded(accountObject.getString("dateadded"));
+                    serverAccount.setDatechanged(accountObject.getString("datechanged"));
+                    serverAccount.setDateToday(accountObject.getString("today"));
+                    //waiter information
+                    serverAccount.setWaiter_id(accountObject.getInt("waiter_id"));
+                    serverAccount.setWaiter_names(accountObject.getString("waiter_names"));
+                    return true;
+                }
+                else
+                {
+                    String message=jsonObject.getString(TAG_MESSAGE);
+                    Log.e(TAG_MESSAGE,""+message);
+                    return false;
+                }
+            }
+            catch (JSONException e)
+            {
+                Log.e("JSON",""+e.getMessage());
+                return false;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean successfull) {
+
+            if (successfull) {
+                Log.d(TAG,"successful login waiter");
+                preferences.setPersona(2);
+                onSuccesfullLogin();
+
+            }
+            else
+            {
+                showProgress(false);
+                Toast.makeText(getBaseContext(), "Sign in failed", Toast.LENGTH_SHORT).show();
+                mGoogleSignInClient.signOut().addOnCompleteListener(LoginA.this, new OnCompleteListener<Void>()
+                {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task)
+                    {
+                        Log.d(TAG,"gmail signed out");
+                    }
+                });
+            }
+        }
+
+    }
+
     /**
      * Following code will get the sellers notifications
      * The returned infos are id,  classes, messages, dateadded.
@@ -534,10 +690,14 @@ public class LoginA extends AppCompatActivity
      **/
     private class SMessagesTask extends AsyncTask<Void, Void, Boolean>
     {
+        private String TAG_SUCCESS="success";
+        private String TAG_MESSAGE="message";
+        private  JSONParser jsonParser;
         @Override
         protected void onPreExecute()
         {
             Log.d("SNOTIFICATIONS: ","starting....");
+            jsonParser = new JSONParser();
             super.onPreExecute();
         }
         @Override
@@ -545,8 +705,10 @@ public class LoginA extends AppCompatActivity
         {
             //getting columns list
             List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("id",Integer.toString(sellerAccount.getId())));
+            info.add(new BasicNameValuePair("id",Integer.toString(serverAccount.getId())));
             // making HTTP request
+            //sellers php files
+            String url_get_s_notifications = base_url + "get_seller_notifications.php";
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_notifications,"POST",info);
             Log.d("sNotis",""+jsonObject.toString());
             try
@@ -598,239 +760,7 @@ public class LoginA extends AppCompatActivity
             }
         }
     }
-    /**
-     * Following code will get the sellers categories
-     * The returned infos are id,  categories, descriptions, dateadded, datechanged.
-     * Arguments are:
-     * id==boss id.
-     * Returns are:
-     * success==1 successful get
-     * success==0 for id argument missing
-     **/
-    private class SCategoriesTask extends AsyncTask<Void, Void, Boolean>
-    {
-        @Override
-        protected void onPreExecute()
-        {
-            Log.d("SCATEGORIES: ","starting....");
-            super.onPreExecute();
-        }
-        @Override
-        protected Boolean doInBackground(Void... params)
-        {
-            //getting columns list
-            List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("id",Integer.toString(sellerAccount.getId())));
-            // making HTTP request
-            JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_categories,"POST",info);
-            Log.d("sCategories",""+jsonObject.toString());
-            try
-            {
-                JSONArray categoriesArrayList=null;
-                int success=jsonObject.getInt(TAG_SUCCESS);
-                if(success==1)
-                {
-                    categoriesArrayList=jsonObject.getJSONArray("categories");
-                    for(int count=0; count<categoriesArrayList.length(); count+=1)
-                    {
-                        JSONObject jsonObjectNotis=categoriesArrayList.getJSONObject(count);
-                        int id=jsonObjectNotis.getInt("id");
-                        String category=jsonObjectNotis.getString("category");
-                        String description=jsonObjectNotis.getString("description");
-                        String dateadded=jsonObjectNotis.getString("dateadded");
-                        String datechanged=jsonObjectNotis.getString("datechanged");
-                        SCategories sCategories=new SCategories(id,category,description,dateadded,datechanged);
-                        sCategoriesList.put(id,sCategories);
-                    }
-                    return true;
-                }
-                else
-                {
-                    String message=jsonObject.getString(TAG_MESSAGE);
-                    Log.e(TAG_MESSAGE,""+message);
-                    return false;
-                }
-            }
-            catch (JSONException e)
-            {
-                Log.e("JSON",""+e.getMessage());
-                return false;
-            }
-        }
-        @Override
-        protected void onPostExecute(final Boolean successful) {
-            Log.d("SCATEGORIES: ","finished...."+"progress: "+String.valueOf(loginProgress));
-            loginProgress+=1;
-            if (loginProgress == sFinalProgress)
-                stopService(intentLoginProgress);
 
-            if (successful)
-            {
-
-            }
-            else
-            {
-
-            }
-        }
-    }
-    /**
-     * Following code will get the sellers groups
-     * The returned infos are id,  categories, groups, descriptions, dateadded, datechanged.
-     * Arguments are:
-     * id==boss id.
-     * Returns are:
-     * success==1 successful get
-     * success==0 for id argument missing
-     **/
-    private class SGroupsTask extends AsyncTask<Void, Void, Boolean>
-    {
-        @Override
-        protected void onPreExecute()
-        {
-            Log.d("SGROUPS: ","starting....");
-            super.onPreExecute();
-        }
-        @Override
-        protected Boolean doInBackground(Void... params)
-        {
-            //getting columns list
-            List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("id",Integer.toString(sellerAccount.getId())));
-            // making HTTP request
-            JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_groups,"POST",info);
-            Log.d("sGroups",""+jsonObject.toString());
-            try
-            {
-                JSONArray groupsArrayList=null;
-                int success=jsonObject.getInt(TAG_SUCCESS);
-                if(success==1)
-                {
-                    groupsArrayList=jsonObject.getJSONArray("groups");
-                    for(int count=0; count<groupsArrayList.length(); count+=1)
-                    {
-                        JSONObject jsonObjectNotis=groupsArrayList.getJSONObject(count);
-                        int id=jsonObjectNotis.getInt("id");
-                        int category=jsonObjectNotis.getInt("category");
-                        String group=jsonObjectNotis.getString("group");
-                        String description=jsonObjectNotis.getString("description");
-                        String dateadded=jsonObjectNotis.getString("dateadded");
-                        String datechanged=jsonObjectNotis.getString("datechanged");
-                        SGroups sGroups=new SGroups(id,category,group,description,dateadded,datechanged);
-                        sGroupsList.put(id,sGroups);
-                    }
-                    return true;
-                }
-                else
-                {
-                    String message=jsonObject.getString(TAG_MESSAGE);
-                    Log.e(TAG_MESSAGE,""+message);
-                    return false;
-                }
-            }
-            catch (JSONException e)
-            {
-                Log.e("JSON",""+e.getMessage());
-                return false;
-            }
-        }
-        @Override
-        protected void onPostExecute(final Boolean successful) {
-            Log.d("SGROUPS: ","finished...."+"progress: "+String.valueOf(loginProgress));
-            loginProgress+=1;
-            if (loginProgress == sFinalProgress)
-                stopService(intentLoginProgress);
-
-            if (successful)
-            {
-
-            }
-            else
-            {
-
-            }
-        }
-    }
-    /**
-     * Following code will get the sellers groups
-     * The returned infos are id,  categories, groups, items, descriptions, sellingprice, available, dateadded, datechanged.
-     * Arguments are:
-     * id==boss id.
-     * Returns are:
-     * success==1 successful get
-     * success==0 for id argument missing
-     **/
-    private class SItemsTask extends AsyncTask<Void, Void, Boolean>
-    {
-        @Override
-        protected void onPreExecute()
-        {
-            Log.d("SITEMS: ","starting....");
-            super.onPreExecute();
-        }
-        @Override
-        protected Boolean doInBackground(Void... params)
-        {
-            //getting columns list
-            List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("id",Integer.toString(sellerAccount.getId())));
-            // making HTTP request
-            JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_items,"POST",info);
-            Log.d("sItems",""+jsonObject.toString());
-            try
-            {
-                JSONArray itemsArrayList=null;
-                int success=jsonObject.getInt(TAG_SUCCESS);
-                if(success==1)
-                {
-                    itemsArrayList=jsonObject.getJSONArray("items");
-                    for(int count=0; count<itemsArrayList.length(); count+=1)
-                    {
-                        JSONObject jsonObjectNotis=itemsArrayList.getJSONObject(count);
-                        int id=jsonObjectNotis.getInt("id");
-                        int category=jsonObjectNotis.getInt("category");
-                        int group=jsonObjectNotis.getInt("group");
-                        String item=jsonObjectNotis.getString("item");
-                        String description=jsonObjectNotis.getString("description");
-                        double selling_price=jsonObjectNotis.getDouble("sellingprice");
-                        int available=jsonObjectNotis.getInt("available");
-                        String dateadded=jsonObjectNotis.getString("dateadded");
-                        String datechanged=jsonObjectNotis.getString("datechanged");
-                        SItems sItems=new SItems(id,category,group,item,description,selling_price,available,dateadded,datechanged);
-                        sItemsList.put(id,sItems);
-                    }
-                    return true;
-                }
-                else
-                {
-                    String message=jsonObject.getString(TAG_MESSAGE);
-                    Log.e(TAG_MESSAGE,""+message);
-                    return false;
-                }
-            }
-            catch (JSONException e)
-            {
-                Log.e("JSON",""+e.getMessage());
-                return false;
-            }
-        }
-        @Override
-        protected void onPostExecute(final Boolean successful) {
-            Log.d("SITEMS: ","finished...."+"progress: "+String.valueOf(loginProgress));
-            loginProgress+=1;
-            if (loginProgress == sFinalProgress)
-                stopService(intentLoginProgress);
-
-            if (successful)
-            {
-
-            }
-            else
-            {
-
-            }
-        }
-    }
     /**
      * Following code will get the sellers orders
      * The returned infos are id, userId, itemId, orderNumber, orderStatus, orderName, price, dateAdded, dateChanged
@@ -842,11 +772,15 @@ public class LoginA extends AppCompatActivity
      **/
     private class SOrdersTask extends AsyncTask<Void, Void, Boolean>
     {
+        private String TAG_SUCCESS="success";
+        private String TAG_MESSAGE="message";
+        private  JSONParser jsonParser;
         @Override
         protected void onPreExecute()
         {
             Log.d("BORDERS: ","starting....");
             if(!sOrdersList.isEmpty())sOrdersList.clear();
+            jsonParser = new JSONParser();
             super.onPreExecute();
         }
         @Override
@@ -854,8 +788,9 @@ public class LoginA extends AppCompatActivity
         {
             //getting columns list
             List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("id",Integer.toString(sellerAccount.getId())));
+            info.add(new BasicNameValuePair("id",Integer.toString(serverAccount.getId())));
             // making HTTP request
+            String url_get_s_orders = base_url + "get_seller_orders.php";
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_orders,"POST",info);
             Log.d("sItems",""+jsonObject.toString());
             try
@@ -918,11 +853,15 @@ public class LoginA extends AppCompatActivity
     }
     private class WaitersTask extends AsyncTask<Void, Void, Boolean>
     {
+        private String TAG_SUCCESS="success";
+        private String TAG_MESSAGE="message";
+        private  JSONParser jsonParser;
         @Override
         protected void onPreExecute()
         {
             Log.d("BORDERS: ","starting....");
             if(!waitersList.isEmpty())waitersList.clear();
+            jsonParser = new JSONParser();
             super.onPreExecute();
         }
         @Override
@@ -930,8 +869,9 @@ public class LoginA extends AppCompatActivity
         {
             //getting columns list
             List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("seller_id",Integer.toString(sellerAccount.getId())));
+            info.add(new BasicNameValuePair("seller_id",Integer.toString(serverAccount.getId())));
             // making HTTP request
+            String url_get_s_waiters = base_url + "get_waiters.php";
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_waiters,"POST",info);
             Log.d("sItems",""+jsonObject.toString());
             try

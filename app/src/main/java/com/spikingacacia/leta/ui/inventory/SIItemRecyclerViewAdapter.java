@@ -31,7 +31,7 @@ import com.spikingacacia.leta.ui.CommonHelper;
 import com.spikingacacia.leta.ui.JSONParser;
 import com.spikingacacia.leta.ui.LoginA;
 import com.spikingacacia.leta.ui.Preferences;
-import com.spikingacacia.leta.ui.database.SItems;
+import com.spikingacacia.leta.ui.database.DMenu;
 import com.spikingacacia.leta.ui.inventory.SIItemC.InventoryItem;
 import com.spikingacacia.leta.ui.inventory.SIItemF.OnListFragmentInteractionListener;
 
@@ -46,7 +46,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import static com.spikingacacia.leta.ui.LoginA.base_url;
-import static com.spikingacacia.leta.ui.LoginA.sellerAccount;
+import static com.spikingacacia.leta.ui.LoginA.serverAccount;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link InventoryItem} and makes a call to the
@@ -101,12 +101,9 @@ public class SIItemRecyclerViewAdapter extends RecyclerView.Adapter<SIItemRecycl
         holder.mItemView.setText(item);
         holder.mPriceView.setText(Double.toString(mValues.get(position).sellingPrice));
         holder.mDescriptionView.setText(des);
-        if(!preferences.isDark_theme_enabled())
-        {
-            holder.mView.setBackgroundColor(mContext.getResources().getColor(R.color.secondary_background_light));
-        }
+
         //get the category photo
-        String url= LoginA.base_url+"src/sellers/"+String.format("%s/pics/i_%d", CommonHelper.makeName(LoginA.sellerAccount.getId()), mValues.get(position).id)+".jpg";
+        String url= LoginA.base_url+"src/sellers/"+String.format("%s/pics/i_%d", CommonHelper.makeName(LoginA.serverAccount.getId()), mValues.get(position).id)+".jpg";
         ImageRequest request=new ImageRequest(
                 url,
                 new Response.Listener<Bitmap>()
@@ -139,7 +136,7 @@ public class SIItemRecyclerViewAdapter extends RecyclerView.Adapter<SIItemRecycl
                 }
             }
         });
-        if(sellerAccount.getPersona()==0)
+        if(serverAccount.getPersona()==0)
             holder.mView.setOnLongClickListener(new View.OnLongClickListener()
         {
             @Override
@@ -387,7 +384,7 @@ public class SIItemRecyclerViewAdapter extends RecyclerView.Adapter<SIItemRecycl
             //logIn=handler.LogInStaff(mEmail,mPassword);
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.sellerAccount.getId())));
+            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.serverAccount.getId())));
             info.add(new BasicNameValuePair("category_id", Integer.toString(mCategoryId)));
             info.add(new BasicNameValuePair("group_id", Integer.toString(mGroupId)));
             info.add(new BasicNameValuePair("item_id", Integer.toString(mId)));
@@ -428,23 +425,23 @@ public class SIItemRecyclerViewAdapter extends RecyclerView.Adapter<SIItemRecycl
                 Iterator iterator= LoginA.sItemsList.entrySet().iterator();
                 while (iterator.hasNext())
                 {
-                    LinkedHashMap.Entry<Integer, SItems> set = (LinkedHashMap.Entry<Integer, SItems>) iterator.next();
+                    LinkedHashMap.Entry<Integer, DMenu> set = (LinkedHashMap.Entry<Integer, DMenu>) iterator.next();
                     int id = set.getKey();
-                    SItems sItems=set.getValue();
+                    DMenu DMenu =set.getValue();
                     if(id==mId)
                     {
-                        sItems.setDatechanged(dateChanged);
-                        if (!sItems.getItem().contentEquals(mName))
-                            sItems.setItem(mName);
-                        if (!sItems.getDescription().contentEquals(mDescription))
-                            sItems.setDescription(mDescription);
-                        if(sItems.getSellingPrice()!=mSellingPrice)
-                            sItems.setSellingPrice(mSellingPrice);
+                        DMenu.setDatechanged(dateChanged);
+                        if (!DMenu.getItem().contentEquals(mName))
+                            DMenu.setItem(mName);
+                        if (!DMenu.getDescription().contentEquals(mDescription))
+                            DMenu.setDescription(mDescription);
+                        if(DMenu.getSellingPrice()!=mSellingPrice)
+                            DMenu.setSellingPrice(mSellingPrice);
                         SIItemC content=new SIItemC(mCategoryId,mGroupId);
-                        mValues.set(mPosition, content.createItem(mPosition +1, id, mCategoryId,mGroupId,mName, mDescription, mSellingPrice,mAvailable,sItems.getDateadded(), dateChanged));
+                        //mValues.set(mPosition, content.createItem(mPosition +1, id, mCategoryId,mGroupId,mName, mDescription, mSellingPrice,mAvailable, DMenu.getDateadded(), dateChanged));
                         notifyDataSetChanged();
                         //iterator.remove();
-                        LoginA.sItemsList.put(id, sItems);
+                        LoginA.sItemsList.put(id, DMenu);
                         break;
                     }
 
@@ -485,7 +482,7 @@ public class SIItemRecyclerViewAdapter extends RecyclerView.Adapter<SIItemRecycl
             //logIn=handler.LogInStaff(mEmail,mPassword);
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.sellerAccount.getId())));
+            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.serverAccount.getId())));
             info.add(new BasicNameValuePair("item_id",Integer.toString(mId)));
             //getting all account details by making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_delete_item,"POST",info);
@@ -519,7 +516,7 @@ public class SIItemRecyclerViewAdapter extends RecyclerView.Adapter<SIItemRecycl
                 Iterator iterator= LoginA.sItemsList.entrySet().iterator();
                 while (iterator.hasNext())
                 {
-                    LinkedHashMap.Entry<Integer, SItems>set=(LinkedHashMap.Entry<Integer, SItems>) iterator.next();
+                    LinkedHashMap.Entry<Integer, DMenu>set=(LinkedHashMap.Entry<Integer, DMenu>) iterator.next();
                     int id=set.getKey();
                     if(id==mId )
                     {

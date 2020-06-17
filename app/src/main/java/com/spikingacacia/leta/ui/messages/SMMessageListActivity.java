@@ -60,16 +60,6 @@ public class SMMessageListActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Messages");
-        if(!preferences.isDark_theme_enabled())
-        {
-            setTheme(R.style.AppThemeLight_NoActionBarLight);
-            toolbar.setTitleTextColor(getResources().getColor(R.color.text_light));
-            toolbar.setPopupTheme(R.style.AppThemeLight_PopupOverlayLight);
-            AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
-            appBarLayout.getContext().setTheme(R.style.AppThemeLight_AppBarOverlayLight);
-            appBarLayout.setBackgroundColor(getResources().getColor(R.color.main_background_light));
-            findViewById(R.id.main).setBackgroundColor(getResources().getColor(R.color.main_background_light));
-        }
 
         RecyclerView recyclerView = findViewById(R.id.message_list);
         recyclerView.addItemDecoration(new DividerItemDecoration(getBaseContext(),DividerItemDecoration.VERTICAL));
@@ -164,10 +154,7 @@ public class SMMessageListActivity extends AppCompatActivity
                 else
                     message=mValues.get(position).message;
             }
-            if(!preferences.isDark_theme_enabled())
-            {
-                holder.itemView.setBackgroundColor(context.getResources().getColor(R.color.secondary_background_light));
-            }
+
             holder.mPositionView.setText(mValues.get(position).position);
             holder.mMessageView.setText(message);
 
