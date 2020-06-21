@@ -4,6 +4,8 @@
  *******************************************************************************************************************/
 package com.spikingacacia.leta.ui.util;
 
+import android.util.Log;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
@@ -11,6 +13,9 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -106,13 +111,24 @@ public class VolleyMultipartRequest extends Request<NetworkResponse>
 
     @Override
     protected Response<NetworkResponse> parseNetworkResponse(NetworkResponse response) {
-        try {
-            return Response.success(
-                    response,
-                    HttpHeaderParser.parseCacheHeaders(response));
-        } catch (Exception e) {
+        try
+        {
+            String jsonString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+            Log.d("Volleymultireq",""+jsonString);
+            return Response.success(response, HttpHeaderParser.parseCacheHeaders(response));
+        }
+        catch (Exception e)
+        {
             return Response.error(new ParseError(e));
         }
+        /*try {
+            String jsonString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+            return Response.success(new JSONObject(jsonString),HttpHeaderParser.parseCacheHeaders(response));
+        } catch (UnsupportedEncodingException e) {
+            return Response.error(new ParseError(e));
+        } catch (JSONException je) {
+            return Response.error(new ParseError(je));
+        }*/
     }
 
     @Override

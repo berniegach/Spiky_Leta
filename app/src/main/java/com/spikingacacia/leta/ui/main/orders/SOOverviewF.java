@@ -1,4 +1,4 @@
-package com.spikingacacia.leta.ui.orders;
+package com.spikingacacia.leta.ui.main.orders;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -16,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -50,16 +50,12 @@ import static com.spikingacacia.leta.ui.LoginA.sOrdersList;
  */
 public class SOOverviewF extends Fragment
 {
-    private static String url_update_order_format = LoginA.base_url+"update_seller_order_format.php";
-    private static JSONParser jsonParser;
-    private static String TAG_SUCCESS="success";
-    private static String TAG_MESSAGE="message";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private String mParam1;
     private String mParam2;
     private OnFragmentInteractionListener mListener;
-    private TextView tOrderFormat;
+    private Button bOrderFormat;
     private TextView tMainCount;
     private int pendingCount=0;
     private int inProgressCount=0;
@@ -106,7 +102,6 @@ public class SOOverviewF extends Fragment
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        jsonParser=new JSONParser();
     }
 
     @Override
@@ -125,7 +120,7 @@ public class SOOverviewF extends Fragment
         lPayment = ((LinearLayout)view.findViewById(R.id.payment));
        lFinished = ((LinearLayout)view.findViewById(R.id.finished));
         //views
-        tOrderFormat=view.findViewById(R.id.order_format);
+        bOrderFormat =view.findViewById(R.id.order_format);
         tMainCount=view.findViewById(R.id.main_count);
         tPendingCount=view.findViewById(R.id.pending_count);
         tInProgressCount=view.findViewById(R.id.inprogress_count);
@@ -137,6 +132,14 @@ public class SOOverviewF extends Fragment
         tDeliveryName=view.findViewById(R.id.delivery_name);
         tPaymentName=view.findViewById(R.id.payment_name);
         //on click listeners
+        bOrderFormat.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                changeOrderFormat();
+            }
+        });
         lPending.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -232,14 +235,14 @@ public class SOOverviewF extends Fragment
             tInProgressName.setText("In Progress");
             tDeliveryName.setText("Delivery");
             tPaymentName.setText("Payment");
-            tOrderFormat.setText("Pay Last");
+            bOrderFormat.setText("Pay Last");
         }
         else
         {
             tInProgressName.setText("Payment");
             tDeliveryName.setText("In Progress");
             tPaymentName.setText("Delivery");
-            tOrderFormat.setText("Pay First");
+            bOrderFormat.setText("Pay First");
         }
         final LinearLayout[] layouts_format=new LinearLayout[]{ lPending, lInProgress, lDelivery, lPayment, lFinished};
         final int[] counts=new int[]{ pendingCount, inProgressCount, deliveryCount, paymentCount, finishedCount};
@@ -269,25 +272,7 @@ public class SOOverviewF extends Fragment
         super.onCreateOptionsMenu(menu,inflater);
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.soorders_menu, menu);
-        final MenuItem menu_format=menu.findItem(R.id.format);
-        menu_format.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()
-        {
-            @Override
-            public boolean onMenuItemClick(MenuItem item)
-            {
-                new AlertDialog.Builder(getContext())
-                        .setItems(new String[]{"Pay last ", "Pay first"}, new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i)
-                            {
-                                new UpdateOrderFormatTask(i+1).execute((Void)null);
 
-                            }
-                        }).create().show();
-                return true;
-            }
-        });
         final String[] strings_format_1=new String[]{"Pending", "In Progress", "Delivery", "Payment", "Finished"};
         final String[] strings_format_2=new String[]{"Pending", "Payment", "In Progress", "Delivery", "Finished"};
         final LinearLayout[] layouts_format=new LinearLayout[]{ lPending, lInProgress, lDelivery, lPayment, lFinished};
@@ -330,6 +315,19 @@ public class SOOverviewF extends Fragment
                 return true;
             }
         });
+    }
+    void changeOrderFormat()
+    {
+        new AlertDialog.Builder(getContext())
+                .setItems(new String[]{"Pay last ", "Pay first"}, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        new UpdateOrderFormatTask(i+1).execute((Void)null);
+
+                    }
+                }).create().show();
     }
     @Override
     public void onAttach(Context context)
@@ -406,12 +404,15 @@ public class SOOverviewF extends Fragment
     }
     public class UpdateOrderFormatTask extends AsyncTask<Void, Void, Boolean>
     {
+        private String url_update_order_format = LoginA.base_url + "update_seller_order_format.php";
+        private JSONParser jsonParser;
         final int format;
         UpdateOrderFormatTask(int format)
 
         {
             Log.d("settings","update started...");
             this.format=format;
+            jsonParser = new JSONParser();
         }
         @Override
         protected Boolean doInBackground(Void... params)
@@ -424,6 +425,7 @@ public class SOOverviewF extends Fragment
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_update_order_format,"POST",info);
             try
             {
+                String TAG_SUCCESS = "success";
                 int success=jsonObject.getInt(TAG_SUCCESS);
                 if(success==1)
                 {
@@ -431,6 +433,7 @@ public class SOOverviewF extends Fragment
                 }
                 else
                 {
+                    String TAG_MESSAGE = "message";
                     String message=jsonObject.getString(TAG_MESSAGE);
                     Log.e(TAG_MESSAGE,""+message);
                     return false;
@@ -456,14 +459,14 @@ public class SOOverviewF extends Fragment
                     tInProgressName.setText("In Progress");
                     tDeliveryName.setText("Delivery");
                     tPaymentName.setText("Payment");
-                    tOrderFormat.setText("Pay Last");
+                    bOrderFormat.setText("Pay Last");
                 }
                 else
                 {
                     tInProgressName.setText("Payment");
                     tDeliveryName.setText("In Progress");
                     tPaymentName.setText("Delivery");
-                    tOrderFormat.setText("Pay First");
+                    bOrderFormat.setText("Pay First");
                 }
                 //changes the count display
                 if(previous_format!=format)

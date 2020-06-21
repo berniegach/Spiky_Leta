@@ -4,26 +4,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.orders.SOOverviewF">
+    tools:context=".ui.main.orders.SOOverviewF">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:divider="?android:listDivider"
-        android:dividerPadding="10dp"
-        android:showDividers="middle">
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/sec_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <TextView
+            <Button
                 android:id="@+id/order_format"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="10dp"
+                android:text="pay first" />
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="pay first"
                 android:gravity="end"
                 android:paddingEnd="10dp"
                 android:textStyle="bold"/>
@@ -49,72 +51,86 @@
                 android:layout_height="wrap_content"
                 android:weightSum="2"
                 android:orientation="horizontal">
-
-                <LinearLayout
-                    android:id="@+id/pending"
+                <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="2dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/text_margin"
-                        android:text="Pending" />
-
+                    app:cardCornerRadius="6dp"
+                    app:cardElevation="6dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1">
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:id="@+id/pending"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/text_margin"
-                        android:layout_weight="1"
-                        android:gravity="end">
+                        android:layout_marginEnd="2dp"
+                        android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/pending_count"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/circle"
-                            android:gravity="center"
-                            android:text="0"
-                            android:textSize="14sp" />
+                            android:layout_margin="@dimen/text_margin"
+                            android:text="Pending" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/text_margin"
+                            android:layout_weight="1"
+                            android:gravity="end">
+
+                            <TextView
+                                android:id="@+id/pending_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/circle"
+                                android:gravity="center"
+                                android:text="0"
+                                android:textColor="@android:color/white"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
                     </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/inprogress"
+                </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/inprogress_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/text_margin"
-                        android:text="In Progress" />
-
+                    app:cardCornerRadius="6dp"
+                    app:cardElevation="6dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1">
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:id="@+id/inprogress"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/text_margin"
-                        android:layout_weight="1"
-                        android:gravity="end">
+                        android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/inprogress_count"
+                            android:id="@+id/inprogress_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/circle"
-                            android:gravity="center"
-                            android:text="0"
-                            android:textSize="14sp" />
-                    </LinearLayout>
+                            android:layout_margin="@dimen/text_margin"
+                            android:text="In Progress" />
 
-                </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/text_margin"
+                            android:layout_weight="1"
+                            android:gravity="end">
+
+                            <TextView
+                                android:id="@+id/inprogress_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/circle"
+                                android:gravity="center"
+                                android:text="0"
+                                android:textColor="@android:color/white"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
             </LinearLayout>
 
@@ -124,117 +140,142 @@
                 android:layout_marginTop="2dp"
                 android:weightSum="2"
                 android:orientation="horizontal">
-
-                <LinearLayout
-                    android:id="@+id/delivery"
+                <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="2dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/delivery_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/text_margin"
-                        android:text="Delivery"/>
-
+                    app:cardCornerRadius="6dp"
+                    app:cardElevation="6dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1">
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:id="@+id/delivery"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/text_margin"
+                        android:layout_marginEnd="2dp"
                         android:layout_weight="1"
-                        android:gravity="end">
+                        android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/delivery_count"
+                            android:id="@+id/delivery_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/circle"
-                            android:gravity="center"
-                            android:text="0"
-                            android:textSize="14sp" />
+                            android:layout_margin="@dimen/text_margin"
+                            android:text="Delivery"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/text_margin"
+                            android:layout_weight="1"
+                            android:gravity="end">
+
+                            <TextView
+                                android:id="@+id/delivery_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/circle"
+                                android:gravity="center"
+                                android:text="0"
+                                android:textColor="@android:color/white"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
                     </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/payment"
+                <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/payment_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/text_margin"
-                        android:text="Payment" />
-
+                    app:cardCornerRadius="6dp"
+                    app:cardElevation="6dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1">
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:id="@+id/payment"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/text_margin"
-                        android:layout_weight="1"
-                        android:gravity="end">
+                        android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/payment_count"
+                            android:id="@+id/payment_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/circle"
-                            android:gravity="center"
-                            android:text="0"
-                            android:textColor="@android:color/white"
-                            android:textSize="14sp" />
-                    </LinearLayout>
+                            android:layout_margin="@dimen/text_margin"
+                            android:text="Payment" />
 
-                </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/text_margin"
+                            android:layout_weight="1"
+                            android:gravity="end">
+
+                            <TextView
+                                android:id="@+id/payment_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/circle"
+                                android:gravity="center"
+                                android:text="0"
+                                android:textColor="@android:color/white"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+
 
             </LinearLayout>
-
-            <LinearLayout
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:weightSum="2"
-                android:orientation="horizontal">
-
-
+                app:cardCornerRadius="6dp"
+                app:cardElevation="6dp"
+                android:layout_margin="5dp"
+                android:weightSum="2">
                 <LinearLayout
-                    android:id="@+id/finished"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/text_margin"
-                        android:text="Finished" />
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/text_margin"
-                        android:layout_weight="1"
-                        android:gravity="end">
+                        android:id="@+id/finished"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/finished_count"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/circle"
-                            android:gravity="center"
-                            android:text="0"
-                            android:textSize="14sp" />
-                    </LinearLayout>
+                            android:layout_margin="@dimen/text_margin"
+                            android:text="Finished" />
 
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/text_margin"
+                            android:layout_weight="1"
+                            android:gravity="end">
+
+                            <TextView
+                                android:id="@+id/finished_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/circle"
+                                android:gravity="center"
+                                android:text="0"
+                                android:textColor="@android:color/white"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
 
 
         </LinearLayout>

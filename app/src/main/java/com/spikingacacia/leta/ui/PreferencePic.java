@@ -1,15 +1,21 @@
 package com.spikingacacia.leta.ui;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.preference.Preference;
 
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -19,8 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceViewHolder;
 
 import com.android.volley.AuthFailureError;
@@ -28,9 +32,10 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.Volley;
 import com.spikingacacia.leta.R;
-import com.spikingacacia.leta.ui.main.home.ItemDialog;
 import com.spikingacacia.leta.ui.util.GetFilePathFromDevice;
 import com.spikingacacia.leta.ui.util.VolleyMultipartRequest;
 
@@ -38,81 +43,87 @@ import com.spikingacacia.leta.ui.util.VolleyMultipartRequest;
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
+import java.util.Set;
 
 import static android.app.Activity.RESULT_OK;
+import static com.spikingacacia.leta.ui.LoginA.serverAccount;
 
 
 /**
  * Created by $USER_NAME on 9/20/2018.
  **/
-public class SPreferencePic extends Preference
+public class PreferencePic extends Preference
 {
     private static final int PERMISSION_REQUEST_INTERNET=2;
     private static String url_upload_profile_pic= LoginA.base_url+"upload_profile_pic_s.php";
-    public static ImageView imageView;
+    public static NetworkImageView imageView;
     public static TextView textView;
     private static Context context;
-    private static JSONParser jsonParser;
-    private static String TAG_SUCCESS="success";
-    private static String TAG_MESSAGE="message";
     private FragmentManager fragmentManager;
-    private Preferences preferences;
-    public SPreferencePic(Context context)
+    private ImageLoader imageLoader = AppController.getInstance().getImageLoader();
+    public PreferencePic(Context context)
     {
         super(context);
-        setLayoutResource(R.layout.ssettings_profilepic);
+        setLayoutResource(R.layout.settings_profilepic);
         this.context=context;
         fragmentManager=((AppCompatActivity)context).getFragmentManager();
-        jsonParser=new JSONParser();
-        preferences = new Preferences(context);
+        if (imageLoader == null)
+            imageLoader = AppController.getInstance().getImageLoader();
     }
 
-    public SPreferencePic(Context context, AttributeSet attrs)
+    public PreferencePic(Context context, AttributeSet attrs)
     {
         super(context,attrs);
-        setLayoutResource(R.layout.ssettings_profilepic);
+        setLayoutResource(R.layout.settings_profilepic);
         this.context=context;
         fragmentManager=((AppCompatActivity)context).getFragmentManager();
-        jsonParser=new JSONParser();
-        preferences = new Preferences(context);
+        if (imageLoader == null)
+            imageLoader = AppController.getInstance().getImageLoader();
     }
-    public SPreferencePic(Context context, AttributeSet attrs, int defStyleAttr)
+    public PreferencePic(Context context, AttributeSet attrs, int defStyleAttr)
     {
         super(context,attrs,defStyleAttr);
-        setLayoutResource(R.layout.ssettings_profilepic);
+        setLayoutResource(R.layout.settings_profilepic);
         this.context=context;
         fragmentManager=((AppCompatActivity)context).getFragmentManager();
-        jsonParser=new JSONParser();
-        preferences = new Preferences(context);
-
+        if (imageLoader == null)
+            imageLoader = AppController.getInstance().getImageLoader();
     }
     @Override
     public void onBindViewHolder(PreferenceViewHolder view)
     {
         super.onBindViewHolder(view);
-        imageView=(ImageView)view.findViewById(R.id.image);
-        //get the profile pic
-        imageView.setImageBitmap(SSettingsA.profilePic);
-
+        String image_url= LoginA.base_url+"src/sellers_pics/";
+        imageView= (NetworkImageView) view.findViewById(R.id.image);
+        // thumbnail image
+        String url=image_url+String.valueOf(serverAccount.getId())+'_'+String.valueOf(serverAccount.getImageType());
+        imageView.setImageUrl(url, imageLoader);
         view.findViewById(R.id.edit).setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-
-
                 final FragmentManager fragmentManager=((AppCompatActivity)context).getFragmentManager();
                 Fragment fragment= GetPicture.newInstance();
-                fragmentManager.beginTransaction().add(fragment,"AB").commit();
-                fragmentManager.executePendingTransactions();
-                Intent intent=new Intent();
-                //show only images
-                intent.setType("image/*");
-                intent.putExtra(Intent.EXTRA_MIME_TYPES,new String[]{"image/jpeg"});
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                fragment.startActivityForResult(Intent.createChooser(intent,"Select profile Image in jpg format"),1);
-                notifyChanged();
+
+                if(ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+                {
+                    fragmentManager.beginTransaction().add(fragment,"AB").commit();
+                    fragmentManager.executePendingTransactions();
+                    Intent intent=new Intent();
+                    //show only images
+                    intent.setType("image/*");
+                    intent.putExtra(Intent.EXTRA_MIME_TYPES,new String[]{"image/jpeg","image/png"});
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    fragment.startActivityForResult(Intent.createChooser(intent,"Select profile Image in jpg format"),1);
+                    notifyChanged();
+                }
+                else
+                {
+                    ActivityCompat.requestPermissions((Activity) getContext(),new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},PERMISSION_REQUEST_INTERNET);
+                }
+
+
             }
         });
 
@@ -137,8 +148,7 @@ public class SPreferencePic extends Preference
                 try
                 {
 
-                    //final String path = getPath(uri);
-                    final String path= GetFilePathFromDevice.getPath(context,uri);
+                    final String path = getPath(uri);
                     Log.d("path",path);
 
                 if (true)
@@ -157,8 +167,7 @@ public class SPreferencePic extends Preference
                         Log.d("uploading","1");
                         try
                         {
-                            //uploadPic(path);
-
+                            uploadBitmap(bitmap);
                         }
                         catch (Exception e)
                         {
@@ -175,9 +184,33 @@ public class SPreferencePic extends Preference
             }
             getFragmentManager().beginTransaction().remove(this).commit();
         }
+        private String getPath(Uri uri)
+        {
+            if(uri==null)
+                return null;
+            String res=null;
+
+            if (DocumentsContract.isDocumentUri(getActivity(), uri))
+            {
+                //emulator
+                String[] path = uri.getPath().split(":");
+                res = path[1];
+                Log.i("debinf ProdAct", "Real file path on Emulator: "+res);
+            }
+            else {
+                String[] proj = {MediaStore.Images.Media.DATA};
+                Cursor cursor = getActivity().getContentResolver().query(uri, proj, null, null, null);
+                if (cursor.moveToFirst()) {
+                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                    res = cursor.getString(column_index);
+                }
+                cursor.close();
+            }
+            return res;
+        }
         private void uploadBitmap(final Bitmap bitmap)
         {
-            String url_upload_profile_pic= LoginA.base_url+"upload_inventory_pic.php";
+            String url_upload_profile_pic= LoginA.base_url+"upload_profile_pic_s.php";
             VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url_upload_profile_pic,
                     new Response.Listener<NetworkResponse>()
                     {
@@ -186,6 +219,8 @@ public class SPreferencePic extends Preference
                         {
                             //weve uploaded the image therefore its okay to proceed with adding the new item in the server
                             int statusCode = response.statusCode;
+                            SettingsActivity.tempServerAccount.setImageType(".png");
+                            SettingsActivity.settingsChanged = true;
                         }
                     },
                     new Response.ErrorListener()
@@ -212,7 +247,7 @@ public class SPreferencePic extends Preference
                 {
                     Map<String , String >params = new HashMap<>();
                     params.put("name", "name"); //Adding text parameter to the request
-                    //params.put("id",String.valueOf(getCategoryId(category_title)));
+                    params.put("id",String.valueOf(serverAccount.getId()));
                     return params;
                 }
             };
@@ -224,51 +259,6 @@ public class SPreferencePic extends Preference
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
             return byteArrayOutputStream.toByteArray();
-        }
-        private String makeName(int id)
-        {
-            String letters=String.valueOf(id);
-            char[] array=letters.toCharArray();
-            String name="";
-            for(int count=0; count<array.length; count++)
-            {
-                switch (array[count])
-                {
-                    case '0':
-                        name+="zero";
-                        break;
-                    case '1':
-                        name+="one";
-                        break;
-                    case '2':
-                        name+="two";
-                        break;
-                    case '3':
-                        name+="three";
-                        break;
-                    case '4':
-                        name+="four";
-                        break;
-                    case '5':
-                        name+="five";
-                        break;
-                    case '6':
-                        name+="six";
-                        break;
-                    case '7':
-                        name+="seven";
-                        break;
-                    case '8':
-                        name+="eight";
-                        break;
-                    case '9':
-                        name+="nine";
-                        break;
-                    default :
-                        name+="NON";
-                }
-            }
-            return name;
         }
     }
 }

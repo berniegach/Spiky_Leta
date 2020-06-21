@@ -10,12 +10,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.google.android.material.appbar.AppBarLayout;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
 import com.spikingacacia.leta.ui.LoginA;
 import com.spikingacacia.leta.ui.Preferences;
 import com.spikingacacia.leta.ui.database.SOrders;
+import com.spikingacacia.leta.ui.main.orders.SOOverviewF;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -32,7 +32,7 @@ import static com.spikingacacia.leta.ui.LoginA.sOrdersList;
 import static com.spikingacacia.leta.ui.LoginA.serverAccount;
 
 public class SOOrdersA extends AppCompatActivity
-    implements SOOverviewF.OnFragmentInteractionListener, SOOrderF.OnListFragmentInteractionListener,
+    implements  SOOrderF.OnListFragmentInteractionListener,
         SOOrderOverviewF.OnFragmentInteractionListener
 {
     private String url_update_order_status=base_url+"update_seller_order.php";
@@ -78,37 +78,7 @@ public class SOOrdersA extends AppCompatActivity
             }
         });
     }
-    /**
-     * implementation of SOOverviewF.java*/
-    @Override
-    public void onChoiceClicked(int which)
-    {
-        mWhichOrder=which;
-        final int format= serverAccount.getOrderFormat();
-        switch(which)
-        {
-            case 1:
-                fragmentWhich="Pending";
-                break;
-            case 2:
-                fragmentWhich= format==1?"In Progress":"Payment";
-                break;
-            case 3:
-                fragmentWhich= format==1?"Delivery":"In Progress";
-                break;
-            case 4:
-                fragmentWhich= format==1?"Payment":"Delivery";
-                break;
-            case 5:
-                fragmentWhich="Finished";
-        }
-        setTitle(fragmentWhich);
-        Fragment fragment=SOOrderF.newInstance(1,which);
-        FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.base,fragment,fragmentWhich);
-        transaction.addToBackStack(fragmentWhich);
-        transaction.commit();
-    }
+
     /**
      * implementation of SOOrderF.java
      * */

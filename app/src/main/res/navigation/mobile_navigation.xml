@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/navigation_orders"
-        android:name="com.spikingacacia.leta.ui.main.orders.OrderFragment"
+        android:name="com.spikingacacia.leta.ui.main.orders.SOOverviewF"
         android:label="Orders"
-        tools:layout="@layout/fragment_order_list" />
+        tools:layout="@layout/f_sooverview" />
 
     <fragment
         android:id="@+id/navigation_notifications"

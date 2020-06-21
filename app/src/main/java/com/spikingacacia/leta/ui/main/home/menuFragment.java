@@ -73,9 +73,12 @@ public class menuFragment extends Fragment
     private MymenuRecyclerViewAdapter mymenuRecyclerViewAdapter;
     private MymenuCategoryRecyclerViewAdapter mymenuCategoryRecyclerViewAdapter;
     private OnListFragmentInteractionListener mListener;
+    public static int itemIdToEdit;
     public static int newCategoryId;
     public static String newItem;
     public static String newDescription;
+    public static String newSellingPrice;
+    private String TAG = "menuF";
 
     public menuFragment()
     {
@@ -112,10 +115,9 @@ public class menuFragment extends Fragment
             recyclerViewMenu.setLayoutManager(new LinearLayoutManager(context));
         } else
         {
-           // recyclerViewMenu.setLayoutManager(new GridLayoutManager(context, getHorizontalItemCount()));
-            recyclerViewMenu.setLayoutManager(new GridLayoutManager(context,1));
+            recyclerViewMenu.setLayoutManager(new GridLayoutManager(context, getHorizontalItemCount()));
         }
-        mymenuRecyclerViewAdapter = new MymenuRecyclerViewAdapter(mListener);
+        mymenuRecyclerViewAdapter = new MymenuRecyclerViewAdapter(mListener, getContext(), getChildFragmentManager());
         recyclerViewMenu.setAdapter(mymenuRecyclerViewAdapter);
         recyclerViewMenu.addItemDecoration(new SpacesItemDecoration(16));
         return view;
@@ -189,9 +191,12 @@ public class menuFragment extends Fragment
         });
 
     }
+
+
     public interface OnListFragmentInteractionListener
     {
         // TODO: Update argument type and name
+        //void onEditMenu(int which, DMenu dMenu);
         //void onMenuItemInteraction(DMenu item);
         //void onCategoryItemInteraction(Categories item);
     }
@@ -202,13 +207,13 @@ public class menuFragment extends Fragment
 
         switch(screenSize) {
             case Configuration.SCREENLAYOUT_SIZE_XLARGE:
-                return 4;
-
-            case Configuration.SCREENLAYOUT_SIZE_LARGE:
                 return 3;
 
-            case Configuration.SCREENLAYOUT_SIZE_NORMAL:
+            case Configuration.SCREENLAYOUT_SIZE_LARGE:
                 return 2;
+
+            case Configuration.SCREENLAYOUT_SIZE_NORMAL:
+                return 1;
 
             case Configuration.SCREENLAYOUT_SIZE_SMALL:
             default:
@@ -284,6 +289,48 @@ public class menuFragment extends Fragment
                 Log.e("bitmap", "" + e.getMessage());
             }
         }
+        else if (requestCode == 2 && resultCode == RESULT_OK && data != null && data.getData() != null)
+        {
+            final Uri uri = data.getData();
+            try
+            {
+
+                final String path = getPath(uri);
+                //String path= GetFilePathFromDevice.getPath(getContext(),uri);
+                Log.d("path 2",""+path);
+
+                final Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), uri);
+                if(bitmap == null)
+                {
+                    Log.e(TAG,"failed to compress image");
+                    Toast.makeText(getContext(),"Image upload failed",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                ItemDialogEdit.imageView.setImageBitmap(bitmap);
+                //imageButton.setImageBitmap(bitmap);
+                //upload
+                if (path == null)
+                {
+                    Log.e("upload cert","its null");
+                }
+                else
+                {
+                    //Uploading code
+                    try
+                    {
+                        uploadBitmap(bitmap, itemIdToEdit);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.e("uploading",""+e.getMessage());
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.e("bitmap", "" + e.getMessage());
+            }
+        }
     }
     private String getPath(Uri uri)
     {
@@ -320,6 +367,7 @@ public class menuFragment extends Fragment
                     {
                         //weve uploaded the image therefore its okay to proceed with adding the new item in the server
                         int statusCode = response.statusCode;
+                        Log.d("upload img menu 2","status code ");
                         Toast.makeText(getContext(),"Successful",Toast.LENGTH_SHORT).show();
                         new MenuTask().execute((Void)null);
                     }
@@ -358,8 +406,12 @@ public class menuFragment extends Fragment
     }
     public byte[] getFileDataFromDrawable(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-        return byteArrayOutputStream.toByteArray();
+        if(bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream))
+        {
+            Log.e(TAG,"bytes length "+byteArrayOutputStream.toByteArray().length);
+            return byteArrayOutputStream.toByteArray();
+        }
+        return null;
     }
     public class CreateItemTask extends AsyncTask<Void, Void, Boolean>
     {
@@ -394,6 +446,7 @@ public class menuFragment extends Fragment
             info.add(new BasicNameValuePair("item",item));
             info.add(new BasicNameValuePair("description",description));
             info.add(new BasicNameValuePair("category_id",Integer.toString(category_id)));
+            info.add(new BasicNameValuePair("selling_price",newSellingPrice));
             info.add(new BasicNameValuePair("image_type",image_type));
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_add_item,"POST",info);
             try
@@ -602,4 +655,5 @@ public class menuFragment extends Fragment
             }
         }
     }
+
 }

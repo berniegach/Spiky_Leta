@@ -57,16 +57,8 @@ public class SSettingsA extends AppCompatActivity
         implements    PreferenceFragmentCompat.OnPreferenceStartFragmentCallback
 {
     private static final String TITLE_TAG = "Settings";
-    private static String url_update_account= LoginA.base_url+"update_seller_account.php";
-    private static String url_delete_account= LoginA.base_url+"delete_seller_account.php";
-    private static JSONParser jsonParser;
-    private static String TAG_SUCCESS="success";
-    private static String TAG_MESSAGE="message";
-    private UpdateAccount updateTask;
-    public static boolean settingsChanged;
+
     public static boolean permissionsChanged;
-    static private Context context;
-    public static ServerAccount tempServerAccount;
     public static String permissions;
     public static Bitmap profilePic;
     Preferences preferences;
@@ -106,15 +98,7 @@ public class SSettingsA extends AppCompatActivity
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        ///
-        tempServerAccount =new ServerAccount();
-        tempServerAccount =LoginA.serverAccount;
-        permissionsChanged=false;
-        permissions="";
-        jsonParser=new JSONParser();
-        updateTask=new UpdateAccount();
-        settingsChanged=false;
-        context=this;
+
         //get the profile pic
         String url= LoginA.base_url+"src/sellers/"+String.format("%s/pics/prof_pic",makeName(LoginA.serverAccount.getId()))+".jpg";
         ImageRequest request=new ImageRequest(
@@ -141,22 +125,7 @@ public class SSettingsA extends AppCompatActivity
         request2.add(request);
 
     }
-    @Override
-    protected void onDestroy()
-    {
-        new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                if (settingsChanged)
-                {
-                    updateTask.execute((Void)null);
-                }
-            }
-        }).start();
-        super.onDestroy();
-    }
+
     @Override
     public void onSaveInstanceState(Bundle outState)
     {
@@ -221,44 +190,13 @@ public class SSettingsA extends AppCompatActivity
         {
             setPreferencesFromResource(R.xml.pref_sgeneral, rootKey);
 
-            EditTextPreference preference_est=findPreference("username");
-            EditTextPreference preference_est_type=findPreference("email");
-            final Preference preference_password=findPreference("password");
-            final SeekBarPreference pref_order_radius=findPreference("order_radius");
-            final Preference preference_tables=findPreference("number_of_tables");
-            final SwitchPreference preference_dark=findPreference("dark_theme");
-            final Preference preference_subscription=findPreference("subscription");
-            //check if we have the waiter logged on
-            if(LoginA.serverAccount.getPersona()==1)
-            {
-                preference_est.setVisible(false);
-                preference_password.setVisible(false);
-                pref_order_radius.setVisible(false);
-                preference_tables.setVisible(false);
-            }
 
-            //feedback preference click listener
 
-            preference_est.setSummary(LoginA.serverAccount.getUsername());
-            preference_est.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object o)
-                {
-                    String name = o.toString();
-                    tempServerAccount.setUsername(name);
-                    settingsChanged=true;
-                    preference.setSummary(name);
-                    return false;
-                }
-            });
-            //you cannot change the email
 
-            preference_est_type.setSummary(LoginA.serverAccount.getEmail());
 
             //password change
 
-            preference_password.setSummary(passwordStars(LoginA.serverAccount.getPassword()));
+            /*preference_password.setSummary(passwordStars(LoginA.serverAccount.getPassword()));
             preference_password.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
             {
                 @Override
@@ -353,87 +291,9 @@ public class SSettingsA extends AppCompatActivity
                     dialog.show();
                     return false;
                 }
-            });
-            //order radius
-
-            pref_order_radius.setValue(LoginA.serverAccount.getOrderRadius());
-            pref_order_radius.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue)
-                {
-                    int range=(int)newValue;
-                    pref_order_radius.setValue(range);
-                    tempServerAccount.setOrderRadius(range);
-                    settingsChanged=true;
-                    return false;
-                }
-            });
-            //number of tables change
-
-            preference_tables.setSummary(String.valueOf(LoginA.serverAccount.getNumberOfTables()));
-            preference_tables.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override
-                public boolean onPreferenceClick(Preference preference)
-                {
-                    final AlertDialog dialog;
-                    AlertDialog.Builder builderPass=new AlertDialog.Builder(context);
-                    builderPass.setTitle("Table Number");
-                    final NumberPicker numberPicker=new NumberPicker(context);
-                    numberPicker.setMinValue(1);
-                    numberPicker.setMaxValue(500);
-                    numberPicker.setValue(LoginA.serverAccount.getNumberOfTables());
-                    builderPass.setView(numberPicker);
-                    builderPass.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
-                            dialog.dismiss();
-                        }
-                    });
-                    builderPass.setPositiveButton("Proceed", new DialogInterface.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
-                            int tableNumber=numberPicker.getValue();
-                            if(tableNumber!=LoginA.serverAccount.getNumberOfTables())
-                            {
-                                preference_tables.setSummary(String.valueOf(tableNumber));
-                                tempServerAccount.setNumberOfTables(tableNumber);
-                                settingsChanged=true;
-                            }
-                        }
-                    });
-                    dialog=builderPass.create();
-                    dialog.show();
-                    return false;
-                }
-            });
-
-            //dark theme
-
-            //preference
-            preferences=new Preferences(context);
-            preference_dark.setChecked(preferences.isDark_theme_enabled());
-            preference_dark.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue)
-                {
-                    boolean choice = (boolean) newValue;
-                    preference_dark.setChecked(choice);
-                    preferences.setDark_theme_enabled(choice);
-                    return false;
-                }
-            });
+            });*/
 
 
-            //subscription change
-
-            preference_subscription.setSummary(LoginA.currentSubscription);
 
 
         }
@@ -464,7 +324,7 @@ public class SSettingsA extends AppCompatActivity
             //bindPreferenceSummaryToValue(findPreference("online_visibility"));
             //bindPreferenceSummaryToValue(findPreference("online_delivery"));
             //countries
-            String countryCode= LoginA.serverAccount.getCountry();
+            /*String countryCode= LoginA.serverAccount.getCountry();
             ListPreference pref_countries=( findPreference("countries"));
             pref_countries.setEntries(getCountriesList());
             pref_countries.setEntryValues(getCountriesListValues());
@@ -480,60 +340,10 @@ public class SSettingsA extends AppCompatActivity
                     preference.setSummary(getCountryFromCode(s));
                     return false;
                 }
-            });
-            //location
-            String[] pos=LoginA.serverAccount.getLocation().split(",");
-            final Preference pref_location=findPreference("location");
-            pref_location.setSummary(pos.length==3?pos[2]:"Please set your location");
+            });*/
 
-            //visible online
-            int online=LoginA.serverAccount.getOnlineVisibility();
-            final SwitchPreference pref_visible_online= (SwitchPreference) findPreference("online_visibility");
-            pref_visible_online.setChecked(online==1);
-            pref_visible_online.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object o)
-                {
-                    if(pref_visible_online.isChecked())
-                    {
-                        pref_visible_online.setChecked(false);
-                        LoginA.serverAccount.setOnlineVisibility(0);
-                        settingsChanged=true;
-                    }
-                    else
-                    {
-                        pref_visible_online.setChecked(true);
-                        LoginA.serverAccount.setOnlineVisibility(1);
-                        settingsChanged=true;
-                    }
-                    return false;
-                }
-            });
-            //deliver
-            int deliver=LoginA.serverAccount.getDeliver();
-            final SwitchPreference pref_deliver= (SwitchPreference) findPreference("online_delivery");
-            pref_deliver.setChecked(deliver==1);
-            pref_deliver.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object o)
-                {
-                    if(pref_deliver.isChecked())
-                    {
-                        pref_deliver.setChecked(false);
-                        LoginA.serverAccount.setDeliver(0);
-                        settingsChanged=true;
-                    }
-                    else
-                    {
-                        pref_deliver.setChecked(true);
-                        LoginA.serverAccount.setDeliver(1);
-                        settingsChanged=true;
-                    }
-                    return false;
-                }
-            });
+
+
         }
 
 
@@ -667,7 +477,7 @@ public class SSettingsA extends AppCompatActivity
             // guidelines.
             //bindPreferenceSummaryToValue(findPreference("online_visibility"));
             //bindPreferenceSummaryToValue(findPreference("online_delivery"));
-            final Preference pref_del= (Preference) findPreference("account_delete");
+            /*final Preference pref_del= (Preference) findPreference("account_delete");
             pref_del.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
             {
                 @Override
@@ -733,73 +543,9 @@ public class SSettingsA extends AppCompatActivity
 
                     return true;
                 }
-            });
+            });*/
 
         }
-
-        public class DeleteAccount extends AsyncTask<Void, Void, Boolean>
-        {
-            DeleteAccount()
-            {
-                // setDialog(true);
-                Log.d("DELETINGACCOUNT","delete started started...");
-            }
-            @Override
-            protected Boolean doInBackground(Void... params)
-            {
-                //building parameters
-                List<NameValuePair>info=new ArrayList<NameValuePair>();
-                info.add(new BasicNameValuePair("id",String.valueOf(LoginA.serverAccount.getId())));
-                JSONObject jsonObject= jsonParser.makeHttpRequest(url_delete_account,"POST",info);
-                Log.d("jsonaccountdelete",jsonObject.toString());
-                try
-                {
-                    int success=jsonObject.getInt(TAG_SUCCESS);
-                    if(success==1)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        String message=jsonObject.getString(TAG_MESSAGE);
-                        Log.e(TAG_MESSAGE,""+message);
-                        return false;
-                    }
-                }
-                catch (JSONException e)
-                {
-                    Log.e("JSON",""+e.getMessage());
-                    return false;
-                }
-            }
-            @Override
-            protected void onPostExecute(final Boolean success)
-            {
-                Log.d("settings permissions","finished");
-                //setDialog(false);
-                if(success)
-                {
-                    Toast.makeText(context,"Account deleted",Toast.LENGTH_SHORT).show();
-                    Intent intent=new Intent(context,LoginA.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    getActivity().finish();
-                    /*Intent intent=new Intent(context,LoginActivity.class);
-                    int mPendingIntentId=12356;
-                    PendingIntent pendingIntent=PendingIntent.getActivity(context,mPendingIntentId,intent,PendingIntent.FLAG_CANCEL_CURRENT);
-                    AlarmManager alarmManager=(AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-                    alarmManager.set(AlarmManager.RTC,System.currentTimeMillis()+100,pendingIntent);
-                    System.exit(0);*/
-                }
-                else
-                {
-
-                }
-
-            }
-        }
-
-
 
 
     }
@@ -821,16 +567,7 @@ public class SSettingsA extends AppCompatActivity
 
 
     }
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class AboutPreferenceFragment extends PreferenceFragmentCompat
-    {
-        @Override
-        public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
-        {
-            setPreferencesFromResource(R.xml.pref_about,rootKey);
-        }
 
-    }
     /**
      * This fragment shows location preferences only. It is used when the
      * activity is showing a two-pane settings UI.
@@ -909,66 +646,7 @@ public class SSettingsA extends AppCompatActivity
         }
     }*/
 
-    public class UpdateAccount extends AsyncTask<Void, Void, Boolean>
-    {
-        UpdateAccount()
-        {
-            Log.d("settings","update started...");
-        }
-        @Override
-        protected Boolean doInBackground(Void... params)
-        {
-            //building parameters
-            List<NameValuePair>info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("id",Integer.toString(tempServerAccount.getId())));
-            info.add(new BasicNameValuePair("password", tempServerAccount.getPassword()));
-            info.add(new BasicNameValuePair("username", tempServerAccount.getUsername()));
-            info.add(new BasicNameValuePair("online", Integer.toString(tempServerAccount.getOnlineVisibility())));
-            info.add(new BasicNameValuePair("deliver", Integer.toString(tempServerAccount.getDeliver())));
-            info.add(new BasicNameValuePair("country", tempServerAccount.getCountry()));
-            info.add(new BasicNameValuePair("location", tempServerAccount.getLocation()));
-            info.add(new BasicNameValuePair("order_range", Integer.toString(tempServerAccount.getOrderRadius())));
-            info.add(new BasicNameValuePair("number_of_tables", Integer.toString(tempServerAccount.getNumberOfTables())));
-            //getting all account details by making HTTP request
-            JSONObject jsonObject= jsonParser.makeHttpRequest(url_update_account,"POST",info);
-            try
-            {
-                int success=jsonObject.getInt(TAG_SUCCESS);
-                if(success==1)
-                {
-                    return true;
-                }
-                else
-                {
-                    String message=jsonObject.getString(TAG_MESSAGE);
-                    Log.e(TAG_MESSAGE,""+message);
-                    return false;
-                }
-            }
-            catch (JSONException e)
-            {
-                Log.e("JSON",""+e.getMessage());
-                return false;
-            }
-        }
-        @Override
-        protected void onPostExecute(final Boolean success)
-        {
-            Log.d("settings","finished");
-            if(success)
-            {
-                Log.d("settings", "update done");
-                LoginA.serverAccount = tempServerAccount;
-                settingsChanged=false;
-            }
-            else
-            {
-                Log.e("settings", "error");
-                Toast.makeText(context,"Your Account was not updated",Toast.LENGTH_LONG).show();
-            }
 
-        }
-    }
 
     private String makeName(int id)
     {

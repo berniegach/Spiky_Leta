@@ -1,17 +1,11 @@
 package com.spikingacacia.leta.ui.main.home;
 
 import android.app.Dialog;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,48 +13,16 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
-
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
-import com.android.volley.toolbox.Volley;
 import com.spikingacacia.leta.R;
-import com.spikingacacia.leta.ui.JSONParser;
-import com.spikingacacia.leta.ui.LoginA;
 import com.spikingacacia.leta.ui.database.Categories;
-import com.spikingacacia.leta.ui.database.DMenu;
-import com.spikingacacia.leta.ui.inventory.SIItemRecyclerViewAdapter;
 import com.spikingacacia.leta.ui.main.MainActivity;
-import com.spikingacacia.leta.ui.util.GetFilePathFromDevice;
-import com.spikingacacia.leta.ui.util.VolleyMultipartRequest;
-
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-
-import static android.app.Activity.RESULT_OK;
-import static com.spikingacacia.leta.ui.LoginA.base_url;
-import static com.spikingacacia.leta.ui.LoginA.sItemsList;
-import static com.spikingacacia.leta.ui.LoginA.serverAccount;
 
 
 public class ItemDialog extends DialogFragment
@@ -78,6 +40,7 @@ public class ItemDialog extends DialogFragment
     String category_title;
     String item;
     String description;
+    String price;
 
     public ItemDialog()
     {
@@ -97,9 +60,11 @@ public class ItemDialog extends DialogFragment
 
         final View view = inflater.inflate(R.layout.item_dialog, null);
         imageButton = view.findViewById(R.id.image);
-        Spinner spinner = view.findViewById(R.id.spinner);
+        final Spinner spinner = view.findViewById(R.id.spinner);
         final EditText editItem = view.findViewById(R.id.item);
         final EditText editDescription = view.findViewById(R.id.description);
+        final EditText editPrice = view.findViewById(R.id.price);
+        final ImageButton backButton = view.findViewById(R.id.edit_back);
 
         //categories
         final List<String> categories= getCategories();
@@ -130,6 +95,7 @@ public class ItemDialog extends DialogFragment
                     {
                         item = editItem.getText().toString();
                         description = editDescription.getText().toString();
+                        price = editPrice.getText().toString();
                         if(TextUtils.isEmpty(item))
                         {
                             editItem.setError("Item name empty");
@@ -140,9 +106,15 @@ public class ItemDialog extends DialogFragment
                             editDescription.setError("Description empty");
                             return;
                         }
+                        if(TextUtils.isEmpty(price))
+                        {
+                            editPrice.setError("Price empty");
+                            return;
+                        }
                         menuFragment.newItem = item;
                         menuFragment.newDescription = description;
                         menuFragment.newCategoryId = getCategoryId(category_title);
+                        menuFragment.newSellingPrice = price;
                         addnewItem();
                     }
                 })
@@ -152,6 +124,29 @@ public class ItemDialog extends DialogFragment
                         dialog.dismiss();
                     }
                 });
+        editDescription.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus)
+            {
+                spinner.setVisibility(hasFocus? View.GONE : View.VISIBLE);
+                editItem.setVisibility(hasFocus? View.GONE : View.VISIBLE);
+                editPrice.setVisibility(hasFocus? View.GONE : View.VISIBLE);
+                backButton.setVisibility(hasFocus? View.VISIBLE : View.GONE);
+            }
+        });
+        backButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                spinner.setVisibility(View.VISIBLE);
+                editItem.setVisibility(View.VISIBLE);
+                editPrice.setVisibility(View.VISIBLE);
+                backButton.setVisibility( View.GONE);
+                editDescription.clearFocus();
+            }
+        });
         // Create the AlertDialog object and return it
         return builder.create();
     }

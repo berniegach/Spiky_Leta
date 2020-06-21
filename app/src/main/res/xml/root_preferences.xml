@@ -1,0 +1,67 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.spikingacacia.leta.ui.PreferencePic/>
+    <PreferenceCategory app:title="General">
+        <EditTextPreference
+            app:useSimpleSummaryProvider="true"
+            app:enabled="false"
+            app:defaultValue="Leta"
+            app:key="email"
+            app:maxLines="1"
+            app:singleLine="true"
+            app:title="Email Address" />
+        <EditTextPreference
+            app:useSimpleSummaryProvider="true"
+            app:defaultValue="Leta"
+            app:key="username"
+            app:maxLines="1"
+            app:singleLine="true"
+            app:title="Restaurant Name" />
+        <SeekBarPreference
+            app:key="order_radius"
+            app:defaultValue="10"
+            android:max="50"
+            android:min="2"
+            app:title="Order radius"
+            app:seekBarIncrement="1"
+            app:showSeekBarValue="true"
+            app:updatesContinuously="true"
+            app:adjustable="true"
+            app:summary="@string/pref_order_range" />
+        <Preference
+            app:key="number_of_tables"
+            app:title="Number of tables" />
+        <Preference
+            app:key="subscription"
+            app:title="Subscription "
+            app:enabled="false" />
+    </PreferenceCategory>
+
+
+    <PreferenceCategory app:title="Location">
+        <Preference android:title="Change Location"
+            android:key="location">
+            <intent android:action="android.intent.action.VIEW"
+                android:targetPackage="com.spikingacacia.leta"
+                android:targetClass="com.spikingacacia.leta.ui.MapsA" >
+            </intent>
+        </Preference>
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="online_visibility"
+            android:title="Visible online"
+            android:summary="Do you wish your business to be seen online by customers" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="online_visibility"
+            android:key="online_delivery"
+            android:title="Delivery"
+            android:summary="Do you make delivery" />
+   </PreferenceCategory>
+    <Preference
+        app:fragment="com.spikingacacia.leta.ui.SettingsActivity$AboutPreferenceFragment"
+        app:icon="@drawable/ic_help"
+        app:title="@string/about"
+        app:allowDividerAbove="true"/>
+
+</PreferenceScreen>

@@ -14,6 +14,7 @@ public class ServerAccount
     private int orderRadius;
     private int orderFormat;
     private int numberOfTables;
+    private String imageType;
     private String dateadded;
     private String datechanged;
     private String dateToday;
@@ -24,7 +25,7 @@ public class ServerAccount
     public ServerAccount(){}
 
     public ServerAccount(int persona, int id, String email, String password, String username, String country, int online, int deliver, String location, int orderRadius, int orderFormat,
-                         int numberOfTables, String dateadded, String datechanged, String dateToday,
+                         int numberOfTables, String imageType, String dateadded, String datechanged, String dateToday,
                          int waiter_id, String waiter_names) {
         this.persona=persona;
         this.id = id;
@@ -39,6 +40,7 @@ public class ServerAccount
         this.orderRadius=orderRadius;
         this.orderFormat=orderFormat;
         this.numberOfTables=numberOfTables;
+        this.imageType = imageType;
         this.dateadded = dateadded;
         this.datechanged = datechanged;
         this.dateToday = dateToday;
@@ -145,6 +147,15 @@ public class ServerAccount
     public void setNumberOfTables(int numberOfTables)
     {
         this.numberOfTables = numberOfTables;
+    }
+    public String getImageType()
+    {
+        return imageType;
+    }
+
+    public void setImageType(String imageType)
+    {
+        this.imageType = imageType;
     }
 
     public String getDateadded() {

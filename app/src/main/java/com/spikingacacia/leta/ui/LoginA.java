@@ -533,6 +533,7 @@ public class LoginA extends AppCompatActivity
                     serverAccount.setOrderRadius(accountObject.getInt("order_radius"));
                     serverAccount.setOrderFormat(accountObject.getInt("order_format"));
                     serverAccount.setNumberOfTables(accountObject.getInt("number_of_tables"));
+                    serverAccount.setImageType(accountObject.getString("image_type"));
                     serverAccount.setDateadded(accountObject.getString("dateadded"));
                     serverAccount.setDatechanged(accountObject.getString("datechanged"));
                     serverAccount.setDateToday(accountObject.getString("today"));

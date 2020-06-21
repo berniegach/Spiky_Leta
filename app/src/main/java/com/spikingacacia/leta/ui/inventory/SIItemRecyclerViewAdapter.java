@@ -55,7 +55,6 @@ import static com.spikingacacia.leta.ui.LoginA.serverAccount;
  */
 public class SIItemRecyclerViewAdapter extends RecyclerView.Adapter<SIItemRecyclerViewAdapter.ViewHolder>
 {
-    private String url_delete_item = base_url+"delete_seller_item.php";
     private String url_update_item = base_url+"update_seller_item.php";
     private final List<InventoryItem> mValues;
     private final OnListFragmentInteractionListener mListener;
@@ -287,7 +286,7 @@ public class SIItemRecyclerViewAdapter extends RecyclerView.Adapter<SIItemRecycl
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i)
                                                 {
-                                                    new DeleteItemTask(position, mValues.get(position).id).execute((Void) null);
+                                                    //new DeleteItemTask(position, mValues.get(position).id).execute((Void) null);
                                                 }
                                             }).create().show();
                                 }
@@ -459,83 +458,5 @@ public class SIItemRecyclerViewAdapter extends RecyclerView.Adapter<SIItemRecycl
             //mAuthTaskU = null;
         }
     }
-    public class DeleteItemTask extends AsyncTask<Void, Void, Boolean>
-    {
-        private int success=0;
-        final private int mId;
-        final private int mPosition;
 
-        DeleteItemTask(final int position, final int id)
-        {
-            mPosition=position;
-            mId=id;
-        }
-        @Override
-        protected void onPreExecute()
-        {
-            Log.d("DELETING ITEM: ","deleting....");
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            //logIn=handler.LogInStaff(mEmail,mPassword);
-            //building parameters
-            List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.serverAccount.getId())));
-            info.add(new BasicNameValuePair("item_id",Integer.toString(mId)));
-            //getting all account details by making HTTP request
-            JSONObject jsonObject= jsonParser.makeHttpRequest(url_delete_item,"POST",info);
-            try
-            {
-                success=jsonObject.getInt(TAG_SUCCESS);
-                if(success==1)
-                {
-                    return true;
-                }
-                else
-                {
-                    String message=jsonObject.getString(TAG_MESSAGE);
-                    Log.e(TAG_MESSAGE,""+message);
-                    return false;
-                }
-            }
-            catch (JSONException e)
-            {
-                Log.e("JSON",""+e.getMessage());
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean successful) {
-            Log.d("DELETING ITEM: ","finished....");
-            if (successful)
-            {
-                Toast.makeText(mContext,"Deleted Successfully",Toast.LENGTH_SHORT).show();
-                Iterator iterator= LoginA.sItemsList.entrySet().iterator();
-                while (iterator.hasNext())
-                {
-                    LinkedHashMap.Entry<Integer, DMenu>set=(LinkedHashMap.Entry<Integer, DMenu>) iterator.next();
-                    int id=set.getKey();
-                    if(id==mId )
-                    {
-                        iterator.remove();
-                        mValues.remove(mPosition);
-                        notifyDataSetChanged();
-                        break;
-                    }
-                }
-            }
-            else
-            {
-
-            }
-        }
-        @Override
-        protected void onCancelled()
-        {
-            //mAuthTaskU = null;
-        }
-    }
 }

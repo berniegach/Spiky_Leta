@@ -1,7 +1,12 @@
 package com.spikingacacia.leta.ui.main.home;
 
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,14 +33,19 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
     private List<DMenu>itemsCopy;
     private final OnListFragmentInteractionListener mListener;
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
+    private Context context;
+    private FragmentManager fragmentManager;
+    private static int lastImageFaded = -1;
 
-    public MymenuRecyclerViewAdapter(OnListFragmentInteractionListener listener)
+    public MymenuRecyclerViewAdapter(OnListFragmentInteractionListener listener, Context context, FragmentManager fragmentManager)
     {
         mListener = listener;
         mValues = new LinkedList<>();
         itemsCopy = new LinkedList<>();
         if (imageLoader == null)
             imageLoader = AppController.getInstance().getImageLoader();
+        this.context = context;
+        this.fragmentManager = fragmentManager;
     }
 
     @Override
@@ -58,10 +68,19 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
         // image
         String url=image_url+String.valueOf(mValues.get(position).getId())+'_'+String.valueOf(mValues.get(position).getImageType());
         holder.image.setImageUrl(url, imageLoader);
-        holder.mView.setOnTouchListener(new View.OnTouchListener()
+        holder.mEditButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public boolean onTouch(View v, MotionEvent event)
+            public void onClick(View v)
+            {
+                DialogFragment dialog = new ItemDialogEdit(holder.mItem);
+                dialog.show(fragmentManager, "ItemDialogFragment");
+            }
+        });
+        holder.mView.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
             {
                 if(holder.image.getImageAlpha()==20)
                 {
@@ -75,7 +94,6 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
                     holder.mItemView.setAlpha((float)1.0);
                     holder.mDescriptionView.setAlpha((float)1.0);
                 }
-                return false;
             }
         });
     }
@@ -93,7 +111,7 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
         public final TextView mItemView;
         public final TextView mDescriptionView;
         public final TextView mPriceView;
-        //public final ImageButton mEditButton;
+        public final ImageButton mEditButton;
         public DMenu mItem;
 
         public ViewHolder(View view)
@@ -104,7 +122,7 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
             mItemView = (TextView) view.findViewById(R.id.item);
             mDescriptionView = view.findViewById(R.id.description);
             mPriceView = (TextView) view.findViewById(R.id.price);
-            //mEditButton = view.findViewById(R.id.edit);
+            mEditButton = view.findViewById(R.id.edit);
         }
 
         @Override
