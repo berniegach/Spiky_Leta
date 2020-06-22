@@ -24,10 +24,11 @@ import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
 import com.spikingacacia.leta.ui.LoginA;
 import com.spikingacacia.leta.ui.Preferences;
-import com.spikingacacia.leta.ui.database.SOrders;
+import com.spikingacacia.leta.ui.database.Orders;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,18 +39,21 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
-import static com.spikingacacia.leta.ui.LoginA.sOrdersList;
+import static com.spikingacacia.leta.ui.LoginA.base_url;
+import static com.spikingacacia.leta.ui.LoginA.serverAccount;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link SOOverviewF.OnFragmentInteractionListener} interface
+ * {@link OrdersOverviewFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link SOOverviewF#newInstance} factory method to
+ * Use the {@link OrdersOverviewFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SOOverviewF extends Fragment
+public class OrdersOverviewFragment extends Fragment
 {
+    private LinkedHashMap<Integer, Orders> ordersLinkedHashMap;
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private String mParam1;
@@ -78,13 +82,13 @@ public class SOOverviewF extends Fragment
     private int countToShow=0;
     Preferences preferences;
 
-    public SOOverviewF()
+    public OrdersOverviewFragment()
     {
         // Required empty public constructor
     }
-    public static SOOverviewF newInstance(String param1, String param2)
+    public static OrdersOverviewFragment newInstance(String param1, String param2)
     {
-        SOOverviewF fragment = new SOOverviewF();
+        OrdersOverviewFragment fragment = new OrdersOverviewFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -109,7 +113,7 @@ public class SOOverviewF extends Fragment
                              Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.f_sooverview, container, false);
+        View view= inflater.inflate(R.layout.fragment_orders_overview, container, false);
         //preference
         preferences=new Preferences(getContext());
 
@@ -210,6 +214,7 @@ public class SOOverviewF extends Fragment
                     mListener.onChoiceClicked(5);
             }
         });
+        ordersLinkedHashMap = new LinkedHashMap<>();
         return view;
     }
     @Override
@@ -221,49 +226,7 @@ public class SOOverviewF extends Fragment
         //2. so we can set the texviews after setting the values. if not done here the texviews will show 0 during the initial run
         //3 so we can set the piechart with correct values during the initial run as above 2
         super.onResume();
-        countToShow=preferences.getOrder_format_to_show_count();
-        pendingCount=0;
-        inProgressCount=0;
-        deliveryCount=0;
-        paymentCount=0;
-        finishedCount=0;
-        setCounts();
-        //set the formats
-        final int format=LoginA.serverAccount.getOrderFormat();
-        if(format==1)
-        {
-            tInProgressName.setText("In Progress");
-            tDeliveryName.setText("Delivery");
-            tPaymentName.setText("Payment");
-            bOrderFormat.setText("Pay Last");
-        }
-        else
-        {
-            tInProgressName.setText("Payment");
-            tDeliveryName.setText("In Progress");
-            tPaymentName.setText("Delivery");
-            bOrderFormat.setText("Pay First");
-        }
-        final LinearLayout[] layouts_format=new LinearLayout[]{ lPending, lInProgress, lDelivery, lPayment, lFinished};
-        final int[] counts=new int[]{ pendingCount, inProgressCount, deliveryCount, paymentCount, finishedCount};
-        for(int count=0; count<=4; count+=1)
-        {
-            if(count==countToShow)
-            {
-                tMainCount.setText(String.valueOf(counts[count]));
-            }
-            else
-            {
-                ;//
-            }
-        }
-
-        //set the counts
-        tPendingCount.setText(String.valueOf(pendingCount));
-        tInProgressCount.setText(String.valueOf(inProgressCount));
-        tDeliveryCount.setText(String.valueOf(deliveryCount));
-        tPaymentCount.setText(String.valueOf(paymentCount));
-        tFinishedCount.setText(String.valueOf(finishedCount));
+        new OrdersTask().execute((Void)null);
 
     }
     @Override
@@ -357,11 +320,11 @@ public class SOOverviewF extends Fragment
     {
         int format=LoginA.serverAccount.getOrderFormat();
         List<String> order_numbers=new ArrayList<>();
-        Iterator iterator= sOrdersList.entrySet().iterator();
+        Iterator iterator= ordersLinkedHashMap.entrySet().iterator();
         while (iterator.hasNext())
         {
-            LinkedHashMap.Entry<Integer, SOrders>set=(LinkedHashMap.Entry<Integer, SOrders>) iterator.next();
-            SOrders bOrders=set.getValue();
+            LinkedHashMap.Entry<Integer, Orders>set=(LinkedHashMap.Entry<Integer, Orders>) iterator.next();
+            Orders bOrders=set.getValue();
             int order_number=bOrders.getOrderNumber();
             int order_status=bOrders.getOrderStatus();
             String date_added=bOrders.getDateAdded();
@@ -402,9 +365,55 @@ public class SOOverviewF extends Fragment
         }
         //return unique.size();
     }
+    private void updateGui()
+    {
+        countToShow=preferences.getOrder_format_to_show_count();
+        pendingCount=0;
+        inProgressCount=0;
+        deliveryCount=0;
+        paymentCount=0;
+        finishedCount=0;
+        setCounts();
+        //set the formats
+        final int format=LoginA.serverAccount.getOrderFormat();
+        if(format==1)
+        {
+            tInProgressName.setText("In Progress");
+            tDeliveryName.setText("Delivery");
+            tPaymentName.setText("Payment");
+            bOrderFormat.setText("Pay Last");
+        }
+        else
+        {
+            tInProgressName.setText("Payment");
+            tDeliveryName.setText("In Progress");
+            tPaymentName.setText("Delivery");
+            bOrderFormat.setText("Pay First");
+        }
+        final LinearLayout[] layouts_format=new LinearLayout[]{ lPending, lInProgress, lDelivery, lPayment, lFinished};
+        final int[] counts=new int[]{ pendingCount, inProgressCount, deliveryCount, paymentCount, finishedCount};
+        for(int count=0; count<=4; count+=1)
+        {
+            if(count==countToShow)
+            {
+                tMainCount.setText(String.valueOf(counts[count]));
+            }
+            else
+            {
+                ;//
+            }
+        }
+
+        //set the counts
+        tPendingCount.setText(String.valueOf(pendingCount));
+        tInProgressCount.setText(String.valueOf(inProgressCount));
+        tDeliveryCount.setText(String.valueOf(deliveryCount));
+        tPaymentCount.setText(String.valueOf(paymentCount));
+        tFinishedCount.setText(String.valueOf(finishedCount));
+    }
     public class UpdateOrderFormatTask extends AsyncTask<Void, Void, Boolean>
     {
-        private String url_update_order_format = LoginA.base_url + "update_seller_order_format.php";
+        private String url_update_order_format = base_url + "update_seller_order_format.php";
         private JSONParser jsonParser;
         final int format;
         UpdateOrderFormatTask(int format)
@@ -514,6 +523,83 @@ public class SOOverviewF extends Fragment
                 Snackbar.make(lFinished,"Error updating format",Snackbar.LENGTH_SHORT).show();
             }
 
+        }
+    }
+    private class OrdersTask extends AsyncTask<Void, Void, Boolean>
+    {
+        private String url_get_s_orders = base_url + "get_seller_orders.php";
+        private String TAG_SUCCESS="success";
+        private String TAG_MESSAGE="message";
+        private  JSONParser jsonParser;
+        @Override
+        protected void onPreExecute()
+        {
+            Log.d("BORDERS: ","starting....");
+            if(!ordersLinkedHashMap.isEmpty()) ordersLinkedHashMap.clear();
+            jsonParser = new JSONParser();
+            super.onPreExecute();
+        }
+        @Override
+        protected Boolean doInBackground(Void... params)
+        {
+            //getting columns list
+            List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
+            info.add(new BasicNameValuePair("email",serverAccount.getEmail()));
+            // making HTTP request
+            JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_orders,"POST",info);
+            Log.d("sItems",""+jsonObject.toString());
+            try
+            {
+                JSONArray itemsArrayList=null;
+                int success=jsonObject.getInt(TAG_SUCCESS);
+                if(success==1)
+                {
+                    itemsArrayList=jsonObject.getJSONArray("items");
+                    for(int count=0; count<itemsArrayList.length(); count+=1)
+                    {
+                        JSONObject jsonObjectNotis=itemsArrayList.getJSONObject(count);
+                        int id=jsonObjectNotis.getInt("id");
+                        String user_email=jsonObjectNotis.getString("user_email");
+                        int item_id=jsonObjectNotis.getInt("item_id");
+                        int order_number=jsonObjectNotis.getInt("order_number");
+                        int order_status=jsonObjectNotis.getInt("order_status");
+                        String date_added=jsonObjectNotis.getString("date_added");
+                        String date_changed=jsonObjectNotis.getString("date_changed");
+                        String item=jsonObjectNotis.getString("item");
+                        double selling_price=jsonObjectNotis.getDouble("selling_price");
+                        String username=jsonObjectNotis.getString("username");
+                        String waiter_names=jsonObjectNotis.getString("waiter_names");
+                        int table_number=jsonObjectNotis.getInt("table_number");
+
+                        Orders orders =new Orders(id,user_email,item_id,order_number,order_status,item,selling_price, username,waiter_names,table_number,date_added,date_changed);
+                        ordersLinkedHashMap.put(id, orders);
+                    }
+                    return true;
+                }
+                else
+                {
+                    String message=jsonObject.getString(TAG_MESSAGE);
+                    Log.e(TAG_MESSAGE,""+message);
+                    return false;
+                }
+            }
+            catch (JSONException e)
+            {
+                Log.e("JSON",""+e.getMessage());
+                return false;
+            }
+        }
+        @Override
+        protected void onPostExecute(final Boolean successful) {
+
+            if (successful)
+            {
+                updateGui();
+            }
+            else
+            {
+
+            }
         }
     }
 }

@@ -17,18 +17,16 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.Preferences;
-import com.spikingacacia.leta.ui.database.SOrders;
+import com.spikingacacia.leta.ui.database.Orders;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,7 +41,6 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import static com.spikingacacia.leta.ui.LoginA.sOrdersList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -266,11 +263,11 @@ public class SRCountRateF extends Fragment
 
     {
         List<String> order_dates=new ArrayList<>();
-        Iterator iterator= sOrdersList.entrySet().iterator();
+        Iterator iterator= null;//sOrdersList.entrySet().iterator();
         while (iterator.hasNext())
         {
-            LinkedHashMap.Entry<Integer, SOrders>set=(LinkedHashMap.Entry<Integer, SOrders>) iterator.next();
-            SOrders bOrders=set.getValue();
+            LinkedHashMap.Entry<Integer, Orders>set=(LinkedHashMap.Entry<Integer, Orders>) iterator.next();
+            Orders bOrders=set.getValue();
             //int id=bOrders.getId();
             //int userId=bOrders.getUserId();
             //int itemId=bOrders.getItemId();
@@ -300,11 +297,11 @@ public class SRCountRateF extends Fragment
         //get the hourly price total
         for(int c=0; c<unique_dates_list.size(); c++)
         {
-            Iterator iterator_prices= sOrdersList.entrySet().iterator();
+            Iterator iterator_prices= null;//sOrdersList.entrySet().iterator();
             while (iterator_prices.hasNext())
             {
-                LinkedHashMap.Entry<Integer, SOrders>set=(LinkedHashMap.Entry<Integer, SOrders>) iterator_prices.next();
-                SOrders bOrders=set.getValue();
+                LinkedHashMap.Entry<Integer, Orders>set=(LinkedHashMap.Entry<Integer, Orders>) iterator_prices.next();
+                Orders bOrders=set.getValue();
                 //int id=bOrders.getId();
                 //int userId=bOrders.getUserId();
                 //int itemId=bOrders.getItemId();

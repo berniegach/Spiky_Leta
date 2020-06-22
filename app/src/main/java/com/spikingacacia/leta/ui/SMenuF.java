@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.database.SMessages;
-import com.spikingacacia.leta.ui.database.SOrders;
+import com.spikingacacia.leta.ui.database.Orders;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -35,7 +35,6 @@ import java.util.Set;
 
 import static com.spikingacacia.leta.ui.LoginA.base_url;
 import static com.spikingacacia.leta.ui.LoginA.sMessagesList;
-import static com.spikingacacia.leta.ui.LoginA.sOrdersList;
 import static com.spikingacacia.leta.ui.LoginA.serverAccount;
 
 /**
@@ -339,11 +338,11 @@ public class SMenuF extends Fragment {
     private int getOrdersCounts()
     {
         List<String> order_numbers=new ArrayList<>();
-        Iterator iterator= sOrdersList.entrySet().iterator();
+        /*Iterator iterator= sOrdersList.entrySet().iterator();
         while (iterator.hasNext())
         {
-            LinkedHashMap.Entry<Integer, SOrders>set=(LinkedHashMap.Entry<Integer, SOrders>) iterator.next();
-            SOrders bOrders=set.getValue();
+            LinkedHashMap.Entry<Integer, Orders>set=(LinkedHashMap.Entry<Integer, Orders>) iterator.next();
+            Orders bOrders=set.getValue();
             int order_number=bOrders.getOrderNumber();
             String date_added=bOrders.getDateAdded();
             String[] date_pieces=date_added.split(" ");
@@ -351,7 +350,8 @@ public class SMenuF extends Fragment {
             order_numbers.add(unique_name);
         }
         Set<String> unique=new HashSet<>(order_numbers);
-        return unique.size();
+        return unique.size();*/
+        return 1;
     }
     /**
      * Following code will get the sellers notifications
@@ -439,8 +439,8 @@ public class SMenuF extends Fragment {
                     String waiter_names=jsonObjectNotis.getString("waiter_names");
                     int table_number=jsonObjectNotis.getInt("table_number");
 
-                    SOrders sOrders=new SOrders(id,user_id,item_id,order_number,orderstatus,item,selling_price, username, waiter_names,table_number,dateadded,datechanged);
-                    sOrdersList.put(id,sOrders);
+                   // Orders orders =new Orders(id,user_id,item_id,order_number,orderstatus,item,selling_price, username, waiter_names,table_number,dateadded,datechanged);
+                   // sOrdersList.put(id, orders);
                 }
             }
             else

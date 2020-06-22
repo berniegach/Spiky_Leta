@@ -2,10 +2,7 @@ package com.spikingacacia.leta.ui.main;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,7 +13,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.spikingacacia.leta.R;
-import com.spikingacacia.leta.ui.SMenuA;
 import com.spikingacacia.leta.ui.SettingsActivity;
 import com.spikingacacia.leta.ui.database.Categories;
 import com.spikingacacia.leta.ui.database.DMenu;
@@ -24,9 +20,6 @@ import com.spikingacacia.leta.ui.database.DMenu;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -35,9 +28,8 @@ import androidx.navigation.ui.NavigationUI;
 import com.spikingacacia.leta.ui.main.home.ItemDialog;
 import com.spikingacacia.leta.ui.main.home.ItemDialogEdit;
 import com.spikingacacia.leta.ui.main.home.menuFragment;
-import com.spikingacacia.leta.ui.main.orders.SOOverviewF;
-import com.spikingacacia.leta.ui.orders.SOOrderF;
-import com.spikingacacia.leta.ui.util.GetFilePathFromDevice;
+import com.spikingacacia.leta.ui.main.orders.OrdersOverviewFragment;
+import com.spikingacacia.leta.ui.orders.OrdersActivity;
 
 
 import java.util.LinkedHashMap;
@@ -47,7 +39,7 @@ import static com.spikingacacia.leta.ui.LoginA.serverAccount;
 
 public class MainActivity extends AppCompatActivity implements
         menuFragment.OnListFragmentInteractionListener, ItemDialog.NoticeDialogListener, ItemDialogEdit.NoticeDialogListener,
-        SOOverviewF.OnFragmentInteractionListener
+        OrdersOverviewFragment.OnFragmentInteractionListener
 {
     private ProgressBar progressBar;
     private View mainFragment;
@@ -164,34 +156,35 @@ public class MainActivity extends AppCompatActivity implements
 
     }
     /**
-     * implementation of SOOverviewF.java*/
+     * implementation of OrdersOverviewFragment.java*/
     @Override
     public void onChoiceClicked(int which)
     {
-       /* mWhichOrder=which;
+        Intent intent=new Intent(MainActivity.this, OrdersActivity.class);
+        //prevent this activity from flickering as we call the next one
+        intent.putExtra("which",which);
         final int format= serverAccount.getOrderFormat();
+        String title="Order";
         switch(which)
         {
             case 1:
-                fragmentWhich="Pending";
+                title = "Pending";
                 break;
             case 2:
-                fragmentWhich= format==1?"In Progress":"Payment";
+                title= format==1?"In Progress":"Payment";
                 break;
             case 3:
-                fragmentWhich= format==1?"Delivery":"In Progress";
+                title= format==1?"Delivery":"In Progress";
                 break;
             case 4:
-                fragmentWhich= format==1?"Payment":"Delivery";
+                title= format==1?"Payment":"Delivery";
                 break;
             case 5:
-                fragmentWhich="Finished";
+                title="Finished";
         }
-        setTitle(fragmentWhich);
-        Fragment fragment= SOOrderF.newInstance(1,which);
-        FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.base,fragment,fragmentWhich);
-        transaction.addToBackStack(fragmentWhich);
-        transaction.commit();*/
+        intent.putExtra("title",title);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(intent);
+
     }
 }

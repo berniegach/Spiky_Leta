@@ -10,15 +10,14 @@ import android.widget.TextView;
 
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.Preferences;
-import com.spikingacacia.leta.ui.orders.SOOrderF.OnListFragmentInteractionListener;
-import com.spikingacacia.leta.ui.orders.SOOrderC.OrderItem;
+import com.spikingacacia.leta.ui.database.Orders;
+import com.spikingacacia.leta.ui.orders.OrdersFragment.OnListFragmentInteractionListener;
 
 import org.ocpsoft.prettytime.PrettyTime;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,22 +25,22 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class SOOrderRVA extends RecyclerView.Adapter<SOOrderRVA.ViewHolder>
+public class MyOrdersRecyclerViewAdapter extends RecyclerView.Adapter<MyOrdersRecyclerViewAdapter.ViewHolder>
 {
 
-    private final List<OrderItem> mValues;
-    private List<OrderItem> itemsCopy;
+    private List<Orders> mValues;
+    private List<Orders> itemsCopy;
     private final OnListFragmentInteractionListener mListener;
     private Context mContext;
     private  int mWhichOrder;
     Preferences preferences;
 
-    public SOOrderRVA(List<OrderItem> items, OnListFragmentInteractionListener listener, Context context, int whichOrder)
+    public MyOrdersRecyclerViewAdapter(OnListFragmentInteractionListener listener, Context context, int whichOrder)
     {
-        mValues = items;
+        mValues = new ArrayList<>();
         mListener = listener;
         itemsCopy=new ArrayList<>();
-        itemsCopy.addAll(items);
+        itemsCopy = new ArrayList<>();
         mContext=context;
         mWhichOrder=whichOrder;
         //preference
@@ -60,16 +59,15 @@ public class SOOrderRVA extends RecyclerView.Adapter<SOOrderRVA.ViewHolder>
     public void onBindViewHolder(final ViewHolder holder, int position)
     {
         holder.mItem = mValues.get(position);
-        holder.mPositionView.setText(mValues.get(position).position);
-        holder.mOrderView.setText("Order "+mValues.get(position).orderNumber);
-        holder.mTableView.setText("Table "+mValues.get(position).tableNumber);
-        holder.mUsernameView.setText(mValues.get(position).username);
+        holder.mOrderView.setText("Order "+mValues.get(position).getOrderNumber());
+        holder.mTableView.setText("Table "+mValues.get(position).getTableNumber());
+        holder.mUsernameView.setText(mValues.get(position).getUsername());
         //format the date
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         PrettyTime p = new PrettyTime();
         try
         {
-            holder.mDateView.setText(p.format(format.parse(mValues.get(position).dateAdded)));
+            holder.mDateView.setText(p.format(format.parse(mValues.get(position).getDateAdded())));
         } catch (ParseException e)
         {
             e.printStackTrace();
@@ -104,9 +102,9 @@ public class SOOrderRVA extends RecyclerView.Adapter<SOOrderRVA.ViewHolder>
         else
         {
             text=text.toLowerCase();
-            for(OrderItem orderItem:itemsCopy)
+            for(Orders orderItem:itemsCopy)
             {
-                if(orderItem.username.toLowerCase().contains(text))
+                if(orderItem.getUsername().toLowerCase().contains(text))
                     mValues.add(orderItem);
             }
         }
@@ -114,8 +112,7 @@ public class SOOrderRVA extends RecyclerView.Adapter<SOOrderRVA.ViewHolder>
     }
     public void notifyChange(int position, int id, int userId, int itemId, int orderNumber, int orderStatus, String orderName, double price, String username, int tableNumber, String dateAdded, String dateChanged)
     {
-        SOOrderC content=new SOOrderC(mWhichOrder);
-        mValues.add(content.CreateItem(position,id,userId,itemId,orderNumber,orderStatus,orderName,price,username,tableNumber,dateAdded,dateChanged));
+
         notifyDataSetChanged();
     }
 
@@ -127,7 +124,7 @@ public class SOOrderRVA extends RecyclerView.Adapter<SOOrderRVA.ViewHolder>
         public final TextView mTableView;
         public final TextView mUsernameView;
         public final TextView mDateView;
-        public OrderItem mItem;
+        public Orders mItem;
 
         public ViewHolder(View view)
         {
@@ -145,5 +142,12 @@ public class SOOrderRVA extends RecyclerView.Adapter<SOOrderRVA.ViewHolder>
         {
             return super.toString() + " '" + mUsernameView.getText() + "'";
         }
+    }
+    public void listUpdated(List<Orders> newitems)
+    {
+        mValues.clear();
+        mValues.addAll(newitems);
+        itemsCopy.addAll(newitems);
+        notifyDataSetChanged();
     }
 }

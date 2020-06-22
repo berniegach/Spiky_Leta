@@ -35,7 +35,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.Preferences;
 import com.spikingacacia.leta.ui.database.DMenu;
-import com.spikingacacia.leta.ui.database.SOrders;
+import com.spikingacacia.leta.ui.database.Orders;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -47,7 +47,6 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.spikingacacia.leta.ui.LoginA.sItemsList;
-import static com.spikingacacia.leta.ui.LoginA.sOrdersList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -232,11 +231,11 @@ public class SRSoldF extends Fragment implements OnChartValueSelectedListener
             //int id = set.getKey();
             DMenu DMenu =set.getValue();
             int id= DMenu.getId();
-            Iterator iterator_orders= sOrdersList.entrySet().iterator();
+            Iterator iterator_orders= null;//sOrdersList.entrySet().iterator();
             while (iterator_orders.hasNext())
             {
-                LinkedHashMap.Entry<Integer, SOrders>set_orders=(LinkedHashMap.Entry<Integer, SOrders>) iterator_orders.next();
-                SOrders bOrders=set_orders.getValue();
+                LinkedHashMap.Entry<Integer, Orders>set_orders=(LinkedHashMap.Entry<Integer, Orders>) iterator_orders.next();
+                Orders bOrders=set_orders.getValue();
                 //int id=bOrders.getId();
                 //int userId=bOrders.getUserId();
                 int itemId=bOrders.getItemId();

@@ -1,9 +1,7 @@
 package com.spikingacacia.leta.ui.orders;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.AsyncTask;
@@ -12,10 +10,7 @@ import android.util.Log;
 
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
-import com.spikingacacia.leta.ui.LoginA;
-import com.spikingacacia.leta.ui.Preferences;
-import com.spikingacacia.leta.ui.database.SOrders;
-import com.spikingacacia.leta.ui.main.orders.SOOverviewF;
+import com.spikingacacia.leta.ui.database.Orders;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -28,72 +23,50 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import static com.spikingacacia.leta.ui.LoginA.base_url;
-import static com.spikingacacia.leta.ui.LoginA.sOrdersList;
 import static com.spikingacacia.leta.ui.LoginA.serverAccount;
 
-public class SOOrdersA extends AppCompatActivity
-    implements  SOOrderF.OnListFragmentInteractionListener,
+public class OrdersActivity extends AppCompatActivity
+    implements  OrdersFragment.OnListFragmentInteractionListener,
         SOOrderOverviewF.OnFragmentInteractionListener
 {
-    private String url_update_order_status=base_url+"update_seller_order.php";
     private String fragmentWhich="overview";
-    private int buyerId;
+    private String buyerEmail;
     private int orderId;
     private int orderNumber;
     private String dateAdded;
-    private int mWhichOrder=0;
     private String TAG_SUCCESS="success";
     private String TAG_MESSAGE="message";
-    private String TAG="SOOrdersA";
-    private JSONParser jsonParser;
-    Preferences preferences;
+    private String TAG="OrdersActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.a_soorders);
-        jsonParser=new JSONParser();
+        setContentView(R.layout.activity_orders);
+         int which = getIntent().getIntExtra("which",0);
+         String title = getIntent().getStringExtra("title");
+        setTitle(title);
 
-        //set actionbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        setTitle("Orders");
-
-        //set the first base fragment
-        Fragment fragment=SOOverviewF.newInstance("","");
+        Fragment fragment= OrdersFragment.newInstance(1,which);
         FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.base,fragment,"");
+        transaction.replace(R.id.base,fragment,fragmentWhich);
         transaction.commit();
-        //fragment manager
-        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener()
-        {
-            @Override
-            public void onBackStackChanged()
-            {
-                int count=getSupportFragmentManager().getBackStackEntryCount();
-                if(count==0)
-                    setTitle("Orders");
-                else if(count==1)
-                    setTitle(fragmentWhich);
-            }
-        });
     }
 
     /**
-     * implementation of SOOrderF.java
+     * implementation of OrdersFragment.java
      * */
-    public void onListFragmentInteraction(SOOrderC.OrderItem item)
+    public void onListFragmentInteraction(Orders item)
     {
         final int format= serverAccount.getOrderFormat();
-        buyerId=item.userId;
-        orderId=item.id;
-        orderNumber=item.orderNumber;
-        dateAdded=item.dateAdded;
+        buyerEmail =item.getUserId();
+        orderId=item.getId();
+        orderNumber=item.getOrderNumber();
+        dateAdded=item.getDateAdded();
         setTitle("Order");
-        String dateAdded=item.dateAdded;
+        String dateAdded=item.getDateAdded();
         String[] date=dateAdded.split(" ");
-        String message=date[0]+":"+item.orderNumber+":"+item.orderStatus;
-        Fragment fragment=SOOrderOverviewF.newInstance(message, format, item.orderStatus);
+        String message=date[0]+":"+item.getOrderNumber()+":"+item.getOrderStatus();
+        Fragment fragment=SOOrderOverviewF.newInstance(message, format, item.getOrderStatus());
         FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.base,fragment,"order");
         transaction.addToBackStack("order");
@@ -114,15 +87,18 @@ public class SOOrdersA extends AppCompatActivity
         //accept order is 1 while decline is 2
         new BOrdersFormatUpdateTask( new_status ).execute((Void)null);
     }
+
     private class BOrdersFormatUpdateTask extends AsyncTask<Void, Void, Boolean>
     {
         int status;
         int waiter_id=0;
+        private JSONParser jsonParser;
         public BOrdersFormatUpdateTask(int status)
         {
             this.status=status;
             if(serverAccount.getPersona()==1)
                 waiter_id= serverAccount.getWaiter_id();
+            jsonParser = new JSONParser();
         }
         @Override
         protected void onPreExecute()
@@ -135,13 +111,14 @@ public class SOOrdersA extends AppCompatActivity
             //getting columns list
             List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
             info.add(new BasicNameValuePair("seller_id",Integer.toString(serverAccount.getId())));
-            info.add(new BasicNameValuePair("buyer_id",String.valueOf(buyerId)));
+            info.add(new BasicNameValuePair("buyer_id",String.valueOf(buyerEmail)));
             info.add(new BasicNameValuePair("waiter_id",Integer.toString(waiter_id)));
             info.add(new BasicNameValuePair("order_id",String.valueOf(orderId)));
             info.add(new BasicNameValuePair("order_number",String.valueOf(orderNumber)));
             info.add(new BasicNameValuePair("status",String.valueOf(status)));
             info.add(new BasicNameValuePair("date_added",dateAdded));
             // making HTTP request
+            String url_update_order_status = base_url + "update_seller_order.php";
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_update_order_status,"POST",info);
             try
             {
@@ -170,11 +147,11 @@ public class SOOrdersA extends AppCompatActivity
             if (successful)
             {
                 //set the order in the orderlist
-                Iterator iterator=LoginA.sOrdersList.entrySet().iterator();
+                Iterator iterator=null;//LoginA.sOrdersList.entrySet().iterator();
                 while (iterator.hasNext())
                 {
-                    LinkedHashMap.Entry<Integer, SOrders>set=(LinkedHashMap.Entry<Integer, SOrders>) iterator.next();
-                    SOrders bOrders=set.getValue();
+                    LinkedHashMap.Entry<Integer, Orders>set=(LinkedHashMap.Entry<Integer, Orders>) iterator.next();
+                    Orders bOrders=set.getValue();
                     int o_id=bOrders.getId();
                     if(o_id==orderId)
                     {
@@ -188,7 +165,7 @@ public class SOOrdersA extends AppCompatActivity
                             if(serverAccount.getPersona()==1)
                                 bOrders.setWaiter_names(serverAccount.getWaiter_names());
                             bOrders.setOrderStatus(status);
-                            sOrdersList.put(orderId,bOrders);
+                            //sOrdersList.put(orderId,bOrders);
                         }
                     }
                 }

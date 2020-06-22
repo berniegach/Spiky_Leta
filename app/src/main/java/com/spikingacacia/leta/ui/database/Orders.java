@@ -1,24 +1,24 @@
 package com.spikingacacia.leta.ui.database;
 
-public class SOrders
+public class Orders
 {
     private int id;
-    private int userId;
+    private String userEmail;
     private int itemId;
     private int orderNumber;
     private int orderStatus;
     private String orderName;
     private double price;
-    public String username;
-    public String waiter_names;
-    public int tableNumber;
+    private String username;
+    private String waiter_names;
+    private int tableNumber;
     private String dateAdded;
     private String dateChanged;
 
-    public SOrders(int id, int userId, int itemId, int orderNumber, int orderStatus, String orderName, double price, String username, String waiter_names, int tableNumber, String dateAdded, String dateChanged)
+    public Orders(int id, String userEmail, int itemId, int orderNumber, int orderStatus, String orderName, double price, String username, String waiter_names, int tableNumber, String dateAdded, String dateChanged)
     {
         this.id = id;
-        this.userId = userId;
+        this.userEmail = userEmail;
         this.itemId = itemId;
         this.orderNumber = orderNumber;
         this.orderStatus = orderStatus;
@@ -41,14 +41,14 @@ public class SOrders
         this.id = id;
     }
 
-    public int getUserId()
+    public String getUserId()
     {
-        return userId;
+        return userEmail;
     }
 
-    public void setUserId(int userId)
+    public void setUserId(String userEmail)
     {
-        this.userId = userId;
+        this.userEmail = userEmail;
     }
 
     public int getItemId()

@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.LoginA;
 import com.spikingacacia.leta.ui.Preferences;
-import com.spikingacacia.leta.ui.database.SOrders;
+import com.spikingacacia.leta.ui.database.Orders;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -160,24 +160,24 @@ public class SOOrderOverviewF extends Fragment
         double total_price=0.0;
         String date_to_show="";
         String waiter="";
-        Iterator iterator= LoginA.sOrdersList.entrySet().iterator();
+        Iterator iterator= null;//LoginA.sOrdersList.entrySet().iterator();
         while (iterator.hasNext())
         {
-            LinkedHashMap.Entry<Integer, SOrders>set=(LinkedHashMap.Entry<Integer, SOrders>) iterator.next();
-            SOrders sOrders=set.getValue();
-            int itemId=sOrders.getItemId();
-            int order_number=sOrders.getOrderNumber();
-            int orderStatus=sOrders.getOrderStatus();
-            String orderName=sOrders.getOrderName();
+            LinkedHashMap.Entry<Integer, Orders>set=(LinkedHashMap.Entry<Integer, Orders>) iterator.next();
+            Orders orders =set.getValue();
+            int itemId= orders.getItemId();
+            int order_number= orders.getOrderNumber();
+            int orderStatus= orders.getOrderStatus();
+            String orderName= orders.getOrderName();
             orderName=orderName.replace("_"," ");
-            double price=sOrders.getPrice();
-            String dateAdded=sOrders.getDateAdded();
+            double price= orders.getPrice();
+            String dateAdded= orders.getDateAdded();
             String[] date=dateAdded.split(" ");
             if(!(date[0]+":"+order_number+":"+orderStatus).contentEquals(mOrder))
                 continue;
-            username=sOrders.getUsername();
-            waiter=sOrders.getWaiter_names();
-            table=sOrders.getTableNumber();
+            username= orders.getUsername();
+            waiter= orders.getWaiter_names();
+            table= orders.getTableNumber();
             if(count==0)
             {
                 progressBar.setProgress(orderStatus);

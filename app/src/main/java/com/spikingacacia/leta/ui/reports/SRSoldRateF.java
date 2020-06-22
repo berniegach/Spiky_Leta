@@ -1,18 +1,13 @@
 package com.spikingacacia.leta.ui.reports;
 
 
-import android.Manifest;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
@@ -24,49 +19,36 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IFillFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.Preferences;
-import com.spikingacacia.leta.ui.database.SOrders;
+import com.spikingacacia.leta.ui.database.Orders;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
-import java.util.Set;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-import static com.spikingacacia.leta.ui.LoginA.sOrdersList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -405,12 +387,12 @@ public class SRSoldRateF extends Fragment
         {
             //first get the earlist order date
             Date earliest_date=null;
-            Iterator iterator= sOrdersList.entrySet().iterator();
+            Iterator iterator=null;//= sOrdersList.entrySet().iterator();
             int count_date=0;
             while (iterator.hasNext())
             {
-                LinkedHashMap.Entry<Integer, SOrders> set = (LinkedHashMap.Entry<Integer, SOrders>) iterator.next();
-                SOrders bOrders = set.getValue();
+                LinkedHashMap.Entry<Integer, Orders> set = (LinkedHashMap.Entry<Integer, Orders>) iterator.next();
+                Orders bOrders = set.getValue();
                 int orderStatus = bOrders.getOrderStatus();
                 String dateChanged = bOrders.getDateChanged();
                 String[] date_pieces = dateChanged.split(":"); // the date is in the form "dd-MM-yyyy HH:mm"
@@ -429,11 +411,11 @@ public class SRSoldRateF extends Fragment
             {
 
                 double total_price=0;
-                iterator= sOrdersList.entrySet().iterator();
+                //iterator;//= sOrdersList.entrySet().iterator();
                 while (iterator.hasNext())
                 {
-                    LinkedHashMap.Entry<Integer, SOrders> set = (LinkedHashMap.Entry<Integer, SOrders>) iterator.next();
-                    SOrders bOrders = set.getValue();
+                    LinkedHashMap.Entry<Integer, Orders> set = (LinkedHashMap.Entry<Integer, Orders>) iterator.next();
+                    Orders bOrders = set.getValue();
                     int orderStatus = bOrders.getOrderStatus();
                     String dateChanged = bOrders.getDateChanged();
                     double price=bOrders.getPrice();

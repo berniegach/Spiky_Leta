@@ -7,11 +7,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -30,7 +27,7 @@ import com.google.android.gms.tasks.Task;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.database.DMenu;
 import com.spikingacacia.leta.ui.database.SMessages;
-import com.spikingacacia.leta.ui.database.SOrders;
+import com.spikingacacia.leta.ui.database.Orders;
 import com.spikingacacia.leta.ui.database.ServerAccount;
 import com.spikingacacia.leta.ui.billing.BillingManager;
 import com.spikingacacia.leta.ui.billing.BillingProvider;
@@ -72,7 +69,6 @@ public class LoginA extends AppCompatActivity
     public static ServerAccount serverAccount;
     public static LinkedHashMap<String, SMessages> sMessagesList;
     public static LinkedHashMap<Integer, DMenu> sItemsList;
-    public static LinkedHashMap<Integer, SOrders>sOrdersList;
     public static LinkedHashMap<Integer, WaitersD> waitersList;
     public static int who;
     public static String currentSubscription="Non";
@@ -129,7 +125,6 @@ public class LoginA extends AppCompatActivity
         serverAccount =new ServerAccount();
         sMessagesList=new LinkedHashMap<>();
         sItemsList=new LinkedHashMap<>();
-        sOrdersList=new LinkedHashMap<>();
         waitersList=new LinkedHashMap<>();
 
 
@@ -229,7 +224,6 @@ public class LoginA extends AppCompatActivity
         //sellers
         if(!sMessagesList.isEmpty())sMessagesList.clear();
         if(!sItemsList.isEmpty())sItemsList.clear();
-        if(!sOrdersList.isEmpty())sOrdersList.clear();
         if(!waitersList.isEmpty())waitersList.clear();
         AppRunningInThisActivity=true;
         //billing
@@ -762,96 +756,7 @@ public class LoginA extends AppCompatActivity
         }
     }
 
-    /**
-     * Following code will get the sellers orders
-     * The returned infos are id, userId, itemId, orderNumber, orderStatus, orderName, price, dateAdded, dateChanged
-     * * Arguments are:
-     * id==boss id.
-     * Returns are:
-     * success==1 successful get
-     * success==0 for id argument missing
-     **/
-    private class SOrdersTask extends AsyncTask<Void, Void, Boolean>
-    {
-        private String TAG_SUCCESS="success";
-        private String TAG_MESSAGE="message";
-        private  JSONParser jsonParser;
-        @Override
-        protected void onPreExecute()
-        {
-            Log.d("BORDERS: ","starting....");
-            if(!sOrdersList.isEmpty())sOrdersList.clear();
-            jsonParser = new JSONParser();
-            super.onPreExecute();
-        }
-        @Override
-        protected Boolean doInBackground(Void... params)
-        {
-            //getting columns list
-            List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("id",Integer.toString(serverAccount.getId())));
-            // making HTTP request
-            String url_get_s_orders = base_url + "get_seller_orders.php";
-            JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_orders,"POST",info);
-            Log.d("sItems",""+jsonObject.toString());
-            try
-            {
-                JSONArray itemsArrayList=null;
-                int success=jsonObject.getInt(TAG_SUCCESS);
-                if(success==1)
-                {
-                    itemsArrayList=jsonObject.getJSONArray("items");
-                    for(int count=0; count<itemsArrayList.length(); count+=1)
-                    {
-                        JSONObject jsonObjectNotis=itemsArrayList.getJSONObject(count);
-                        int id=jsonObjectNotis.getInt("id");
-                        int user_id=jsonObjectNotis.getInt("userid");
-                        int item_id=jsonObjectNotis.getInt("itemid");
-                        int order_number=jsonObjectNotis.getInt("ordernumber");
-                        int orderstatus=jsonObjectNotis.getInt("orderstatus");
-                        String dateadded=jsonObjectNotis.getString("dateadded");
-                        String datechanged=jsonObjectNotis.getString("datechanged");
-                        String item=jsonObjectNotis.getString("item");
-                        double selling_price=jsonObjectNotis.getDouble("sellingprice");
-                        String username=jsonObjectNotis.getString("username");
-                        String waiter_names=jsonObjectNotis.getString("waiter_names");
-                        int table_number=jsonObjectNotis.getInt("table_number");
 
-                        SOrders sOrders=new SOrders(id,user_id,item_id,order_number,orderstatus,item,selling_price, username,waiter_names,table_number,dateadded,datechanged);
-                        sOrdersList.put(id,sOrders);
-                    }
-                    return true;
-                }
-                else
-                {
-                    String message=jsonObject.getString(TAG_MESSAGE);
-                    Log.e(TAG_MESSAGE,""+message);
-                    return false;
-                }
-            }
-            catch (JSONException e)
-            {
-                Log.e("JSON",""+e.getMessage());
-                return false;
-            }
-        }
-        @Override
-        protected void onPostExecute(final Boolean successful) {
-            Log.d("BORDERS: ","finished...."+"progress: "+String.valueOf(loginProgress));
-            loginProgress+=1;
-            if (loginProgress == sFinalProgress)
-                stopService(intentLoginProgress);
-
-            if (successful)
-            {
-
-            }
-            else
-            {
-
-            }
-        }
-    }
     private class WaitersTask extends AsyncTask<Void, Void, Boolean>
     {
         private String TAG_SUCCESS="success";

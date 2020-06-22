@@ -28,8 +28,7 @@
             android:label="@string/title_activity_srreports"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.orders.SOOrdersA"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".ui.orders.OrdersActivity" />
         <activity
             android:name=".ui.inventory.SIInventoryA"
             android:theme="@style/AppTheme.NoActionBar" />
