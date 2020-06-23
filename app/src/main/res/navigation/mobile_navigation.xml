@@ -18,8 +18,8 @@
         tools:layout="@layout/fragment_orders_overview" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.spikingacacia.leta.ui.main.notifications.NotificationsFragment"
+        android:id="@+id/navigation_messages"
+        android:name="com.spikingacacia.leta.ui.main.messages.MessagesFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_messages_list" />
 </navigation>

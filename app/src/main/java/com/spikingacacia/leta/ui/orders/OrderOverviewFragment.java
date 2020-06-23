@@ -3,6 +3,7 @@ package com.spikingacacia.leta.ui.orders;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import android.view.Gravity;
@@ -15,7 +16,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.spikingacacia.leta.R;
-import com.spikingacacia.leta.ui.LoginA;
 import com.spikingacacia.leta.ui.Preferences;
 import com.spikingacacia.leta.ui.database.Orders;
 
@@ -25,12 +25,12 @@ import java.util.LinkedHashMap;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link SOOrderOverviewF.OnFragmentInteractionListener} interface
+ * {@link OrderOverviewFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link SOOrderOverviewF#newInstance} factory method to
+ * Use the {@link OrderOverviewFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SOOrderOverviewF extends Fragment
+public class OrderOverviewFragment extends Fragment
 {
     private static final String ARG_ORDER = "order";
     private static final String ARG_FORMAT = "order_format";
@@ -41,13 +41,13 @@ public class SOOrderOverviewF extends Fragment
     private OnFragmentInteractionListener mListener;
     Preferences preferences;
 
-    public SOOrderOverviewF()
+    public OrderOverviewFragment()
     {
         // Required empty public constructor
     }
-    public static SOOrderOverviewF newInstance(String order,int format, int station)
+    public static OrderOverviewFragment newInstance(String order, int format, int station)
     {
-        SOOrderOverviewF fragment = new SOOrderOverviewF();
+        OrderOverviewFragment fragment = new OrderOverviewFragment();
         Bundle args = new Bundle();
         args.putString(ARG_ORDER, order);
         args.putInt(ARG_FORMAT, format);
@@ -73,7 +73,7 @@ public class SOOrderOverviewF extends Fragment
                              Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.f_soorder_overview, container, false);
+        View view= inflater.inflate(R.layout.fragment_order_overview, container, false);
         //preference
         preferences=new Preferences(getContext());
 
@@ -160,7 +160,7 @@ public class SOOrderOverviewF extends Fragment
         double total_price=0.0;
         String date_to_show="";
         String waiter="";
-        Iterator iterator= null;//LoginA.sOrdersList.entrySet().iterator();
+        Iterator iterator= OrdersFragment.ordersLinkedHashMap.entrySet().iterator();
         while (iterator.hasNext())
         {
             LinkedHashMap.Entry<Integer, Orders>set=(LinkedHashMap.Entry<Integer, Orders>) iterator.next();
@@ -183,42 +183,24 @@ public class SOOrderOverviewF extends Fragment
                 progressBar.setProgress(orderStatus);
             }
             //add the layouts
-            //main layout
-            LinearLayout l_main=new LinearLayout(getContext());
-            l_main.setWeightSum(10);
-            l_main.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            l_main.setOrientation(LinearLayout.HORIZONTAL);
-            l_main.setPadding(2,2,2,2);
-            //textView for count
-            TextView t_count=new TextView(getContext());
-            t_count.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+            //cardview
+            View layout = inflater.inflate(R.layout.order_cardview_layout,null);
+            TextView t_count = layout.findViewById(R.id.count);
+            TextView t_item = layout.findViewById(R.id.item);
+            TextView t_price = layout.findViewById(R.id.price);
+
             t_count.setText(String.valueOf(count+1));
-            t_count.setGravity(Gravity.START);
-            //textview for names
-            TextView t_names=new TextView(getContext());
-            t_names.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,6));
-            t_names.setText(orderName);
-            t_names.setGravity(Gravity.CENTER);
-            //textview for price
-            TextView t_price=new TextView(getContext());
-            t_price.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,3));
+            t_item.setText(orderName);
             t_price.setText(String.valueOf(price));
-            t_price.setGravity(Gravity.END);
-            //add the layouts
-            l_main.addView(t_count);
-            l_main.addView(t_names);
-            l_main.addView(t_price);
-            l_base.addView(l_main);
+            l_base.addView(layout);
+
+
             count+=1;
             total_price+=price;
             date_to_show=dateAdded;
         }
-        //textview for total price
-        TextView t_total=new TextView(getContext());
-        t_total.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        t_total.setGravity(Gravity.END);
-        t_total.setText("Total: "+String.valueOf(total_price));
-        l_base.addView(t_total);
+        ((TextView)view.findViewById(R.id.total)).setText("Total "+String.valueOf(total_price));
+       // l_base.addView(t_total);
         //set date text
         t_date.setText(date_to_show);
         t_username.setText(username);

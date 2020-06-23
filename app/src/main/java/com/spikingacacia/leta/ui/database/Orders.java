@@ -3,6 +3,7 @@ package com.spikingacacia.leta.ui.database;
 public class Orders
 {
     private int id;
+    private int userId;
     private String userEmail;
     private int itemId;
     private int orderNumber;
@@ -15,9 +16,10 @@ public class Orders
     private String dateAdded;
     private String dateChanged;
 
-    public Orders(int id, String userEmail, int itemId, int orderNumber, int orderStatus, String orderName, double price, String username, String waiter_names, int tableNumber, String dateAdded, String dateChanged)
+    public Orders(int id,int userId, String userEmail, int itemId, int orderNumber, int orderStatus, String orderName, double price, String username, String waiter_names, int tableNumber, String dateAdded, String dateChanged)
     {
         this.id = id;
+        this.userId = userId;
         this.userEmail = userEmail;
         this.itemId = itemId;
         this.orderNumber = orderNumber;
@@ -41,12 +43,21 @@ public class Orders
         this.id = id;
     }
 
-    public String getUserId()
+    public int getUserId()
+    {
+        return userId;
+    }
+
+    public void setUserId(int userId)
+    {
+        this.userId = userId;
+    }
+    public String getUserEmail()
     {
         return userEmail;
     }
 
-    public void setUserId(String userEmail)
+    public void setUserEmail(String userEmail)
     {
         this.userEmail = userEmail;
     }

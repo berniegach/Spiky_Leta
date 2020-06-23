@@ -32,7 +32,7 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
     private List<DMenu> mValues;
     private List<DMenu>itemsCopy;
     private final OnListFragmentInteractionListener mListener;
-    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
+    private ImageLoader imageLoader = AppController.getInstance().getImageLoader();
     private Context context;
     private FragmentManager fragmentManager;
     private static int lastImageFaded = -1;

@@ -27,7 +27,7 @@ import static com.spikingacacia.leta.ui.LoginA.serverAccount;
 
 public class OrdersActivity extends AppCompatActivity
     implements  OrdersFragment.OnListFragmentInteractionListener,
-        SOOrderOverviewF.OnFragmentInteractionListener
+        OrderOverviewFragment.OnFragmentInteractionListener
 {
     private String fragmentWhich="overview";
     private String buyerEmail;
@@ -58,7 +58,7 @@ public class OrdersActivity extends AppCompatActivity
     public void onListFragmentInteraction(Orders item)
     {
         final int format= serverAccount.getOrderFormat();
-        buyerEmail =item.getUserId();
+        buyerEmail =item.getUserEmail();
         orderId=item.getId();
         orderNumber=item.getOrderNumber();
         dateAdded=item.getDateAdded();
@@ -66,14 +66,14 @@ public class OrdersActivity extends AppCompatActivity
         String dateAdded=item.getDateAdded();
         String[] date=dateAdded.split(" ");
         String message=date[0]+":"+item.getOrderNumber()+":"+item.getOrderStatus();
-        Fragment fragment=SOOrderOverviewF.newInstance(message, format, item.getOrderStatus());
+        Fragment fragment= OrderOverviewFragment.newInstance(message, format, item.getOrderStatus());
         FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.base,fragment,"order");
         transaction.addToBackStack("order");
         transaction.commit();
     }
     /**
-     * implementation of SOOrderOverviewF.java
+     * implementation of OrderOverviewFragment.java
      * */
     @Override
     public void onAcceptDecline(int which, int status)
@@ -91,13 +91,13 @@ public class OrdersActivity extends AppCompatActivity
     private class BOrdersFormatUpdateTask extends AsyncTask<Void, Void, Boolean>
     {
         int status;
-        int waiter_id=0;
+        String waiter_email="";
         private JSONParser jsonParser;
         public BOrdersFormatUpdateTask(int status)
         {
             this.status=status;
             if(serverAccount.getPersona()==1)
-                waiter_id= serverAccount.getWaiter_id();
+                waiter_email= serverAccount.getWaiter_email();
             jsonParser = new JSONParser();
         }
         @Override
@@ -110,9 +110,9 @@ public class OrdersActivity extends AppCompatActivity
         {
             //getting columns list
             List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("seller_id",Integer.toString(serverAccount.getId())));
-            info.add(new BasicNameValuePair("buyer_id",String.valueOf(buyerEmail)));
-            info.add(new BasicNameValuePair("waiter_id",Integer.toString(waiter_id)));
+            info.add(new BasicNameValuePair("seller_email",serverAccount.getEmail()));
+            info.add(new BasicNameValuePair("buyer_email",String.valueOf(buyerEmail)));
+            info.add(new BasicNameValuePair("waiter_email",waiter_email));
             info.add(new BasicNameValuePair("order_id",String.valueOf(orderId)));
             info.add(new BasicNameValuePair("order_number",String.valueOf(orderNumber)));
             info.add(new BasicNameValuePair("status",String.valueOf(status)));
@@ -146,31 +146,7 @@ public class OrdersActivity extends AppCompatActivity
             Log.d("SORDERUPDATE: ","finished....");
             if (successful)
             {
-                //set the order in the orderlist
-                Iterator iterator=null;//LoginA.sOrdersList.entrySet().iterator();
-                while (iterator.hasNext())
-                {
-                    LinkedHashMap.Entry<Integer, Orders>set=(LinkedHashMap.Entry<Integer, Orders>) iterator.next();
-                    Orders bOrders=set.getValue();
-                    int o_id=bOrders.getId();
-                    if(o_id==orderId)
-                    {
-                        if(status==0)
-                        {
-                            //remove the order
-                            iterator.remove();
-                        }
-                        else
-                        {
-                            if(serverAccount.getPersona()==1)
-                                bOrders.setWaiter_names(serverAccount.getWaiter_names());
-                            bOrders.setOrderStatus(status);
-                            //sOrdersList.put(orderId,bOrders);
-                        }
-                    }
-                }
-               finish();
-                startActivity(getIntent());
+                onBackPressed();
             }
             else
             {

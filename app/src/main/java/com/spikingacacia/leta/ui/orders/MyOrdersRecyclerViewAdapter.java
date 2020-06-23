@@ -8,7 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.spikingacacia.leta.R;
+import com.spikingacacia.leta.ui.AppController;
+import com.spikingacacia.leta.ui.LoginA;
 import com.spikingacacia.leta.ui.Preferences;
 import com.spikingacacia.leta.ui.database.Orders;
 import com.spikingacacia.leta.ui.orders.OrdersFragment.OnListFragmentInteractionListener;
@@ -20,11 +24,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link OrderItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
+import static com.spikingacacia.leta.ui.LoginA.serverAccount;
+
+
 public class MyOrdersRecyclerViewAdapter extends RecyclerView.Adapter<MyOrdersRecyclerViewAdapter.ViewHolder>
 {
 
@@ -33,8 +35,7 @@ public class MyOrdersRecyclerViewAdapter extends RecyclerView.Adapter<MyOrdersRe
     private final OnListFragmentInteractionListener mListener;
     private Context mContext;
     private  int mWhichOrder;
-    Preferences preferences;
-
+    private ImageLoader imageLoader = AppController.getInstance().getImageLoader();
     public MyOrdersRecyclerViewAdapter(OnListFragmentInteractionListener listener, Context context, int whichOrder)
     {
         mValues = new ArrayList<>();
@@ -43,21 +44,22 @@ public class MyOrdersRecyclerViewAdapter extends RecyclerView.Adapter<MyOrdersRe
         itemsCopy = new ArrayList<>();
         mContext=context;
         mWhichOrder=whichOrder;
-        //preference
-        preferences=new Preferences(context);
+        if (imageLoader == null)
+            imageLoader = AppController.getInstance().getImageLoader();
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.f_soorder, parent, false);
+                .inflate(R.layout.fragment_orders, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position)
     {
+        String image_url= LoginA.base_url+"src/buyers_pics/";
         holder.mItem = mValues.get(position);
         holder.mOrderView.setText("Order "+mValues.get(position).getOrderNumber());
         holder.mTableView.setText("Table "+mValues.get(position).getTableNumber());
@@ -87,6 +89,8 @@ public class MyOrdersRecyclerViewAdapter extends RecyclerView.Adapter<MyOrdersRe
                 }
             }
         });
+        String url=image_url+String.valueOf(mValues.get(position).getUserId())+'_'+String.valueOf(serverAccount.getImageType());
+        holder.image.setImageUrl(url, imageLoader);
     }
 
     @Override
@@ -119,7 +123,7 @@ public class MyOrdersRecyclerViewAdapter extends RecyclerView.Adapter<MyOrdersRe
     public class ViewHolder extends RecyclerView.ViewHolder
     {
         public final View mView;
-        public final TextView mPositionView;
+        public final NetworkImageView image;
         public final TextView mOrderView;
         public final TextView mTableView;
         public final TextView mUsernameView;
@@ -130,7 +134,7 @@ public class MyOrdersRecyclerViewAdapter extends RecyclerView.Adapter<MyOrdersRe
         {
             super(view);
             mView = view;
-            mPositionView = (TextView) view.findViewById(R.id.position);
+            image = view.findViewById(R.id.image);
             mOrderView = (TextView) view.findViewById(R.id.order_number);
             mTableView = (TextView) view.findViewById(R.id.table_number);
             mUsernameView = (TextView) view.findViewById(R.id.username);

@@ -25,6 +25,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -46,6 +48,7 @@ public class OrdersFragment extends Fragment
     private int mWhichOrder=0;
     private  RecyclerView recyclerView;
     private MyOrdersRecyclerViewAdapter myOrdersRecyclerViewAdapter;
+    public static LinkedHashMap<Integer,Orders> ordersLinkedHashMap;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -83,14 +86,14 @@ public class OrdersFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.f_soorder_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_orders_list, container, false);
+        ordersLinkedHashMap = new LinkedHashMap<>();
 
         // Set the adapter
         if (view instanceof RecyclerView)
         {
             Context context = view.getContext();
             recyclerView = (RecyclerView) view;
-            recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             myOrdersRecyclerViewAdapter = new MyOrdersRecyclerViewAdapter(mListener,getContext(),mWhichOrder);
             recyclerView.setAdapter(myOrdersRecyclerViewAdapter);
@@ -139,12 +142,15 @@ public class OrdersFragment extends Fragment
         private String TAG_MESSAGE="message";
         private JSONParser jsonParser;
         private List<Orders> ordersList;
+        private LinkedHashMap<String,Orders> uniqueOrderLinkedHashMap;
         @Override
         protected void onPreExecute()
         {
             Log.d("BORDERS: ","starting....");
             ordersList = new LinkedList<>();
+            uniqueOrderLinkedHashMap = new LinkedHashMap<>();
             jsonParser = new JSONParser();
+            ordersLinkedHashMap.clear();
             super.onPreExecute();
         }
         @Override
@@ -167,10 +173,14 @@ public class OrdersFragment extends Fragment
                     {
                         JSONObject jsonObjectNotis=itemsArrayList.getJSONObject(count);
                         int id=jsonObjectNotis.getInt("id");
+                        int user_id = jsonObjectNotis.getInt("user_id");
                         String user_email=jsonObjectNotis.getString("user_email");
                         int item_id=jsonObjectNotis.getInt("item_id");
                         int order_number=jsonObjectNotis.getInt("order_number");
                         int order_status=jsonObjectNotis.getInt("order_status");
+                        if(mWhichOrder!=order_status)
+                            continue;
+
                         String date_added=jsonObjectNotis.getString("date_added");
                         String date_changed=jsonObjectNotis.getString("date_changed");
                         String item=jsonObjectNotis.getString("item");
@@ -179,8 +189,12 @@ public class OrdersFragment extends Fragment
                         String waiter_names=jsonObjectNotis.getString("waiter_names");
                         int table_number=jsonObjectNotis.getInt("table_number");
 
-                        Orders orders =new Orders(id,user_email,item_id,order_number,order_status,item,selling_price, username,waiter_names,table_number,date_added,date_changed);
+                        Orders orders =new Orders(id,user_id,user_email,item_id,order_number,order_status,item,selling_price, username,waiter_names,table_number,date_added,date_changed);
+                        ordersLinkedHashMap.put(id,orders);
                         ordersList.add(orders);
+                        String[] date_pieces=date_added.split(" ");
+                        String unique_name=date_pieces[0]+":"+order_number+":"+order_status;
+                        uniqueOrderLinkedHashMap.put(unique_name,orders);
                     }
                     return true;
                 }
@@ -202,7 +216,14 @@ public class OrdersFragment extends Fragment
 
             if (successful)
             {
-                myOrdersRecyclerViewAdapter.listUpdated(ordersList);
+                List<Orders> unique_order= new ArrayList<>();
+                Iterator iterator = uniqueOrderLinkedHashMap.entrySet().iterator();
+                while (iterator.hasNext())
+                {
+                    LinkedHashMap.Entry<String, Orders> value = ( LinkedHashMap.Entry<String, Orders>) iterator.next();
+                    unique_order.add(value.getValue());
+                }
+                myOrdersRecyclerViewAdapter.listUpdated(unique_order);
             }
             else
             {
