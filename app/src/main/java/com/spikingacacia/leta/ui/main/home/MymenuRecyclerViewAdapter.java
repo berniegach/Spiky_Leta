@@ -85,13 +85,13 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
                 if(holder.image.getImageAlpha()==20)
                 {
                     holder.image.setImageAlpha(255);
-                    holder.mItemView.setAlpha((float)0.4);
+                    //holder.mItemView.setAlpha((float)0.4);
                     holder.mDescriptionView.setAlpha((float)0.0);
                 }
                 else
                 {
                     holder.image.setImageAlpha(20);
-                    holder.mItemView.setAlpha((float)1.0);
+                    //holder.mItemView.setAlpha((float)1.0);
                     holder.mDescriptionView.setAlpha((float)1.0);
                 }
             }

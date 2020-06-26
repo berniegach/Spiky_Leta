@@ -365,7 +365,6 @@ public class OrdersOverviewFragment extends Fragment
         paymentCount=0;
         finishedCount=0;
         setCounts();
-        Log.e("PAYMENT COUNT",""+paymentCount);
         //set the formats
         final int format=LoginA.serverAccount.getOrderFormat();
         if(format==1)

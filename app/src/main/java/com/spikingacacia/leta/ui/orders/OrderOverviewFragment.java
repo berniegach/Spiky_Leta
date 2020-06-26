@@ -74,8 +74,6 @@ public class OrderOverviewFragment extends Fragment
     {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_order_overview, container, false);
-        //preference
-        preferences=new Preferences(getContext());
 
         ProgressBar progressBar=view.findViewById(R.id.progress);
         LinearLayout l_base=view.findViewById(R.id.orders_base);

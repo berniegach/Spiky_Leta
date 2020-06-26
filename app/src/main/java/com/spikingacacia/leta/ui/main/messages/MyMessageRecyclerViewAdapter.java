@@ -1,29 +1,33 @@
 package com.spikingacacia.leta.ui.main.messages;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.spikingacacia.leta.R;
-import com.spikingacacia.leta.ui.main.messages.dummy.DummyContent.DummyItem;
+import androidx.recyclerview.widget.RecyclerView;
 
+
+import com.spikingacacia.leta.R;
+import com.spikingacacia.leta.ui.database.Messages;
+
+import org.ocpsoft.prettytime.PrettyTime;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.LinkedList;
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class MyMessageRecyclerViewAdapter extends RecyclerView.Adapter<MyMessageRecyclerViewAdapter.ViewHolder>
 {
 
-    private final List<DummyItem> mValues;
+    private List<Messages> mValues;
+    private List<Messages> itemsCopy;
 
-    public MyMessageRecyclerViewAdapter(List<DummyItem> items)
+    public MyMessageRecyclerViewAdapter()
     {
-        mValues = items;
+        mValues = new LinkedList<>();
+        itemsCopy = new LinkedList<>();
     }
 
     @Override
@@ -38,8 +42,17 @@ public class MyMessageRecyclerViewAdapter extends RecyclerView.Adapter<MyMessage
     public void onBindViewHolder(final ViewHolder holder, int position)
     {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mMessageView.setText(mValues.get(position).getMessage());
+        //format the date
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        PrettyTime p = new PrettyTime();
+        try
+        {
+            holder.mDateView.setText(p.format(format.parse(mValues.get(position).getDateAdded())));
+        } catch (ParseException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -51,22 +64,45 @@ public class MyMessageRecyclerViewAdapter extends RecyclerView.Adapter<MyMessage
     public class ViewHolder extends RecyclerView.ViewHolder
     {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public DummyItem mItem;
+        public final TextView mMessageView;
+        public final TextView mDateView;
+        public Messages mItem;
 
         public ViewHolder(View view)
         {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mMessageView = (TextView) view.findViewById(R.id.message);
+            mDateView = (TextView) view.findViewById(R.id.date);
         }
 
         @Override
         public String toString()
         {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + mMessageView.getText() + "'";
         }
+    }
+    public void filter(String text)
+    {
+        mValues.clear();
+        if(text.isEmpty())
+            mValues.addAll(itemsCopy);
+        else
+        {
+            text=text.toLowerCase();
+            for(Messages messageItem:itemsCopy)
+            {
+                if(messageItem.getMessage().toLowerCase().contains(text))
+                    mValues.add(messageItem);
+            }
+        }
+        notifyDataSetChanged();
+    }
+    public void listUpdated(List<Messages> newitems)
+    {
+        mValues.clear();
+        mValues.addAll(newitems);
+        itemsCopy.addAll(newitems);
+        notifyDataSetChanged();
     }
 }
