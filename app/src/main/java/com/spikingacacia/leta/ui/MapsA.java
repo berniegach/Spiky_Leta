@@ -134,7 +134,7 @@ public class MapsA extends FragmentActivity implements
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         //marker for business location
-        String pos=LoginA.serverAccount.getLocation();
+        String pos= LoginActivity.serverAccount.getLocation();
         if(pos.contentEquals("null"))
         {
             getCurrentLocation(1);
@@ -145,7 +145,7 @@ public class MapsA extends FragmentActivity implements
             latMyPos=new LatLng(Double.parseDouble(myPos[0]),Double.parseDouble(myPos[1]));
             myMarker=mMap.addMarker(new MarkerOptions()
                     .position(latMyPos)
-                    .title(LoginA.serverAccount.getUsername()).draggable(true)
+                    .title(LoginActivity.serverAccount.getUsername()).draggable(true)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latMyPos,maxZoomLevel));
         }
@@ -197,7 +197,7 @@ public class MapsA extends FragmentActivity implements
                                     //the position is null and we have no marker therefore we use mylocation
                                     myMarker=mMap.addMarker(new MarkerOptions()
                                             .position(latMyPos)
-                                            .title(LoginA.serverAccount.getUsername()).draggable(true)
+                                            .title(LoginActivity.serverAccount.getUsername()).draggable(true)
                                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
                                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latMyPos,maxZoomLevel));
                                 }

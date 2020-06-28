@@ -1,5 +1,6 @@
 package com.spikingacacia.leta.ui.main;
 
+import android.app.Instrumentation;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,12 +31,14 @@ import com.spikingacacia.leta.ui.main.home.ItemDialogEdit;
 import com.spikingacacia.leta.ui.main.home.menuFragment;
 import com.spikingacacia.leta.ui.main.orders.OrdersOverviewFragment;
 import com.spikingacacia.leta.ui.orders.OrdersActivity;
+import com.spikingacacia.leta.ui.qr_code.QrCodeActivity;
+import com.spikingacacia.leta.ui.waiters.WaitersActivity;
 
 
 import java.util.LinkedHashMap;
 
-import static com.spikingacacia.leta.ui.LoginA.mGoogleSignInClient;
-import static com.spikingacacia.leta.ui.LoginA.serverAccount;
+import static com.spikingacacia.leta.ui.LoginActivity.mGoogleSignInClient;
+import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 public class MainActivity extends AppCompatActivity implements
         menuFragment.OnListFragmentInteractionListener, ItemDialog.NoticeDialogListener, ItemDialogEdit.NoticeDialogListener,
@@ -47,6 +50,26 @@ public class MainActivity extends AppCompatActivity implements
     public static LinkedHashMap<Integer, Categories> categoriesLinkedHashMap;
     public static LinkedHashMap<Integer, DMenu> menuLinkedHashMap;
     private String TAG ="MainA";
+    /*ActivityResultLauncher<Intent> mGetBarcode = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<Instrumentation.ActivityResult>() {
+                @Override
+                public void onActivityResult(Instrumentation.ActivityResult result)
+                {
+                    Intent intent = result.getData();
+                    try
+                    {
+                        Barcode barcode = intent.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
+                        barcodeReceived(barcode);
+                    }
+                    catch (NullPointerException excpetion)
+                    {
+                        Log.e(TAG,"no barcode");
+                        // TODO: remove this its only for testing
+                        //onCorrectScan();
+                    }
+
+                }
+            });*/
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -73,6 +96,13 @@ public class MainActivity extends AppCompatActivity implements
     {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
+        MenuItem menu_waiters = menu.findItem(R.id.action_waiter);
+        MenuItem menu_qr_codes = menu.findItem(R.id.action_qr_codes);
+        if(serverAccount.getPersona()==1)
+        {
+            menu_waiters.setVisible(false);
+            menu_qr_codes.setVisible(false);
+        }
         return true;
     }
 
@@ -83,9 +113,20 @@ public class MainActivity extends AppCompatActivity implements
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        if(id == R.id.action_waiter)
+        {
+            Intent intent=new Intent(MainActivity.this, WaitersActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(intent);
+        }
+        else if(id == R.id.action_qr_codes)
+        {
+            Intent intent=new Intent(MainActivity.this, QrCodeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(intent);
+        }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings)
+        else if (id == R.id.action_settings)
         {
             proceedToSettings();
             return true;
@@ -98,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements
                 public void onComplete(@NonNull Task<Void> task)
                 {
                     Log.d(TAG,"gmail signed out");
-                    finish();
+                    finishAffinity();
                 }
             });
         }

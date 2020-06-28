@@ -1,6 +1,6 @@
 package com.spikingacacia.leta.ui.inventory;
 
-import com.spikingacacia.leta.ui.LoginA;
+import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.database.DMenu;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class SIItemC
     public SIItemC(int categoryId, int groupId)
     {
         int pos=1;
-        Iterator iterator= LoginA.sItemsList.entrySet().iterator();
+        Iterator iterator= LoginActivity.sItemsList.entrySet().iterator();
         while(iterator.hasNext())
         {
             LinkedHashMap.Entry<Integer, DMenu>set=(LinkedHashMap.Entry<Integer, DMenu>) iterator.next();

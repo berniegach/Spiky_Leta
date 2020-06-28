@@ -1,11 +1,21 @@
 package com.spikingacacia.leta.ui.database;
 
-public class WaitersD
+public class Waiters
 {
     private int id;
     private String email;
     private String names;
     private double rating;
+    private String imageType;
+
+    public Waiters(int id, String email, String names, double rating, String imageType)
+    {
+        this.id = id;
+        this.email = email;
+        this.names = names;
+        this.rating = rating;
+        this.imageType = imageType;
+    }
 
     public int getId()
     {
@@ -46,13 +56,16 @@ public class WaitersD
     {
         this.rating = rating;
     }
-    public WaitersD(int id, String email, String names, double rating)
+    public String getImageType()
     {
-        this.id = id;
-        this.email = email;
-        this.names = names;
-        this.rating = rating;
+        return imageType;
     }
+
+    public void setImageType(String imageType)
+    {
+        this.imageType = imageType;
+    }
+
 
 
 

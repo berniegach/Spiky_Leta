@@ -41,7 +41,7 @@ public class MainViewController {
     private static final int TANK_MAX = 4;
 
     private final UpdateListener mUpdateListener;
-    private LoginA mActivity;
+    private LoginActivity mActivity;
 
     // Tracks if we currently own subscriptions SKUs
     private boolean mMonthly;
@@ -53,7 +53,7 @@ public class MainViewController {
     // Current amount of gas in tank, in units
     //private int mTank;
 
-    public MainViewController(LoginA activity) {
+    public MainViewController(LoginActivity activity) {
         mUpdateListener = new UpdateListener();
         mActivity = activity;
         //loadData();

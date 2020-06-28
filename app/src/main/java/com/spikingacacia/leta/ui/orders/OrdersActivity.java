@@ -18,12 +18,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 
-import static com.spikingacacia.leta.ui.LoginA.base_url;
-import static com.spikingacacia.leta.ui.LoginA.serverAccount;
+import static com.spikingacacia.leta.ui.LoginActivity.base_url;
+import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 public class OrdersActivity extends AppCompatActivity
     implements  OrdersFragment.OnListFragmentInteractionListener,

@@ -28,9 +28,8 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.CommonHelper;
 import com.spikingacacia.leta.ui.JSONParser;
-import com.spikingacacia.leta.ui.LoginA;
+import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.Preferences;
-import com.spikingacacia.leta.ui.database.SGroups;
 import com.spikingacacia.leta.ui.inventory.SIGroupC.GroupItem;
 import com.spikingacacia.leta.ui.inventory.SIGroupF.OnListFragmentInteractionListener;
 
@@ -40,12 +39,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 
-import static com.spikingacacia.leta.ui.LoginA.base_url;
-import static com.spikingacacia.leta.ui.LoginA.serverAccount;
+import static com.spikingacacia.leta.ui.LoginActivity.base_url;
+import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link GroupItem} and makes a call to the
@@ -97,7 +94,7 @@ public class SIGroupRecyclerViewAdapter extends RecyclerView.Adapter<SIGroupRecy
         holder.mGroupView.setText(group);
         holder.mDescriptionView.setText(des);
         //get the category photo
-        String url= LoginA.base_url+"src/sellers/"+String.format("%s/pics/g_%d", CommonHelper.makeName(LoginA.serverAccount.getId()), mValues.get(position).id)+".jpg";
+        String url= LoginActivity.base_url+"src/sellers/"+String.format("%s/pics/g_%d", CommonHelper.makeName(LoginActivity.serverAccount.getId()), mValues.get(position).id)+".jpg";
         ImageRequest request=new ImageRequest(
                 url,
                 new Response.Listener<Bitmap>()
@@ -354,7 +351,7 @@ public class SIGroupRecyclerViewAdapter extends RecyclerView.Adapter<SIGroupRecy
             //logIn=handler.LogInStaff(mEmail,mPassword);
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.serverAccount.getId())));
+            info.add(new BasicNameValuePair("id",Integer.toString(LoginActivity.serverAccount.getId())));
             info.add(new BasicNameValuePair("category_id", Integer.toString(mCategoryId)));
             info.add(new BasicNameValuePair("group_id", Integer.toString(mId)));
             info.add(new BasicNameValuePair("name", mName));
@@ -389,7 +386,7 @@ public class SIGroupRecyclerViewAdapter extends RecyclerView.Adapter<SIGroupRecy
             if (successful)
             {
                 Toast.makeText(mContext,"Successful",Toast.LENGTH_SHORT).show();
-                /*Iterator iterator= LoginA.sGroupsList.entrySet().iterator();
+                /*Iterator iterator= LoginActivity.sGroupsList.entrySet().iterator();
                 while (iterator.hasNext())
                 {
                     LinkedHashMap.Entry<Integer, SGroups> set = (LinkedHashMap.Entry<Integer, SGroups>) iterator.next();
@@ -406,7 +403,7 @@ public class SIGroupRecyclerViewAdapter extends RecyclerView.Adapter<SIGroupRecy
                         mValues.set(mPosition, content.createItem(mPosition +1, id, mCategoryId,mName, mDescription, sGroups.getDateadded(), dateChanged));
                         notifyDataSetChanged();
                         //iterator.remove();
-                        LoginA.sGroupsList.put(id, sGroups);
+                        LoginActivity.sGroupsList.put(id, sGroups);
                         break;
                     }
 
@@ -447,7 +444,7 @@ public class SIGroupRecyclerViewAdapter extends RecyclerView.Adapter<SIGroupRecy
             //logIn=handler.LogInStaff(mEmail,mPassword);
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.serverAccount.getId())));
+            info.add(new BasicNameValuePair("id",Integer.toString(LoginActivity.serverAccount.getId())));
             info.add(new BasicNameValuePair("group_id",Integer.toString(mId)));
             //getting all account details by making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_delete_group,"POST",info);
@@ -478,7 +475,7 @@ public class SIGroupRecyclerViewAdapter extends RecyclerView.Adapter<SIGroupRecy
             if (successful)
             {
                 Toast.makeText(mContext,"Deleted Successfully",Toast.LENGTH_SHORT).show();
-                /*Iterator iterator= LoginA.sGroupsList.entrySet().iterator();
+                /*Iterator iterator= LoginActivity.sGroupsList.entrySet().iterator();
                 while (iterator.hasNext())
                 {
                     LinkedHashMap.Entry<Integer, SGroups>set=(LinkedHashMap.Entry<Integer, SGroups>) iterator.next();

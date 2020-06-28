@@ -41,11 +41,10 @@ import com.google.android.material.snackbar.Snackbar;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.board.BoardA;
 import com.spikingacacia.leta.ui.inventory.SIInventoryA;
-import com.spikingacacia.leta.ui.messages.SMMessageListActivity;
 import com.spikingacacia.leta.ui.orders.OrdersActivity;
 import com.spikingacacia.leta.ui.qr_code.Encoder;
 import com.spikingacacia.leta.ui.reports.SRReportsA;
-import com.spikingacacia.leta.ui.waiters.WaitersA;
+import com.spikingacacia.leta.ui.waiters.WaitersActivity;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -60,11 +59,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static com.spikingacacia.leta.ui.LoginA.base_url;
-import static com.spikingacacia.leta.ui.LoginA.currentSubscription;
-import static com.spikingacacia.leta.ui.LoginA.loginProgress;
-import static com.spikingacacia.leta.ui.LoginA.sFinalProgress;
-import static com.spikingacacia.leta.ui.LoginA.serverAccount;
+import static com.spikingacacia.leta.ui.LoginActivity.base_url;
+import static com.spikingacacia.leta.ui.LoginActivity.currentSubscription;
+import static com.spikingacacia.leta.ui.LoginActivity.loginProgress;
+import static com.spikingacacia.leta.ui.LoginActivity.sFinalProgress;
+import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 public class SMenuA extends AppCompatActivity
 implements SMenuF.OnFragmentInteractionListener{
@@ -118,7 +117,7 @@ implements SMenuF.OnFragmentInteractionListener{
         super.onResume();
         //set the welcome text
         //we set it in onResume to factor in the possibility of the username changing in the settings
-        if(LoginA.serverAccount.getUsername().length()<2 || LoginA.serverAccount.getUsername().contentEquals("null"))
+        if(LoginActivity.serverAccount.getUsername().length()<2 || LoginActivity.serverAccount.getUsername().contentEquals("null"))
         {
             tWho.setText("Please go to settings and set the business name...");
         }
@@ -171,9 +170,7 @@ implements SMenuF.OnFragmentInteractionListener{
 
         else if(id==4)
         {
-            //messages
-            Intent intent=new Intent(SMenuA.this, SMMessageListActivity.class);
-            startActivity(intent);
+
         }
 
         else if(id==5)
@@ -186,7 +183,7 @@ implements SMenuF.OnFragmentInteractionListener{
     @Override
     public void onWaitersClicked()
     {
-        Intent intent=new Intent(SMenuA.this, WaitersA.class);
+        Intent intent=new Intent(SMenuA.this, WaitersActivity.class);
         startActivity(intent);
     }
 
@@ -240,13 +237,13 @@ implements SMenuF.OnFragmentInteractionListener{
         if (loginProgress >= sFinalProgress)
         {
             String message="";
-           /* if(LoginA.sCategoriesList.size()==0)
+           /* if(LoginActivity.sCategoriesList.size()==0)
                 message="Please create the major categories eg food, drinks etc.\nGo to "+
                         "\u279e Inventory  \u279e Options(upper right corner) \u279e add";
-            else if(LoginA.sGroupsList.size()==0)
+            else if(LoginActivity.sGroupsList.size()==0)
                 message="Please create the groups eg pizza, burgers etc.\nGo to "+
                         "\u279e Inventory  \u279e  category \u279e Options(upper right corner) \u279e add";
-            else if(LoginA.sItemsList.size()==0)
+            else if(LoginActivity.sItemsList.size()==0)
                 message="Please create the items eg pepperoni, cheese burger etc.\nGo to "+
                         " \u279e Inventory  \u279e  category \u279e  group \u279e Options(upper right corner) \u279e add";*/
             if(!message.contentEquals(""))
@@ -453,7 +450,7 @@ implements SMenuF.OnFragmentInteractionListener{
     }
     private void show_qr()
     {
-        final Bitmap bitmap_qr = Encoder.encode(serverAccount.getEmail());
+        final Bitmap bitmap_qr = Encoder.encode(getBaseContext(),serverAccount.getEmail());
         ImageView imageView=new ImageView(this);
         imageView.setImageBitmap(bitmap_qr);
         imageView.setLayoutParams(new LinearLayout.LayoutParams(600,600));

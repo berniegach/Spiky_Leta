@@ -26,12 +26,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.database.DMenu;
-import com.spikingacacia.leta.ui.database.SMessages;
-import com.spikingacacia.leta.ui.database.Orders;
 import com.spikingacacia.leta.ui.database.ServerAccount;
 import com.spikingacacia.leta.ui.billing.BillingManager;
 import com.spikingacacia.leta.ui.billing.BillingProvider;
-import com.spikingacacia.leta.ui.database.WaitersD;
 import com.spikingacacia.leta.ui.main.MainActivity;
 import com.spikingacacia.leta.ui.skulist.AcquireFragment;
 
@@ -51,7 +48,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.spikingacacia.leta.ui.billing.BillingManager.BILLING_MANAGER_NOT_INITIALIZED;
 
-public class LoginA extends AppCompatActivity
+public class LoginActivity extends AppCompatActivity
     implements BillingProvider,View.OnClickListener
 {
     private static final int OVERLAY_PERMISSION_CODE=541;
@@ -67,9 +64,7 @@ public class LoginA extends AppCompatActivity
     public static int sFinalProgress=6;
     //sellers
     public static ServerAccount serverAccount;
-    public static LinkedHashMap<String, SMessages> sMessagesList;
     public static LinkedHashMap<Integer, DMenu> sItemsList;
-    public static LinkedHashMap<Integer, WaitersD> waitersList;
     public static int who;
     public static String currentSubscription="Non";
     //billing
@@ -97,7 +92,7 @@ public class LoginA extends AppCompatActivity
     {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.a_login);
+        setContentView(R.layout.activity_login);
         setTitle("Login");
         preferences = new Preferences(getBaseContext());
         progressBar = findViewById(R.id.progress);
@@ -118,14 +113,12 @@ public class LoginA extends AppCompatActivity
         radioWaiter = findViewById(R.id.radio_waiter);
 
         //background intent
-        intentLoginProgress=new Intent(LoginA.this,ProgressView.class);
+        intentLoginProgress=new Intent(LoginActivity.this,ProgressView.class);
         loginProgress=0;
         //initialize the containers
         //sellers
         serverAccount =new ServerAccount();
-        sMessagesList=new LinkedHashMap<>();
         sItemsList=new LinkedHashMap<>();
-        waitersList=new LinkedHashMap<>();
 
 
         //billing
@@ -222,9 +215,7 @@ public class LoginA extends AppCompatActivity
         //clear the variables . if not done youll find some list contents add up on top of the previous ones
         loginProgress=0;
         //sellers
-        if(!sMessagesList.isEmpty())sMessagesList.clear();
         if(!sItemsList.isEmpty())sItemsList.clear();
-        if(!waitersList.isEmpty())waitersList.clear();
         AppRunningInThisActivity=true;
         //billing
         // Note: We query purchases in onResume() to handle purchases completed while the activity
@@ -245,13 +236,13 @@ public class LoginA extends AppCompatActivity
     @Override
     public boolean isMonthlySubscribed() {
         Log.d(TAG,"subscribed monthly " +mViewController.isMonthlySubscribed());
-        LoginA.currentSubscription="Monthly Subscribed";
+        LoginActivity.currentSubscription="Monthly Subscribed";
         return mViewController.isMonthlySubscribed();
     }
 
     @Override
     public boolean isYearlySubscribed() {
-        LoginA.currentSubscription="Yearly Subscribed";
+        LoginActivity.currentSubscription="Yearly Subscribed";
         Log.d(TAG,"subscribed monthly " +mViewController.isYearlySubscribed());
         /*if(mViewController.isYearlySubscribed() && LoginActivity.AppRunningInThisActivity)
         {
@@ -316,7 +307,7 @@ public class LoginA extends AppCompatActivity
     }
     private void proceedToLogin()
     {
-        Intent intent=new Intent(LoginA.this, MainActivity.class);
+        Intent intent=new Intent(LoginActivity.this, MainActivity.class);
         //prevent this activity from flickering as we call the next one
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
@@ -386,14 +377,11 @@ public class LoginA extends AppCompatActivity
     private void startBackgroundTasks()
     {
         showProgress(false);
-        //new SMessagesTask().execute((Void)null);
-        //new SOrdersTask().execute((Void)null);
-        //new WaitersTask().execute((Void)null);
         proceedToLogin();
     }
     public class RegisterTask extends AsyncTask<Void, Void, Boolean>
     {
-        private String url_create_account_seller =LoginA.base_url+"create_seller_account.php";
+        private String url_create_account_seller = LoginActivity.base_url+"create_seller_account.php";
         private String TAG_SUCCESS="success";
         private String TAG_MESSAGE="message";
         private JSONParser jsonParser;
@@ -453,7 +441,7 @@ public class LoginA extends AppCompatActivity
                 Log.d(TAG,"email already there");
                 //proceed to login
                 // we have already set the persona so...
-                if(preferences.getPersona()==2)
+                if(preferences.getPersona()==1)
                     new LoginWaiterTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
                 else
                     new LoginTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
@@ -463,7 +451,7 @@ public class LoginA extends AppCompatActivity
             {
                 showProgress(false);
                 Toast.makeText(getBaseContext(), "Registration failed", Toast.LENGTH_SHORT).show();
-                mGoogleSignInClient.signOut().addOnCompleteListener(LoginA.this, new OnCompleteListener<Void>()
+                mGoogleSignInClient.signOut().addOnCompleteListener(LoginActivity.this, new OnCompleteListener<Void>()
                 {
                     @Override
                     public void onComplete(@NonNull Task<Void> task)
@@ -489,6 +477,7 @@ public class LoginA extends AppCompatActivity
             mEmail = email;
             mPassword = password;
             jsonParser = new JSONParser();
+            Log.d(TAG,"persona 0");
         }
         @Override
         protected void onPreExecute()
@@ -561,7 +550,7 @@ public class LoginA extends AppCompatActivity
             {
                 showProgress(false);
                 Toast.makeText(getBaseContext(), "Sign in failed", Toast.LENGTH_SHORT).show();
-                mGoogleSignInClient.signOut().addOnCompleteListener(LoginA.this, new OnCompleteListener<Void>()
+                mGoogleSignInClient.signOut().addOnCompleteListener(LoginActivity.this, new OnCompleteListener<Void>()
                 {
                     @Override
                     public void onComplete(@NonNull Task<Void> task)
@@ -587,6 +576,7 @@ public class LoginA extends AppCompatActivity
             mEmail = email;
             mPassword = password;
             jsonParser = new JSONParser();
+            Log.d(TAG,"persona 1");
         }
         @Override
         protected void onPreExecute()
@@ -631,6 +621,7 @@ public class LoginA extends AppCompatActivity
                     //waiter information
                     serverAccount.setWaiter_id(accountObject.getInt("waiter_id"));
                     serverAccount.setWaiter_names(accountObject.getString("waiter_names"));
+                    serverAccount.setWaiterImageType(accountObject.getString("waiter_image_type"));
                     return true;
                 }
                 else
@@ -661,7 +652,7 @@ public class LoginA extends AppCompatActivity
             {
                 showProgress(false);
                 Toast.makeText(getBaseContext(), "Sign in failed", Toast.LENGTH_SHORT).show();
-                mGoogleSignInClient.signOut().addOnCompleteListener(LoginA.this, new OnCompleteListener<Void>()
+                mGoogleSignInClient.signOut().addOnCompleteListener(LoginActivity.this, new OnCompleteListener<Void>()
                 {
                     @Override
                     public void onComplete(@NonNull Task<Void> task)
@@ -674,161 +665,8 @@ public class LoginA extends AppCompatActivity
 
     }
 
-    /**
-     * Following code will get the sellers notifications
-     * The returned infos are id,  classes, messages, dateadded.
-     * Arguments are:
-     * id==boss id.
-     * Returns are:
-     * success==1 successful get
-     * success==0 for id argument missing
-     **/
-    private class SMessagesTask extends AsyncTask<Void, Void, Boolean>
-    {
-        private String TAG_SUCCESS="success";
-        private String TAG_MESSAGE="message";
-        private  JSONParser jsonParser;
-        @Override
-        protected void onPreExecute()
-        {
-            Log.d("SNOTIFICATIONS: ","starting....");
-            jsonParser = new JSONParser();
-            super.onPreExecute();
-        }
-        @Override
-        protected Boolean doInBackground(Void... params)
-        {
-            //getting columns list
-            List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("id",Integer.toString(serverAccount.getId())));
-            // making HTTP request
-            //sellers php files
-            String url_get_s_notifications = base_url + "get_seller_notifications.php";
-            JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_notifications,"POST",info);
-            Log.d("sNotis",""+jsonObject.toString());
-            try
-            {
-                JSONArray notisArrayList=null;
-                int success=jsonObject.getInt(TAG_SUCCESS);
-                if(success==1)
-                {
-                    notisArrayList=jsonObject.getJSONArray("notis");
-                    for(int count=0; count<notisArrayList.length(); count+=1)
-                    {
-                        JSONObject jsonObjectNotis=notisArrayList.getJSONObject(count);
-                        int id=jsonObjectNotis.getInt("id");
-                        int classes=jsonObjectNotis.getInt("classes");
-                        String message=jsonObjectNotis.getString("messages");
-                        String date=jsonObjectNotis.getString("dateadded");
-                        SMessages oneSMessage=new SMessages(id,classes,message,date);
-                        sMessagesList.put(String.valueOf(id),oneSMessage);
-                    }
-                    return true;
-                }
-                else
-                {
-                    String message=jsonObject.getString(TAG_MESSAGE);
-                    Log.e(TAG_MESSAGE,""+message);
-                    return false;
-                }
-            }
-            catch (JSONException e)
-            {
-                Log.e("JSON",""+e.getMessage());
-                return false;
-            }
-        }
-        @Override
-        protected void onPostExecute(final Boolean successful) {
-            Log.d("SNOTIFICATIONS: ","finished...."+"progress: "+String.valueOf(loginProgress));
-            loginProgress+=1;
-            if (loginProgress == sFinalProgress)
-                stopService(intentLoginProgress);
-
-            if (successful)
-            {
-
-            }
-            else
-            {
-
-            }
-        }
-    }
 
 
-    private class WaitersTask extends AsyncTask<Void, Void, Boolean>
-    {
-        private String TAG_SUCCESS="success";
-        private String TAG_MESSAGE="message";
-        private  JSONParser jsonParser;
-        @Override
-        protected void onPreExecute()
-        {
-            Log.d("BORDERS: ","starting....");
-            if(!waitersList.isEmpty())waitersList.clear();
-            jsonParser = new JSONParser();
-            super.onPreExecute();
-        }
-        @Override
-        protected Boolean doInBackground(Void... params)
-        {
-            //getting columns list
-            List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("seller_id",Integer.toString(serverAccount.getId())));
-            // making HTTP request
-            String url_get_s_waiters = base_url + "get_waiters.php";
-            JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_waiters,"POST",info);
-            Log.d("sItems",""+jsonObject.toString());
-            try
-            {
-                JSONArray itemsArrayList=null;
-                int success=jsonObject.getInt(TAG_SUCCESS);
-                if(success==1)
-                {
-                    itemsArrayList=jsonObject.getJSONArray("waiters");
-                    for(int count=0; count<itemsArrayList.length(); count+=1)
-                    {
-                        JSONObject json_object_waiters=itemsArrayList.getJSONObject(count);
-                        int id=json_object_waiters.getInt("id");
-                        String email=json_object_waiters.getString("email");
-                        String username=json_object_waiters.getString("username");
-
-                        WaitersD waiter=new WaitersD(id,email,username,0);
-                        waitersList.put(id,waiter);
-                    }
-                    return true;
-                }
-                else
-                {
-                    String message=jsonObject.getString(TAG_MESSAGE);
-                    Log.e(TAG_MESSAGE,""+message);
-                    return false;
-                }
-            }
-            catch (JSONException e)
-            {
-                Log.e(TAG+"JSON"," waiter"+e.getMessage());
-                return false;
-            }
-        }
-        @Override
-        protected void onPostExecute(final Boolean successful) {
-            Log.d("BORDERS: ","finished...."+"progress: "+String.valueOf(loginProgress));
-            loginProgress+=1;
-            if (loginProgress == sFinalProgress)
-                stopService(intentLoginProgress);
-
-            if (successful)
-            {
-
-            }
-            else
-            {
-
-            }
-        }
-    }
 
 
 }

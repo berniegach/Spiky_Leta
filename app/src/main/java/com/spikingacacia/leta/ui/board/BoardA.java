@@ -2,17 +2,12 @@ package com.spikingacacia.leta.ui.board;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,24 +26,18 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.appbar.AppBarLayout;
 import com.spikingacacia.leta.R;
-import com.spikingacacia.leta.ui.LoginA;
+import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.Preferences;
-import com.spikingacacia.leta.ui.main.home.ItemDialog;
 import com.spikingacacia.leta.ui.util.GetFilePathFromDevice;
 import com.spikingacacia.leta.ui.util.VolleyMultipartRequest;
 
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
-import static com.spikingacacia.leta.ui.LoginA.base_url;
+import static com.spikingacacia.leta.ui.LoginActivity.base_url;
 
 public class BoardA extends AppCompatActivity implements advF.OnListFragmentInteractionListener
 {
@@ -144,7 +133,7 @@ public class BoardA extends AppCompatActivity implements advF.OnListFragmentInte
     }
     private void uploadBitmap(final Bitmap bitmap)
     {
-        String url_upload_profile_pic= LoginA.base_url+"upload_inventory_pic.php";
+        String url_upload_profile_pic= LoginActivity.base_url+"upload_inventory_pic.php";
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url_upload_profile_pic,
                 new Response.Listener<NetworkResponse>()
                 {

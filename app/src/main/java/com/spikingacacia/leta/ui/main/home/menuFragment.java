@@ -1,6 +1,5 @@
 package com.spikingacacia.leta.ui.main.home;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -37,11 +36,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
-import com.spikingacacia.leta.ui.LoginA;
+import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.database.Categories;
 import com.spikingacacia.leta.ui.database.DMenu;
 import com.spikingacacia.leta.ui.main.MainActivity;
-import com.spikingacacia.leta.ui.util.GetFilePathFromDevice;
 import com.spikingacacia.leta.ui.util.VolleyMultipartRequest;
 
 
@@ -58,8 +56,8 @@ import java.util.List;
 import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
-import static com.spikingacacia.leta.ui.LoginA.base_url;
-import static com.spikingacacia.leta.ui.LoginA.serverAccount;
+import static com.spikingacacia.leta.ui.LoginActivity.base_url;
+import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 /**
  * A fragment representing a list of Items.
@@ -168,6 +166,8 @@ public class menuFragment extends Fragment
                 return false;
             }
         });
+        if(serverAccount.getPersona() ==1)
+            add.setVisible(false);
 
         // Associate searchable configuration with the SearchView
         SearchView searchView =  (SearchView) menu.findItem(R.id.action_search).getActionView();
@@ -195,7 +195,6 @@ public class menuFragment extends Fragment
 
     public interface OnListFragmentInteractionListener
     {
-        // TODO: Update argument type and name
         //void onEditMenu(int which, DMenu dMenu);
         //void onMenuItemInteraction(DMenu item);
         //void onCategoryItemInteraction(Categories item);
@@ -358,7 +357,7 @@ public class menuFragment extends Fragment
     }
     private void uploadBitmap(final Bitmap bitmap, final int insert_id)
     {
-        String url_upload_profile_pic= LoginA.base_url+"upload_inventory_pic.php";
+        String url_upload_profile_pic= LoginActivity.base_url+"upload_inventory_pic.php";
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url_upload_profile_pic,
                 new Response.Listener<NetworkResponse>()
                 {

@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.textfield.TextInputLayout;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
-import com.spikingacacia.leta.ui.LoginA;
+import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.database.SGroups;
 import com.spikingacacia.leta.ui.inventory.SIGroupC.GroupItem;
 
@@ -39,8 +39,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.spikingacacia.leta.ui.LoginA.base_url;
-import static com.spikingacacia.leta.ui.LoginA.serverAccount;
+import static com.spikingacacia.leta.ui.LoginActivity.base_url;
+import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 /**
  * A fragment representing a list of Items.
@@ -245,7 +245,7 @@ public class SIGroupF extends Fragment {
         {
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.serverAccount.getId())));
+            info.add(new BasicNameValuePair("id",Integer.toString(LoginActivity.serverAccount.getId())));
             info.add(new BasicNameValuePair("name",name));
             info.add(new BasicNameValuePair("category_id",Integer.toString(mCategoryId)));
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_add_group,"POST",info);

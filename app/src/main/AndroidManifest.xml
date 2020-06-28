@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.spikingacacia.leta">
 
     <application
+        android:requestLegacyExternalStorage="true"
         android:name=".ui.AppController"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,24 +13,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".ui.qr_code.QrCodeActivity"/>
         <activity
             android:name=".ui.SettingsActivity"
-            android:label="@string/title_activity_settings"/>
+            android:label="@string/title_activity_settings" />
         <activity
             android:name=".ui.main.MainActivity"
             android:label="@string/title_activity_main" />
-        <activity
-            android:name=".ui.board.BoardA"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.waiters.WaitersA"
-            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ui.board.BoardA" />
+        <activity android:name=".ui.waiters.WaitersActivity" />
         <activity
             android:name=".ui.reports.SRReportsA"
             android:label="@string/title_activity_srreports"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.orders.OrdersActivity" />
+        <activity android:name=".ui.orders.OrdersActivity" />
         <activity
             android:name=".ui.inventory.SIInventoryA"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -36,18 +34,7 @@
             android:name=".ui.SMenuA"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.messages.SMMessageListActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.messages.SMMessageDetailActivity"
-            android:parentActivityName=".ui.messages.SMMessageListActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.messages.SMMessageListActivity" />
-        </activity>
-        <activity
-            android:name=".ui.LoginA"
+            android:name=".ui.LoginActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/splashScreenTheme">

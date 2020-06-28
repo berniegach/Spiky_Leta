@@ -28,8 +28,7 @@ import android.widget.Toast;
 import com.google.android.material.textfield.TextInputLayout;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
-import com.spikingacacia.leta.ui.LoginA;
-import com.spikingacacia.leta.ui.database.Categories;
+import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.inventory.SICategoryC.CategoryItem;
 
 import org.apache.http.NameValuePair;
@@ -40,8 +39,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.spikingacacia.leta.ui.LoginA.base_url;
-import static com.spikingacacia.leta.ui.LoginA.serverAccount;
+import static com.spikingacacia.leta.ui.LoginActivity.base_url;
+import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 /**
  * A fragment representing a list of Items.
@@ -245,7 +244,7 @@ public class SICategoryF extends Fragment {
         {
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.serverAccount.getId())));
+            info.add(new BasicNameValuePair("id",Integer.toString(LoginActivity.serverAccount.getId())));
             info.add(new BasicNameValuePair("name",name));
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_add_category,"POST",info);
             try
@@ -280,8 +279,8 @@ public class SICategoryF extends Fragment {
                 Toast.makeText(getContext(),"Successful",Toast.LENGTH_SHORT).show();
                 SICategoryRecyclerViewAdapter adapter=(SICategoryRecyclerViewAdapter) recyclerView.getAdapter();
                 //Categories categories =new Categories(id,name,"null", dateAdded,"null");
-                //LoginA.sCategoriesList.put(id, categories);
-                //adapter.notifyChange(LoginA.sCategoriesList.size(),id,name,"null",dateAdded,"null");
+                //LoginActivity.sCategoriesList.put(id, categories);
+                //adapter.notifyChange(LoginActivity.sCategoriesList.size(),id,name,"null",dateAdded,"null");
 
             }
             else if(success==-2)

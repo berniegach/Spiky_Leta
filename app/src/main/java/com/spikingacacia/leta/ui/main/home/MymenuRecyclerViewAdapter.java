@@ -4,11 +4,8 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -23,7 +20,8 @@ import com.spikingacacia.leta.ui.database.DMenu;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.spikingacacia.leta.ui.LoginA.base_url;
+import static com.spikingacacia.leta.ui.LoginActivity.base_url;
+import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 import static com.spikingacacia.leta.ui.main.home.menuFragment.*;
 
 
@@ -68,6 +66,8 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
         // image
         String url=image_url+String.valueOf(mValues.get(position).getId())+'_'+String.valueOf(mValues.get(position).getImageType());
         holder.image.setImageUrl(url, imageLoader);
+        if(serverAccount.getPersona()==1)
+            holder.mEditButton.setVisibility(View.GONE);
         holder.mEditButton.setOnClickListener(new View.OnClickListener()
         {
             @Override

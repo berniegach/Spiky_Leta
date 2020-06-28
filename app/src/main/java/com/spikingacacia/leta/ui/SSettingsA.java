@@ -1,56 +1,29 @@
 package com.spikingacacia.leta.ui;
 
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.appcompat.widget.Toolbar;
-import androidx.preference.EditTextPreference;
-import androidx.preference.ListPreference;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.Preference;
-import androidx.preference.SwitchPreference;
 
-import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.NumberPicker;
-import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.SeekBarPreference;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.textfield.TextInputLayout;
 import com.spikingacacia.leta.R;
-import com.spikingacacia.leta.ui.database.ServerAccount;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 public class SSettingsA extends AppCompatActivity
@@ -100,7 +73,7 @@ public class SSettingsA extends AppCompatActivity
 
 
         //get the profile pic
-        String url= LoginA.base_url+"src/sellers/"+String.format("%s/pics/prof_pic",makeName(LoginA.serverAccount.getId()))+".jpg";
+        String url= LoginActivity.base_url+"src/sellers/"+String.format("%s/pics/prof_pic",makeName(LoginActivity.serverAccount.getId()))+".jpg";
         ImageRequest request=new ImageRequest(
                 url,
                 new Response.Listener<Bitmap>()
@@ -169,7 +142,7 @@ public class SSettingsA extends AppCompatActivity
             setPreferencesFromResource(R.xml.pref_sheaders, rootKey);
             Preference preference_location=findPreference("location");
             Preference preference_account=findPreference("account");
-            if(LoginA.serverAccount.getPersona()==1)
+            if(LoginActivity.serverAccount.getPersona()==1)
             {
                 preference_location.setVisible(false);
                 preference_account.setVisible(false);
@@ -196,7 +169,7 @@ public class SSettingsA extends AppCompatActivity
 
             //password change
 
-            /*preference_password.setSummary(passwordStars(LoginA.serverAccount.getPassword()));
+            /*preference_password.setSummary(passwordStars(LoginActivity.serverAccount.getPassword()));
             preference_password.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
             {
                 @Override
@@ -265,7 +238,7 @@ public class SSettingsA extends AppCompatActivity
                                     String old=oldPassword.getText().toString();
                                     String newPass=newPassword.getText().toString();
                                     String confirm=confirmPassword.getText().toString();
-                                    if(!old.contentEquals(LoginA.serverAccount.getPassword()))
+                                    if(!old.contentEquals(LoginActivity.serverAccount.getPassword()))
                                     {
                                         oldPassword.setError("Incorrect old password");
                                     }
@@ -324,7 +297,7 @@ public class SSettingsA extends AppCompatActivity
             //bindPreferenceSummaryToValue(findPreference("online_visibility"));
             //bindPreferenceSummaryToValue(findPreference("online_delivery"));
             //countries
-            /*String countryCode= LoginA.serverAccount.getCountry();
+            /*String countryCode= LoginActivity.serverAccount.getCountry();
             ListPreference pref_countries=( findPreference("countries"));
             pref_countries.setEntries(getCountriesList());
             pref_countries.setEntryValues(getCountriesListValues());
@@ -510,7 +483,7 @@ public class SSettingsA extends AppCompatActivity
                                 public void onClick(DialogInterface dialog, int which)
                                 {
                                     String pass=password.getText().toString();
-                                    if(!pass.contentEquals(LoginA.serverAccount.getPassword()))
+                                    if(!pass.contentEquals(LoginActivity.serverAccount.getPassword()))
                                     {
                                         password.setError("Incorrect password");
                                         Toast.makeText(context,"Incorrect password.",Toast.LENGTH_SHORT).show();

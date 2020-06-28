@@ -1,14 +1,16 @@
 package com.spikingacacia.leta.ui.waiters;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
+import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,23 +28,24 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
-import com.spikingacacia.leta.ui.LoginA;
-import com.spikingacacia.leta.ui.database.WaitersD;
-import com.spikingacacia.leta.ui.waiters.WaiterC.WaiterItem;
+import com.spikingacacia.leta.ui.database.Waiters;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
-import static com.spikingacacia.leta.ui.LoginA.base_url;
-import static com.spikingacacia.leta.ui.LoginA.waitersList;
+import static com.spikingacacia.leta.ui.LoginActivity.base_url;
+import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 /**
  * A fragment representing a list of Items.
@@ -50,30 +53,28 @@ import static com.spikingacacia.leta.ui.LoginA.waitersList;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class WaiterF extends Fragment
+public class WaiterFragment extends Fragment
 {
 
-    private String url_add_waiter= base_url+"add_waiter.php";
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 2;
     private OnListFragmentInteractionListener mListener;
-    private JSONParser jsonParser;
-    private String TAG_SUCCESS="success";
-    private String TAG_MESSAGE="message";
     private  RecyclerView recyclerView;
+    private String TAG = "WaiterFragment";
+    private MyWaiterRecyclerViewAdapter myWaiterRecyclerViewAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public WaiterF()
+    public WaiterFragment()
     {
     }
 
     @SuppressWarnings("unused")
-    public static WaiterF newInstance(int columnCount)
+    public static WaiterFragment newInstance(int columnCount)
     {
-        WaiterF fragment = new WaiterF();
+        WaiterFragment fragment = new WaiterFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -89,20 +90,20 @@ public class WaiterF extends Fragment
         {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
-        jsonParser=new JSONParser();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.f_waiter_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_waiter_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView)
         {
             Context context = view.getContext();
             recyclerView = (RecyclerView) view;
+            mColumnCount = getHorizontalItemCount();
             if (mColumnCount <= 1)
             {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -110,16 +111,20 @@ public class WaiterF extends Fragment
             {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
-            recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.HORIZONTAL));
-            WaiterC content=new WaiterC();
-            recyclerView.setAdapter(new WaiterRVA(content.ITEMS, mListener, context));
+            myWaiterRecyclerViewAdapter = new MyWaiterRecyclerViewAdapter(mListener, context);
+            recyclerView.setAdapter(myWaiterRecyclerViewAdapter);
+            recyclerView.addItemDecoration(new SpacesItemDecoration(16));
         }
         return view;
     }
 
-
-   /* @Override
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        new WaitersTask().execute((Void)null);
+    }
+    /* @Override
     public void onAttach(Context context)
     {
         super.onAttach(context);
@@ -152,7 +157,7 @@ public class WaiterF extends Fragment
      */
     public interface OnListFragmentInteractionListener
     {
-        void onListFragmentInteraction(WaiterItem item);
+        void onListFragmentInteraction(Waiters item);
     }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -165,59 +170,7 @@ public class WaiterF extends Fragment
             @Override
             public boolean onMenuItemClick(MenuItem menuItem)
             {
-                final android.app.AlertDialog dialog;
-                android.app.AlertDialog.Builder builderPass=new android.app.AlertDialog.Builder(getContext());
-                builderPass.setTitle("Leta email?");
-                TextInputLayout textInputLayout=new TextInputLayout(getContext());
-                textInputLayout.setPadding(10,0,10,1);
-                textInputLayout.setGravity(Gravity.CENTER);
-                final EditText editText=new EditText(getContext());
-                editText.setPadding(20,10,20,10);
-                editText.setTextSize(14);
-                textInputLayout.addView(editText,0,new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-                editText.setHint("Waiters email used in leta");
-                editText.setError(null);
-                LinearLayout layout=new LinearLayout(getContext());
-                layout.setOrientation(LinearLayout.VERTICAL);
-                layout.addView(textInputLayout);
-                builderPass.setView(layout);
-                builderPass.setPositiveButton("Add", null);
-                builderPass.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i)
-                    {
-                        dialogInterface.dismiss();
-                    }
-                });
-                dialog=builderPass.create();
-                dialog.setOnShowListener(new DialogInterface.OnShowListener()
-                {
-                    @Override
-                    public void onShow(DialogInterface dialogInterface)
-                    {
-                        Button button=((android.app.AlertDialog)dialog).getButton(android.app.AlertDialog.BUTTON_POSITIVE);
-                        button.setOnClickListener(new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View view)
-                            {
-                                String name=editText.getText().toString();
-                                if(name.length()<3)
-                                {
-                                    editText.setError("Name too short");
-                                }
-
-                                else
-                                {
-                                    new CreateWaiterTask(name).execute((Void)null);
-                                    dialog.dismiss();
-                                }
-                            }
-                        });
-                    }
-                });
-                dialog.show();
+                showDialog();
                 return true;
             }
         });
@@ -229,7 +182,7 @@ public class WaiterF extends Fragment
             @Override
             public boolean onQueryTextSubmit(String query)
             {
-                WaiterRVA adapter=(WaiterRVA) recyclerView.getAdapter();
+                MyWaiterRecyclerViewAdapter adapter=(MyWaiterRecyclerViewAdapter) recyclerView.getAdapter();
                 adapter.filter(query);
                 return true;
             }
@@ -237,11 +190,75 @@ public class WaiterF extends Fragment
             @Override
             public boolean onQueryTextChange(String newText)
             {
-                WaiterRVA adapter=(WaiterRVA) recyclerView.getAdapter();
+                MyWaiterRecyclerViewAdapter adapter=(MyWaiterRecyclerViewAdapter) recyclerView.getAdapter();
                 adapter.filter(newText);
                 return true;
             }
         });
+    }
+    private void showDialog()
+    {
+        String title = "Enter the Waiter's Email";
+        new MaterialAlertDialogBuilder(getContext())
+                .setTitle(title)
+                .setView(R.layout.item_dialog_waiter)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        Dialog dialog1 = (Dialog) dialog;
+                        EditText editText = dialog1.findViewById(R.id.edittext);
+                        String str = editText.getText().toString();
+                        new CreateWaiterTask(str).execute((Void)null);
+                        dialog.dismiss();
+                    }
+                }).create().show();
+    }
+    private int getHorizontalItemCount()
+    {
+        int screenSize = getContext().getResources().getConfiguration().screenLayout &
+                Configuration.SCREENLAYOUT_SIZE_MASK;
+
+        switch(screenSize) {
+            case Configuration.SCREENLAYOUT_SIZE_XLARGE:
+                return 4;
+
+            case Configuration.SCREENLAYOUT_SIZE_LARGE:
+                return 3;
+
+            case Configuration.SCREENLAYOUT_SIZE_NORMAL:
+                return 2;
+
+            case Configuration.SCREENLAYOUT_SIZE_SMALL:
+            default:
+                return 1;
+        }
+    }
+    public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
+        private int space;
+
+        public SpacesItemDecoration(int space) {
+            this.space = space;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view,
+                                   RecyclerView parent, RecyclerView.State state) {
+            outRect.left = space;
+            outRect.right = space;
+            outRect.bottom = space;
+
+            int pos = parent.getChildLayoutPosition(view);
+            int items = getHorizontalItemCount();
+
+            // Add top margin only for the first item to avoid double space between items
+            if (pos < items) {
+                outRect.top = space;
+            } else {
+                outRect.top = 0;
+            }
+        }
     }
     public class CreateWaiterTask extends AsyncTask<Void, Void, Boolean>
     {
@@ -249,9 +266,12 @@ public class WaiterF extends Fragment
         private int success;
         private int id=-1;
         private String waiter_name="";
+        private JSONParser jsonParser;
+
         CreateWaiterTask(final String name)
         {
             Toast.makeText(getContext(),"Adding the waiter started. Please wait...",Toast.LENGTH_SHORT).show();
+            jsonParser = new JSONParser();
             this.email =name;
         }
         @Override
@@ -259,11 +279,13 @@ public class WaiterF extends Fragment
         {
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("seller_id",Integer.toString(LoginA.serverAccount.getId())));
+            info.add(new BasicNameValuePair("seller_id",Integer.toString(serverAccount.getId())));
             info.add(new BasicNameValuePair("waiter_username", email));
+            String url_add_waiter = base_url + "add_waiter.php";
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_add_waiter,"POST",info);
             try
             {
+                String TAG_SUCCESS = "success";
                 success=jsonObject.getInt(TAG_SUCCESS);
                 if(success==1)
                 {
@@ -273,6 +295,7 @@ public class WaiterF extends Fragment
                 }
                 else
                 {
+                    String TAG_MESSAGE = "message";
                     String message=jsonObject.getString(TAG_MESSAGE);
                     Log.e(TAG_MESSAGE,""+message);
                     return false;
@@ -292,11 +315,7 @@ public class WaiterF extends Fragment
 
                 Log.d("adding new waiter", "done...");
                 Toast.makeText(getContext(),"Successful",Toast.LENGTH_SHORT).show();
-                WaiterRVA  adapter=(WaiterRVA) recyclerView.getAdapter();
-                WaitersD waiter=new WaitersD(id, email,waiter_name,0);
-                waitersList.put(id,waiter);
-                adapter.notifyChange(waitersList.size(),id, email,waiter_name,0);
-
+                new WaitersTask().execute((Void)null);
             }
             else
             {
@@ -304,6 +323,78 @@ public class WaiterF extends Fragment
                 Toast.makeText(getContext(),"Error adding the waiter",Toast.LENGTH_SHORT).show();
             }
 
+        }
+    }
+    private class WaitersTask extends AsyncTask<Void, Void, Boolean>
+    {
+        private String url_get_s_waiters = base_url + "get_waiters.php";
+        private String TAG_SUCCESS="success";
+        private String TAG_MESSAGE="message";
+        private  JSONParser jsonParser;
+        private List<Waiters> list;
+        @Override
+        protected void onPreExecute()
+        {
+            Log.d("BORDERS: ","starting....");
+            jsonParser = new JSONParser();
+            list = new LinkedList<>();
+            super.onPreExecute();
+        }
+        @Override
+        protected Boolean doInBackground(Void... params)
+        {
+            //getting columns list
+            List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
+            info.add(new BasicNameValuePair("seller_id",Integer.toString(serverAccount.getId())));
+            // making HTTP request
+            JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_waiters,"POST",info);
+            Log.d("sItems",""+jsonObject.toString());
+            try
+            {
+                JSONArray itemsArrayList=null;
+                int success=jsonObject.getInt(TAG_SUCCESS);
+                if(success==1)
+                {
+                    itemsArrayList=jsonObject.getJSONArray("waiters");
+                    for(int count=0; count<itemsArrayList.length(); count+=1)
+                    {
+                        JSONObject json_object_waiters=itemsArrayList.getJSONObject(count);
+                        int id=json_object_waiters.getInt("id");
+                        String email=json_object_waiters.getString("email");
+                        String username=json_object_waiters.getString("username");
+                        String image_type = json_object_waiters.getString("image_type");
+
+                        Waiters waiter=new Waiters(id,email,username,0, image_type);
+                        list.add(waiter);
+                    }
+                    return true;
+                }
+                else
+                {
+                    String message=jsonObject.getString(TAG_MESSAGE);
+                    Log.e(TAG_MESSAGE,""+message);
+                    return false;
+                }
+            }
+            catch (JSONException e)
+            {
+                Log.e(TAG+"JSON"," waiter"+e.getMessage());
+                return false;
+            }
+        }
+        @Override
+        protected void onPostExecute(final Boolean successful)
+        {
+
+
+            if (successful)
+            {
+                myWaiterRecyclerViewAdapter.listUpdated(list);
+            }
+            else
+            {
+
+            }
         }
     }
 

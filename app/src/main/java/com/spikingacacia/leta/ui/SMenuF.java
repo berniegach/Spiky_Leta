@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.database.SMessages;
-import com.spikingacacia.leta.ui.database.Orders;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -27,15 +26,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 
-import static com.spikingacacia.leta.ui.LoginA.base_url;
-import static com.spikingacacia.leta.ui.LoginA.sMessagesList;
-import static com.spikingacacia.leta.ui.LoginA.serverAccount;
+import static com.spikingacacia.leta.ui.LoginActivity.base_url;
+import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -174,7 +168,7 @@ public class SMenuF extends Fragment {
                     tOrdersCount.setText(String.valueOf(ordersCount));
                     Log.d(TAG,"orders count changed");
                 }
-                if(serverAccount.getPersona()==0)
+                /*if(serverAccount.getPersona()==0)
                     if(messagesCount!=sMessagesList.size())
                     {
                         if(mListener!=null)
@@ -182,7 +176,7 @@ public class SMenuF extends Fragment {
                         messagesCount=sMessagesList.size();
                         tMessagesCount.setText(String.valueOf(messagesCount));
                         Log.d(TAG,"messages count changed");
-                    }
+                    }*/
                 if(serverAccount.getPersona()==1)
                     if(SMenuA.within_location)
                     {
@@ -313,7 +307,7 @@ public class SMenuF extends Fragment {
         super.onResume();
         //set the counts
         tOrdersCount.setText(String.valueOf(getOrdersCounts()));
-        tMessagesCount.setText(String.valueOf(LoginA.sMessagesList.size()));
+        //tMessagesCount.setText(String.valueOf(LoginActivity.sMessagesList.size()));
 
     }
 
@@ -385,7 +379,7 @@ public class SMenuF extends Fragment {
                     String message=jsonObjectNotis.getString("messages");
                     String date=jsonObjectNotis.getString("dateadded");
                     SMessages oneSMessage=new SMessages(id,classes,message,date);
-                    sMessagesList.put(String.valueOf(id),oneSMessage);
+                    //sMessagesList.put(String.valueOf(id),oneSMessage);
                 }
             }
             else

@@ -22,12 +22,13 @@ public class ServerAccount
     private int waiter_id;
     private String waiter_email;
     private String waiter_names;
+    private String waiterImageType;
 
     public ServerAccount(){}
 
     public ServerAccount(int persona, int id, String email, String password, String username, String country, int online, int deliver, String location, int orderRadius, int orderFormat,
                          int numberOfTables, String imageType, String dateadded, String datechanged, String dateToday,
-                         int waiter_id, String waiter_email, String waiter_names) {
+                         int waiter_id, String waiter_email, String waiter_names, String waiterImageType) {
         this.persona=persona;
         this.id = id;
         this.email = email;
@@ -48,6 +49,7 @@ public class ServerAccount
         this.waiter_id=waiter_id;
         this.waiter_email = waiter_email;
         this.waiter_names=waiter_names;
+        this.waiterImageType = waiterImageType;
     }
     public int getPersona()
     {
@@ -211,6 +213,15 @@ public class ServerAccount
     public void setWaiter_names(String waiter_names)
     {
         this.waiter_names = waiter_names;
+    }
+    public String getWaiterImageType()
+    {
+        return waiterImageType;
+    }
+
+    public void setWaiterImageType(String waiterImageType)
+    {
+        this.waiterImageType = waiterImageType;
     }
 
 

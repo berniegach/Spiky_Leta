@@ -1,12 +1,7 @@
 package com.spikingacacia.leta.ui.inventory;
 
-import com.spikingacacia.leta.ui.LoginA;
-import com.spikingacacia.leta.ui.database.SGroups;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +22,7 @@ public class SIGroupC
     public SIGroupC(int categoryId)
     {
         int pos=1;
-        /*Iterator iterator= LoginA.sGroupsList.entrySet().iterator();
+        /*Iterator iterator= LoginActivity.sGroupsList.entrySet().iterator();
         while(iterator.hasNext())
         {
             LinkedHashMap.Entry<Integer, SGroups>set=(LinkedHashMap.Entry<Integer, SGroups>) iterator.next();

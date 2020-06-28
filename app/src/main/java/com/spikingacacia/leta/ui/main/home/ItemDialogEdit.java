@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -26,7 +25,6 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.AppController;
 import com.spikingacacia.leta.ui.JSONParser;
-import com.spikingacacia.leta.ui.LoginA;
 import com.spikingacacia.leta.ui.database.Categories;
 import com.spikingacacia.leta.ui.database.DMenu;
 import com.spikingacacia.leta.ui.main.MainActivity;
@@ -41,8 +39,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import static com.spikingacacia.leta.ui.LoginA.base_url;
-import static com.spikingacacia.leta.ui.LoginA.serverAccount;
+import static com.spikingacacia.leta.ui.LoginActivity.base_url;
+import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 
 public class ItemDialogEdit extends DialogFragment

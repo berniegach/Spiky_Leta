@@ -12,8 +12,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.AppController;
-import com.spikingacacia.leta.ui.LoginA;
-import com.spikingacacia.leta.ui.Preferences;
+import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.database.Orders;
 import com.spikingacacia.leta.ui.orders.OrdersFragment.OnListFragmentInteractionListener;
 
@@ -24,7 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.spikingacacia.leta.ui.LoginA.serverAccount;
+import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 
 public class MyOrdersRecyclerViewAdapter extends RecyclerView.Adapter<MyOrdersRecyclerViewAdapter.ViewHolder>
@@ -59,7 +58,7 @@ public class MyOrdersRecyclerViewAdapter extends RecyclerView.Adapter<MyOrdersRe
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position)
     {
-        String image_url= LoginA.base_url+"src/buyers_pics/";
+        String image_url= LoginActivity.base_url+"src/buyers_pics/";
         holder.mItem = mValues.get(position);
         holder.mOrderView.setText("Order "+mValues.get(position).getOrderNumber());
         holder.mTableView.setText("Table "+mValues.get(position).getTableNumber());

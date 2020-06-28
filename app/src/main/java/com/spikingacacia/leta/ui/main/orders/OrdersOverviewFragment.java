@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -22,7 +23,7 @@ import android.widget.TextView;
 import com.google.android.material.snackbar.Snackbar;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
-import com.spikingacacia.leta.ui.LoginA;
+import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.Preferences;
 import com.spikingacacia.leta.ui.database.Orders;
 
@@ -39,8 +40,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
-import static com.spikingacacia.leta.ui.LoginA.base_url;
-import static com.spikingacacia.leta.ui.LoginA.serverAccount;
+import static com.spikingacacia.leta.ui.LoginActivity.base_url;
+import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -146,6 +147,11 @@ public class OrdersOverviewFragment extends Fragment
         });
        onClickListeners();
         ordersLinkedHashMap = new LinkedHashMap<>();
+        if(serverAccount.getPersona()==1)
+        {
+            bOrderFormat.setVisibility(View.GONE);
+            ((CardView)view.findViewById(R.id.cardview_finished)).setVisibility(View.GONE);
+        }
         return view;
     }
     @Override
@@ -177,7 +183,7 @@ public class OrdersOverviewFragment extends Fragment
             @Override
             public boolean onMenuItemClick(MenuItem item)
             {
-                final int format=LoginA.serverAccount.getOrderFormat();
+                final int format= LoginActivity.serverAccount.getOrderFormat();
                 new AlertDialog.Builder(getContext())
                         .setItems(format==1?strings_format_1:strings_format_2, new DialogInterface.OnClickListener()
                         {
@@ -242,7 +248,7 @@ public class OrdersOverviewFragment extends Fragment
     }
     private void onClickListeners()
     {
-        final int format=LoginA.serverAccount.getOrderFormat();
+        final int format= LoginActivity.serverAccount.getOrderFormat();
         tInProgressCount.setText(String.valueOf(paymentCount));
         tDeliveryCount.setText(String.valueOf(inProgressCount));
         tPaymentCount.setText(String.valueOf(deliveryCount));
@@ -320,7 +326,7 @@ public class OrdersOverviewFragment extends Fragment
     }
     private void setCounts()
     {
-        int format=LoginA.serverAccount.getOrderFormat();
+        int format= LoginActivity.serverAccount.getOrderFormat();
         List<String> order_numbers=new ArrayList<>();
         Iterator iterator= ordersLinkedHashMap.entrySet().iterator();
         while (iterator.hasNext())
@@ -366,7 +372,7 @@ public class OrdersOverviewFragment extends Fragment
         finishedCount=0;
         setCounts();
         //set the formats
-        final int format=LoginA.serverAccount.getOrderFormat();
+        final int format= LoginActivity.serverAccount.getOrderFormat();
         if(format==1)
         {
             tInProgressName.setText("In Progress");
@@ -423,7 +429,7 @@ public class OrdersOverviewFragment extends Fragment
         {
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.serverAccount.getId())));
+            info.add(new BasicNameValuePair("id",Integer.toString(LoginActivity.serverAccount.getId())));
             info.add(new BasicNameValuePair("order_format", Integer.toString(format)));
             //getting all account details by making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_update_order_format,"POST",info);
@@ -455,8 +461,8 @@ public class OrdersOverviewFragment extends Fragment
             Log.d("settings","finished");
             if(success)
             {
-                int previous_format=LoginA.serverAccount.getOrderFormat();
-                LoginA.serverAccount.setOrderFormat(format);
+                int previous_format= LoginActivity.serverAccount.getOrderFormat();
+                LoginActivity.serverAccount.setOrderFormat(format);
                 Snackbar.make(lFinished,"Format updated",Snackbar.LENGTH_SHORT).show();
                 updateGui();
             }

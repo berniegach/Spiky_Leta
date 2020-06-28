@@ -29,7 +29,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.CommonHelper;
 import com.spikingacacia.leta.ui.JSONParser;
-import com.spikingacacia.leta.ui.LoginA;
+import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.Preferences;
 import com.spikingacacia.leta.ui.database.DMenu;
 import com.spikingacacia.leta.ui.inventory.SIItemC.InventoryItem;
@@ -45,8 +45,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import static com.spikingacacia.leta.ui.LoginA.base_url;
-import static com.spikingacacia.leta.ui.LoginA.serverAccount;
+import static com.spikingacacia.leta.ui.LoginActivity.base_url;
+import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link InventoryItem} and makes a call to the
@@ -102,7 +102,7 @@ public class SIItemRecyclerViewAdapter extends RecyclerView.Adapter<SIItemRecycl
         holder.mDescriptionView.setText(des);
 
         //get the category photo
-        String url= LoginA.base_url+"src/sellers/"+String.format("%s/pics/i_%d", CommonHelper.makeName(LoginA.serverAccount.getId()), mValues.get(position).id)+".jpg";
+        String url= LoginActivity.base_url+"src/sellers/"+String.format("%s/pics/i_%d", CommonHelper.makeName(LoginActivity.serverAccount.getId()), mValues.get(position).id)+".jpg";
         ImageRequest request=new ImageRequest(
                 url,
                 new Response.Listener<Bitmap>()
@@ -383,7 +383,7 @@ public class SIItemRecyclerViewAdapter extends RecyclerView.Adapter<SIItemRecycl
             //logIn=handler.LogInStaff(mEmail,mPassword);
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("id",Integer.toString(LoginA.serverAccount.getId())));
+            info.add(new BasicNameValuePair("id",Integer.toString(LoginActivity.serverAccount.getId())));
             info.add(new BasicNameValuePair("category_id", Integer.toString(mCategoryId)));
             info.add(new BasicNameValuePair("group_id", Integer.toString(mGroupId)));
             info.add(new BasicNameValuePair("item_id", Integer.toString(mId)));
@@ -421,7 +421,7 @@ public class SIItemRecyclerViewAdapter extends RecyclerView.Adapter<SIItemRecycl
             if (successful)
             {
                 Toast.makeText(mContext,"Successful",Toast.LENGTH_SHORT).show();
-                Iterator iterator= LoginA.sItemsList.entrySet().iterator();
+                Iterator iterator= LoginActivity.sItemsList.entrySet().iterator();
                 while (iterator.hasNext())
                 {
                     LinkedHashMap.Entry<Integer, DMenu> set = (LinkedHashMap.Entry<Integer, DMenu>) iterator.next();
@@ -440,7 +440,7 @@ public class SIItemRecyclerViewAdapter extends RecyclerView.Adapter<SIItemRecycl
                         //mValues.set(mPosition, content.createItem(mPosition +1, id, mCategoryId,mGroupId,mName, mDescription, mSellingPrice,mAvailable, DMenu.getDateadded(), dateChanged));
                         notifyDataSetChanged();
                         //iterator.remove();
-                        LoginA.sItemsList.put(id, DMenu);
+                        LoginActivity.sItemsList.put(id, DMenu);
                         break;
                     }
 

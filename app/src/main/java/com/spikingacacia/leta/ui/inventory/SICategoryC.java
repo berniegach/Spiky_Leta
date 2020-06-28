@@ -1,12 +1,7 @@
 package com.spikingacacia.leta.ui.inventory;
 
-import com.spikingacacia.leta.ui.LoginA;
-import com.spikingacacia.leta.ui.database.Categories;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +22,7 @@ public class SICategoryC
     public SICategoryC()
     {
         int pos=1;
-        /*Iterator iterator= LoginA.sCategoriesList.entrySet().iterator();
+        /*Iterator iterator= LoginActivity.sCategoriesList.entrySet().iterator();
         while(iterator.hasNext())
         {
             LinkedHashMap.Entry<Integer, Categories>set=(LinkedHashMap.Entry<Integer, Categories>) iterator.next();

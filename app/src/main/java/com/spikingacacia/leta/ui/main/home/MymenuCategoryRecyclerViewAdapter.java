@@ -1,6 +1,5 @@
 package com.spikingacacia.leta.ui.main.home;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,7 @@ import com.spikingacacia.leta.ui.main.home.menuFragment.OnListFragmentInteractio
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.spikingacacia.leta.ui.LoginA.base_url;
+import static com.spikingacacia.leta.ui.LoginActivity.base_url;
 
 public class MymenuCategoryRecyclerViewAdapter extends RecyclerView.Adapter<MymenuCategoryRecyclerViewAdapter.ViewHolder>
 {

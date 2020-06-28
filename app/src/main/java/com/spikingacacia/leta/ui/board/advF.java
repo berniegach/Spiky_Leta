@@ -30,7 +30,7 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
-import com.spikingacacia.leta.ui.LoginA;
+import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.board.AdsC.AdItem;
 
 import org.apache.http.NameValuePair;
@@ -42,8 +42,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.spikingacacia.leta.ui.LoginA.base_url;
-import static com.spikingacacia.leta.ui.LoginA.serverAccount;
+import static com.spikingacacia.leta.ui.LoginActivity.base_url;
+import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 public class advF extends Fragment
 {
@@ -313,7 +313,7 @@ public class advF extends Fragment
         }
         private void find_image(final int id, final String title, final String content, final int views, final int likes, final int comments, final String date)
         {
-            String url= LoginA.base_url+"src/ads/"+String.format("%d",id)+".jpg";
+            String url= LoginActivity.base_url+"src/ads/"+String.format("%d",id)+".jpg";
             ImageRequest request=new ImageRequest(
                     url,
                     new Response.Listener<Bitmap>()

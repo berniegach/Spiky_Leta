@@ -20,7 +20,6 @@ import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,17 +35,15 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.Volley;
 import com.spikingacacia.leta.R;
-import com.spikingacacia.leta.ui.util.GetFilePathFromDevice;
 import com.spikingacacia.leta.ui.util.VolleyMultipartRequest;
 
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import static android.app.Activity.RESULT_OK;
-import static com.spikingacacia.leta.ui.LoginA.serverAccount;
+import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 
 /**
@@ -55,7 +52,7 @@ import static com.spikingacacia.leta.ui.LoginA.serverAccount;
 public class PreferencePic extends Preference
 {
     private static final int PERMISSION_REQUEST_INTERNET=2;
-    private static String url_upload_profile_pic= LoginA.base_url+"upload_profile_pic_s.php";
+    private static String url_upload_profile_pic= LoginActivity.base_url+"upload_profile_pic_s.php";
     public static NetworkImageView imageView;
     public static TextView textView;
     private static Context context;
@@ -93,10 +90,15 @@ public class PreferencePic extends Preference
     public void onBindViewHolder(PreferenceViewHolder view)
     {
         super.onBindViewHolder(view);
-        String image_url= LoginA.base_url+"src/sellers_pics/";
+        String image_url;
+        Log.d("PEREFRENCE","is:"+serverAccount.getPersona());
+        if(serverAccount.getPersona()==0)
+            image_url = LoginActivity.base_url+"src/sellers_pics/";
+        else
+            image_url = LoginActivity.base_url+"src/buyers_pics/";
         imageView= (NetworkImageView) view.findViewById(R.id.image);
         // thumbnail image
-        String url=image_url+String.valueOf(serverAccount.getId())+'_'+String.valueOf(serverAccount.getImageType());
+        String url=image_url+String.valueOf(serverAccount.getWaiter_id())+'_'+String.valueOf(serverAccount.getWaiterImageType());
         imageView.setImageUrl(url, imageLoader);
         view.findViewById(R.id.edit).setOnClickListener(new View.OnClickListener()
         {
@@ -210,7 +212,7 @@ public class PreferencePic extends Preference
         }
         private void uploadBitmap(final Bitmap bitmap)
         {
-            String url_upload_profile_pic= LoginA.base_url+"upload_profile_pic_s.php";
+            String url_upload_profile_pic= LoginActivity.base_url+"upload_profile_pic_s.php";
             VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url_upload_profile_pic,
                     new Response.Listener<NetworkResponse>()
                     {

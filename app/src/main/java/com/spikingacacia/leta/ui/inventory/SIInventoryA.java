@@ -2,15 +2,10 @@ package com.spikingacacia.leta.ui.inventory;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -26,18 +21,15 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.appbar.AppBarLayout;
 import com.spikingacacia.leta.R;
-import com.spikingacacia.leta.ui.LoginA;
+import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.Preferences;
-import com.spikingacacia.leta.ui.main.home.ItemDialog;
 import com.spikingacacia.leta.ui.util.VolleyMultipartRequest;
 
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class SIInventoryA extends AppCompatActivity
 implements SICategoryF.OnListFragmentInteractionListener,
@@ -45,7 +37,7 @@ implements SICategoryF.OnListFragmentInteractionListener,
         SIItemF.OnListFragmentInteractionListener
 {
     private static final int PERMISSION_REQUEST_INTERNET=255;
-    private static String url_upload_photos=  LoginA.base_url+"upload_inventory_pic.php";
+    private static String url_upload_photos=  LoginActivity.base_url+"upload_inventory_pic.php";
     int whichFragment=1;
     int whichPhoto;
     int photoId;
@@ -229,7 +221,7 @@ implements SICategoryF.OnListFragmentInteractionListener,
     }
     private void uploadBitmap(final Bitmap bitmap)
     {
-        String url_upload_profile_pic= LoginA.base_url+"upload_inventory_pic.php";
+        String url_upload_profile_pic= LoginActivity.base_url+"upload_inventory_pic.php";
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url_upload_profile_pic,
                 new Response.Listener<NetworkResponse>()
                 {
