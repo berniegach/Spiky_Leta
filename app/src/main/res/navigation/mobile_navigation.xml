@@ -16,6 +16,11 @@
         android:name="com.spikingacacia.leta.ui.main.orders.OrdersOverviewFragment"
         android:label="Orders"
         tools:layout="@layout/fragment_orders_overview" />
+    <fragment
+        android:id="@+id/navigation_dashboard"
+        android:name="com.spikingacacia.leta.ui.main.dashboard.DashboardFragment"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_dashboard" />
 
     <fragment
         android:id="@+id/navigation_messages"

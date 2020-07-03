@@ -147,7 +147,7 @@ public class OrdersOverviewFragment extends Fragment
         });
        onClickListeners();
         ordersLinkedHashMap = new LinkedHashMap<>();
-        if(serverAccount.getPersona()==1)
+        if(serverAccount.getPersona()==2)
         {
             bOrderFormat.setVisibility(View.GONE);
             ((CardView)view.findViewById(R.id.cardview_finished)).setVisibility(View.GONE);

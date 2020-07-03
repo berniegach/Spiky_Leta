@@ -53,8 +53,8 @@ public class LoginActivity extends AppCompatActivity
 {
     private static final int OVERLAY_PERMISSION_CODE=541;
     //REMEMBER TO CHANGE THIS WHEN CHANGING BETWEEN ONLINE AND LOCALHOST
-    //public static final String base_url="https://www.spikingacacia.com/leta_project/android/"; //online
-    public static final String base_url="http://10.0.2.2/leta_project/android/"; //localhost no connection for testing user accounts coz it doesnt require subscription checking
+    public static final String base_url="https://www.spikingacacia.com/leta_project/android/"; //online
+    //public static final String base_url="http://10.0.2.2/leta_project/android/"; //localhost no connection for testing user accounts coz it doesnt require subscription checking
 
     private String TAG="LoginActivity";
     private Intent intentLoginProgress;
@@ -149,9 +149,10 @@ public class LoginActivity extends AppCompatActivity
         //proceed to sign in
         if(account!=null)
         {
-            showProgress(true);
             new RegisterTask(account.getEmail(),"null").execute((Void)null);
         }
+        else
+            showProgress(false);
 
     }
     @Override
@@ -314,60 +315,79 @@ public class LoginActivity extends AppCompatActivity
     }
     public void onSuccesfullLogin()
     {
+        long days=0;
+        try
+        {
+            String date_added= serverAccount.getDateadded();
+            String date_now= serverAccount.getDateToday();
+            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy HH:mm");
+            Date date_add= simpleDateFormat.parse(date_added);
+            Date date_n=simpleDateFormat.parse(date_now);
+            long difference=date_n.getTime()-date_add.getTime();
+            days= TimeUnit.DAYS.convert(difference,TimeUnit.MILLISECONDS);
+        }
+        catch (ParseException e)
+        {
+            Log.e(TAG,"exception "+e.getMessage());
+            showProgress(false);
+            return;
+        }
+
         //REMEMBER TO CHANGE THIS WHEN CHANGING BETWEEN ONLINE AND LOCALHOST
         //if(true)
         if(isMonthlySubscribed()||isYearlySubscribed())
             startBackgroundTasks();
         else
         {
-            try
+            //check if the one month since registration has ended
+            //the date added is in the form "d-m-Y H:i"
+
+            Log.d(TAG,"days "+days);
+            if(days>30 && serverAccount.getPersona()==1)
             {
-                //check if the one month since registration has ended
-                //the date added is in the form "d-m-Y H:i"
-                String date_added= serverAccount.getDateadded();
-                String date_now= serverAccount.getDateToday();
-                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy HH:mm");
-                Date date_add= simpleDateFormat.parse(date_added);
-                Date date_n=simpleDateFormat.parse(date_now);
-                long difference=date_n.getTime()-date_add.getTime();
-                long days= TimeUnit.DAYS.convert(difference,TimeUnit.MILLISECONDS);
-                Log.d(TAG,"days "+days);
-                if(days>30)
-                {
-                    String message="Your trial period of 30 days has ended.\nWould you like to proceed to the subscriptions purchase?";
-                    new AlertDialog.Builder(this)
-                            .setTitle("Kazi 1 month trial")
-                            .setMessage(message)
-                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                String message="Your trial period of 30 days has ended.\nWould you like to proceed to the subscriptions purchase?";
+                new AlertDialog.Builder(this)
+                        .setTitle("Kazi 1 month trial")
+                        .setMessage(message)
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i)
                             {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i)
-                                {
-                                    dialogInterface.dismiss();
-                                }
-                            })
-                            .setPositiveButton("Proceed", new DialogInterface.OnClickListener()
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .setPositiveButton("Proceed", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i)
                             {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i)
-                                {
-                                    onSubscriptionPurchase();
-                                }
-                            })
-                            .create().show();
-                }
-                else
-                {
-                    startBackgroundTasks();
-                    currentSubscription="Trial period remaining "+(30-days)+" days";
-                }
+                                onSubscriptionPurchase();
+                            }
+                        })
+                        .create().show();
             }
-            catch (ParseException e)
+            else if(days>30 && serverAccount.getPersona() ==2)
             {
-                Log.e(TAG,"exception "+e.getMessage());
-                showProgress(false);
+                String message="No subscription available";
+                new AlertDialog.Builder(this)
+                        .setTitle("Restaurant payment due")
+                        .setMessage(message)
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i)
+                            {
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .create().show();
             }
-            showProgress(false);
+            else
+            {
+                startBackgroundTasks();
+                currentSubscription="Trial period remaining "+(30-days)+" days";
+            }
 
             Log.d(TAG, "NO subscriptions");
 
@@ -376,7 +396,6 @@ public class LoginActivity extends AppCompatActivity
 
     private void startBackgroundTasks()
     {
-        showProgress(false);
         proceedToLogin();
     }
     public class RegisterTask extends AsyncTask<Void, Void, Boolean>
@@ -430,7 +449,7 @@ public class LoginActivity extends AppCompatActivity
             {
                 Toast.makeText(getBaseContext(), "Successfully registered", Toast.LENGTH_SHORT).show();
                 //proceed to login
-                if(radioAdmin.isClickable())
+                if(radioAdmin.isChecked())
                     new LoginTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
                 else
                     new LoginWaiterTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
@@ -441,7 +460,11 @@ public class LoginActivity extends AppCompatActivity
                 Log.d(TAG,"email already there");
                 //proceed to login
                 // we have already set the persona so...
-                if(preferences.getPersona()==1)
+                if(radioAdmin.isChecked())
+                    new LoginTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
+                else if(radioWaiter.isChecked())
+                    new LoginWaiterTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
+                else if(preferences.getPersona()==2)
                     new LoginWaiterTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
                 else
                     new LoginTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
@@ -477,7 +500,7 @@ public class LoginActivity extends AppCompatActivity
             mEmail = email;
             mPassword = password;
             jsonParser = new JSONParser();
-            Log.d(TAG,"persona 0");
+            Log.d(TAG,"persona 1");
         }
         @Override
         protected void onPreExecute()
@@ -504,7 +527,7 @@ public class LoginActivity extends AppCompatActivity
                     JSONArray accountArray=jsonObject.getJSONArray("account");
                     JSONObject accountObject=accountArray.getJSONObject(0);
 
-                    serverAccount.setPersona(0);
+                    serverAccount.setPersona(1);
                     serverAccount.setId(accountObject.getInt("id"));
                     serverAccount.setEmail(accountObject.getString("email"));
                     serverAccount.setPassword(accountObject.getString("password"));
@@ -576,7 +599,7 @@ public class LoginActivity extends AppCompatActivity
             mEmail = email;
             mPassword = password;
             jsonParser = new JSONParser();
-            Log.d(TAG,"persona 1");
+            Log.d(TAG,"persona 2");
         }
         @Override
         protected void onPreExecute()
@@ -603,7 +626,7 @@ public class LoginActivity extends AppCompatActivity
                     JSONArray accountArray=jsonObject.getJSONArray("account");
                     JSONObject accountObject=accountArray.getJSONObject(0);
 
-                    serverAccount.setPersona(1);
+                    serverAccount.setPersona(2);
                     serverAccount.setId(accountObject.getInt("id"));
                     serverAccount.setEmail(accountObject.getString("email"));
                     serverAccount.setPassword(accountObject.getString("password"));
@@ -620,6 +643,7 @@ public class LoginActivity extends AppCompatActivity
                     serverAccount.setDateToday(accountObject.getString("today"));
                     //waiter information
                     serverAccount.setWaiter_id(accountObject.getInt("waiter_id"));
+                    serverAccount.setWaiter_email(accountObject.getString("waiter_email"));
                     serverAccount.setWaiter_names(accountObject.getString("waiter_names"));
                     serverAccount.setWaiterImageType(accountObject.getString("waiter_image_type"));
                     return true;

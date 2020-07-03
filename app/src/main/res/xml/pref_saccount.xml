@@ -1,8 +1,0 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <Preference
-        android:key="account_delete"
-        android:title="Delete Account"
-        android:summary="Permanently Remove your information from Leta system">
-    </Preference>
-
-</PreferenceScreen>

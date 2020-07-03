@@ -66,7 +66,7 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
         // image
         String url=image_url+String.valueOf(mValues.get(position).getId())+'_'+String.valueOf(mValues.get(position).getImageType());
         holder.image.setImageUrl(url, imageLoader);
-        if(serverAccount.getPersona()==1)
+        if(serverAccount.getPersona()==2)
             holder.mEditButton.setVisibility(View.GONE);
         holder.mEditButton.setOnClickListener(new View.OnClickListener()
         {

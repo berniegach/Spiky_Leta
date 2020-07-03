@@ -20,6 +20,8 @@ import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -91,14 +93,23 @@ public class PreferencePic extends Preference
     {
         super.onBindViewHolder(view);
         String image_url;
+        String url;
+        ImageView b_edit = (ImageView) view.findViewById(R.id.edit);
         Log.d("PEREFRENCE","is:"+serverAccount.getPersona());
-        if(serverAccount.getPersona()==0)
+        if(serverAccount.getPersona()==1)
+        {
             image_url = LoginActivity.base_url+"src/sellers_pics/";
+            url=image_url+String.valueOf(serverAccount.getId())+'_'+String.valueOf(serverAccount.getImageType());
+        }
         else
+        {
             image_url = LoginActivity.base_url+"src/buyers_pics/";
+            url=image_url+String.valueOf(serverAccount.getWaiter_id())+'_'+String.valueOf(serverAccount.getWaiterImageType());
+            b_edit.setVisibility(View.GONE);
+        }
         imageView= (NetworkImageView) view.findViewById(R.id.image);
         // thumbnail image
-        String url=image_url+String.valueOf(serverAccount.getWaiter_id())+'_'+String.valueOf(serverAccount.getWaiterImageType());
+
         imageView.setImageUrl(url, imageLoader);
         view.findViewById(R.id.edit).setOnClickListener(new View.OnClickListener()
         {

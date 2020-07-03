@@ -88,15 +88,17 @@ public class OrdersActivity extends AppCompatActivity
 
     private class BOrdersFormatUpdateTask extends AsyncTask<Void, Void, Boolean>
     {
+        private String url_update_order_status = base_url + "update_seller_order.php";
         int status;
         String waiter_email="";
         private JSONParser jsonParser;
         public BOrdersFormatUpdateTask(int status)
         {
             this.status=status;
-            if(serverAccount.getPersona()==1)
+            if(serverAccount.getPersona()==2)
                 waiter_email= serverAccount.getWaiter_email();
             jsonParser = new JSONParser();
+            Log.d(TAG,"WAITER EMAIL"+waiter_email);
         }
         @Override
         protected void onPreExecute()
@@ -116,7 +118,6 @@ public class OrdersActivity extends AppCompatActivity
             info.add(new BasicNameValuePair("status",String.valueOf(status)));
             info.add(new BasicNameValuePair("date_added",dateAdded));
             // making HTTP request
-            String url_update_order_status = base_url + "update_seller_order.php";
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_update_order_status,"POST",info);
             try
             {

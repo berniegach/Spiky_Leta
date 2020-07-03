@@ -166,7 +166,7 @@ public class menuFragment extends Fragment
                 return false;
             }
         });
-        if(serverAccount.getPersona() ==1)
+        if(serverAccount.getPersona() ==2)
             add.setVisible(false);
 
         // Associate searchable configuration with the SearchView

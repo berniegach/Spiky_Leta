@@ -7,8 +7,8 @@ android {
         applicationId "com.spikingacacia.leta"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 9
-        versionName "1.0.8"
+        versionCode 12
+        versionName "1.1.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         //vectorDrawables.useSupportLibrary = true
     }
@@ -46,8 +46,6 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
     implementation 'androidx.preference:preference:1.1.0'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
-    implementation 'com.google.firebase:firebase-auth:19.2.0'
-    implementation 'com.google.firebase:firebase-dynamic-links:19.1.0'
     implementation 'org.ocpsoft.prettytime:prettytime:4.0.3.Final'
     implementation 'com.google.zxing:core:3.3.2'
     implementation 'com.journeyapps:zxing-android-embedded:3.6.0@aar'

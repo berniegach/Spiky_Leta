@@ -26,6 +26,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.spikingacacia.leta.ui.main.dashboard.DashboardFragment;
 import com.spikingacacia.leta.ui.main.home.ItemDialog;
 import com.spikingacacia.leta.ui.main.home.ItemDialogEdit;
 import com.spikingacacia.leta.ui.main.home.menuFragment;
@@ -42,7 +43,7 @@ import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 public class MainActivity extends AppCompatActivity implements
         menuFragment.OnListFragmentInteractionListener, ItemDialog.NoticeDialogListener, ItemDialogEdit.NoticeDialogListener,
-        OrdersOverviewFragment.OnFragmentInteractionListener
+        OrdersOverviewFragment.OnFragmentInteractionListener, DashboardFragment.OnListFragmentInteractionListener
 {
     private ProgressBar progressBar;
     private View mainFragment;
@@ -85,6 +86,12 @@ public class MainActivity extends AppCompatActivity implements
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+        Menu nav_messages = navView.getMenu();
+        if(serverAccount.getPersona()==2)
+        {
+            nav_messages.findItem(R.id.navigation_messages).setVisible(false);
+        }
+
         progressBar = findViewById(R.id.progress);
         mainFragment = findViewById(R.id.nav_host_fragment);
 
@@ -98,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements
         getMenuInflater().inflate(R.menu.main_menu, menu);
         MenuItem menu_waiters = menu.findItem(R.id.action_waiter);
         MenuItem menu_qr_codes = menu.findItem(R.id.action_qr_codes);
-        if(serverAccount.getPersona()==1)
+        if(serverAccount.getPersona()==2)
         {
             menu_waiters.setVisible(false);
             menu_qr_codes.setVisible(false);
@@ -227,5 +234,18 @@ public class MainActivity extends AppCompatActivity implements
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
 
+    }
+    /*
+     * *implementation of DashboardFragment.java
+     * */
+    @Override
+    public void onCardviewClicked(int which)
+    {
+        // which can be 3, 4 and 5
+        Intent intent=new Intent(MainActivity.this, HostActivity.class);
+        //prevent this activity from flickering as we call the next one
+        intent.putExtra(HostActivity.ARG_WHICH_FRAGMENT,which);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(intent);
     }
 }

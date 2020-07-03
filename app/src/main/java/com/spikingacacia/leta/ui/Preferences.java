@@ -21,7 +21,7 @@ public class Preferences
         email_to_remember = shared_preferences.getString("email","");
         password_to_remember = shared_preferences.getString("password","");
         order_format_to_show_count = shared_preferences.getInt("order_format_to_show_count",0);
-        persona=shared_preferences.getInt("persona",0);
+        persona=shared_preferences.getInt("persona",2);
     }
     public boolean isDark_theme_enabled()
     {
