@@ -28,6 +28,12 @@
             app:updatesContinuously="true"
             app:adjustable="true"
             app:summary="@string/pref_order_range" />
+        <EditTextPreference
+            app:isPreferenceVisible="false"
+            app:key="mpesa_code"
+            app:title="Mpesa Till Number"
+            android:summary="Enter the Mpesa till number used to buy goods and services"
+            app:useSimpleSummaryProvider="true"/>
         <!--<Preference
             app:key="number_of_tables"
             app:title="Number of tables" />-->

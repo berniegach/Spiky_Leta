@@ -34,10 +34,14 @@ public class OrderOverviewFragment extends Fragment
 {
     private static final String ARG_ORDER = "order";
     private static final String ARG_FORMAT = "order_format";
+    private static final String ARG_ORDER_STATUS = "order_status";
     private static final String ARG_STATION = "station";
+    private static final String ARG_PRE_ORDER = "pre_order";
     private String mOrder;
     private int mOrderFormat;
+    private int mOrderStatus;
     private int mStation;
+    private int mPreOrder;
     private OnFragmentInteractionListener mListener;
     Preferences preferences;
 
@@ -45,13 +49,15 @@ public class OrderOverviewFragment extends Fragment
     {
         // Required empty public constructor
     }
-    public static OrderOverviewFragment newInstance(String order, int format, int station)
+    public static OrderOverviewFragment newInstance(String order, int format, int station, int status,  int pre_order)
     {
         OrderOverviewFragment fragment = new OrderOverviewFragment();
         Bundle args = new Bundle();
         args.putString(ARG_ORDER, order);
         args.putInt(ARG_FORMAT, format);
         args.putInt(ARG_STATION, station);
+        args.putInt(ARG_ORDER_STATUS, status);
+        args.putInt(ARG_PRE_ORDER, pre_order);
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,6 +71,8 @@ public class OrderOverviewFragment extends Fragment
             mOrder = getArguments().getString(ARG_ORDER);
             mOrderFormat = getArguments().getInt(ARG_FORMAT);
             mStation = getArguments().getInt(ARG_STATION);
+            mOrderStatus = getArguments().getInt(ARG_ORDER_STATUS);
+            mPreOrder = getArguments().getInt(ARG_PRE_ORDER);
         }
     }
 
@@ -81,6 +89,11 @@ public class OrderOverviewFragment extends Fragment
         TextView t_username=view.findViewById(R.id.username);
         TextView t_table=view.findViewById(R.id.table);
         TextView t_waiter=view.findViewById(R.id.waiter);
+        CardView c_table = view.findViewById(R.id.c_table);
+        CardView c_pre_order = view.findViewById(R.id.pre_order);
+        CardView c_collect_time = view.findViewById(R.id.c_collect_time);
+        TextView t_collect_time = view.findViewById(R.id.collect_time);
+        CardView c_paid = view.findViewById(R.id.paid);
         //set the buttons listeners
         Button b_accept=view.findViewById(R.id.accept);
         Button b_decline=view.findViewById(R.id.decline);
@@ -90,7 +103,7 @@ public class OrderOverviewFragment extends Fragment
             public void onClick(View v)
             {
                 if(mListener!=null)
-                    mListener.onAcceptDecline(1, mStation);
+                    mListener.onAcceptDecline(1, mOrderStatus);
             }
         });
         b_decline.setOnClickListener(new View.OnClickListener()
@@ -99,11 +112,22 @@ public class OrderOverviewFragment extends Fragment
             public void onClick(View v)
             {
                 if(mListener!=null)
-                    mListener.onAcceptDecline(2, mStation);
+                    mListener.onAcceptDecline(2, mOrderStatus);
             }
         });
         //show the respective buttons and change their labels accordingly
         //for pending the buttons remain as they are
+        //the order status are
+        // -3 for new order, -2 = unpaid, -1 = paid, 0 = deleted, 1 = pending, 2 = ..... until 5 = finished
+        if(mPreOrder == 1)
+        {
+            c_pre_order.setVisibility(View.VISIBLE);
+            c_collect_time.setVisibility(View.VISIBLE);
+        }
+        if(mOrderStatus == -1)
+        {
+            c_paid.setVisibility(View.VISIBLE);
+        }
         if(mOrderFormat==1)
         {
             //pending--in progress--delivery--payment--finished
@@ -158,6 +182,7 @@ public class OrderOverviewFragment extends Fragment
         double total_price=0.0;
         String date_to_show="";
         String waiter="";
+        String collect_time="";
         Iterator iterator= OrdersFragment.ordersLinkedHashMap.entrySet().iterator();
         while (iterator.hasNext())
         {
@@ -176,6 +201,7 @@ public class OrderOverviewFragment extends Fragment
             username= orders.getUsername();
             waiter= orders.getWaiter_names();
             table= orders.getTableNumber();
+            collect_time = orders.getCollectTime();
             if(count==0)
             {
                 progressBar.setProgress(orderStatus);
@@ -201,8 +227,12 @@ public class OrderOverviewFragment extends Fragment
        // l_base.addView(t_total);
         //set date text
         t_date.setText(date_to_show);
+        t_collect_time.setText(collect_time);
         t_username.setText(username);
-        t_table.setText("Table "+table);
+        if(table!=-1)
+            t_table.setText("Table "+table);
+        else
+            c_table.setVisibility(View.GONE);
         t_waiter.setText(waiter);
         return view;
     }

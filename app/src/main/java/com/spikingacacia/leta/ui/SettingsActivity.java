@@ -74,6 +74,7 @@ public class SettingsActivity extends AppCompatActivity
             final Preference preference_password=findPreference("password");
             final SeekBarPreference pref_order_radius=findPreference("order_radius");
             final Preference preference_tables=findPreference("number_of_tables");
+            final EditTextPreference mpesa_till_number_preference = findPreference("mpesa_code");
             final Preference preference_subscription=findPreference("subscription");
             //check if we have the waiter logged on
             if(serverAccount.getPersona()==2)
@@ -81,6 +82,7 @@ public class SettingsActivity extends AppCompatActivity
                 preference_est.setEnabled(false);
                 pref_order_radius.setVisible(false);
                 //preference_tables.setVisible(false);
+                mpesa_till_number_preference.setEnabled(false);
             }
             //feedback preference click listener
 
@@ -158,6 +160,9 @@ public class SettingsActivity extends AppCompatActivity
                     return false;
                 }
             });*/
+
+
+
             //subscription change
 
             preference_subscription.setSummary(LoginActivity.currentSubscription);
@@ -167,6 +172,25 @@ public class SettingsActivity extends AppCompatActivity
             String[] pos= serverAccount.getLocation().split(",");
             final Preference pref_location=findPreference("location");
             pref_location.setSummary(pos.length==4?pos[2]:"Please set your location");
+
+            //mpesa tillnumber
+            if(pos.length == 4)
+                if(pos[3].contentEquals("KE"))
+                    mpesa_till_number_preference.setVisible(true);
+            mpesa_till_number_preference.setText(serverAccount.getmCode());
+            mpesa_till_number_preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+            {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue)
+                {
+                    String till_number = newValue.toString();
+                    tempServerAccount.setmCode(till_number);
+                    settingsChanged = true;
+                    ((EditTextPreference)preference).setText(till_number);
+                    return false;
+                }
+            });
+
             //visible online
            int online= serverAccount.getOnlineVisibility();
             final SwitchPreference pref_visible_online= (SwitchPreference) findPreference("online_visibility");
@@ -286,6 +310,7 @@ public class SettingsActivity extends AppCompatActivity
             info.add(new BasicNameValuePair("order_range", Integer.toString(tempServerAccount.getOrderRadius())));
             info.add(new BasicNameValuePair("number_of_tables", Integer.toString(tempServerAccount.getNumberOfTables())));
             info.add(new BasicNameValuePair("image_type", tempServerAccount.getImageType()));
+            info.add(new BasicNameValuePair("m_code", tempServerAccount.getmCode()));
             //getting all account details by making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_update_account,"POST",info);
             try

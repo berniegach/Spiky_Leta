@@ -61,7 +61,8 @@ public class MyOrdersRecyclerViewAdapter extends RecyclerView.Adapter<MyOrdersRe
         String image_url= LoginActivity.base_url+"src/buyers_pics/";
         holder.mItem = mValues.get(position);
         holder.mOrderView.setText("Order "+mValues.get(position).getOrderNumber());
-        holder.mTableView.setText("Table "+mValues.get(position).getTableNumber());
+        int table_number = mValues.get(position).getTableNumber();
+        holder.mTableView.setText(table_number == -1 ? "Pre - Order" : "Table "+table_number);
         holder.mUsernameView.setText(mValues.get(position).getUsername());
         //format the date
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm");

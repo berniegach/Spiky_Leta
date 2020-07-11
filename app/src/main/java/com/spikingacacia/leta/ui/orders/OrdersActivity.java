@@ -64,7 +64,8 @@ public class OrdersActivity extends AppCompatActivity
         String dateAdded=item.getDateAdded();
         String[] date=dateAdded.split(" ");
         String message=date[0]+":"+item.getOrderNumber()+":"+item.getOrderStatus();
-        Fragment fragment= OrderOverviewFragment.newInstance(message, format, item.getOrderStatus());
+        int status = item.getOrderStatus();
+        Fragment fragment= OrderOverviewFragment.newInstance(message, format, status == -1? 1 : status, item.getOrderStatus(), item.getPreOrder());
         FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.base,fragment,"order");
         transaction.addToBackStack("order");
@@ -78,11 +79,22 @@ public class OrdersActivity extends AppCompatActivity
     {
         final int format= serverAccount.getOrderFormat();
         int new_status=1;
-        if(status==1)
-            new_status=which==1?2:0;
-        else
-            new_status=status+=1;
-        //accept order is 1 while decline is 2
+        if(which == 1)
+        {
+            //accept order
+            if(status == -1)
+            {
+                //the order is already paid so skip payment and go straight to inprogress
+                new_status = 3;
+            }
+            else
+                new_status = status+=1;
+        }
+        else if(which == 2)
+        {
+            //decline order
+            new_status = 0;
+        }
         new BOrdersFormatUpdateTask( new_status ).execute((Void)null);
     }
 

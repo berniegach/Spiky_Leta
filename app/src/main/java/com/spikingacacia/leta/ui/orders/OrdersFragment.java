@@ -160,7 +160,7 @@ public class OrdersFragment extends Fragment
             info.add(new BasicNameValuePair("email",serverAccount.getEmail()));
             // making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_orders,"POST",info);
-            Log.d("sItems",""+jsonObject.toString());
+            //Log.d("sItems",""+jsonObject.toString());
             try
             {
                 JSONArray itemsArrayList=null;
@@ -177,7 +177,9 @@ public class OrdersFragment extends Fragment
                         int item_id=jsonObjectNotis.getInt("item_id");
                         int order_number=jsonObjectNotis.getInt("order_number");
                         int order_status=jsonObjectNotis.getInt("order_status");
-                        if(mWhichOrder!=order_status)
+                        if(mWhichOrder == 1 && order_status == -1)
+                            ;
+                        else if(mWhichOrder!=order_status)
                             continue;
 
                         String date_added=jsonObjectNotis.getString("date_added");
@@ -187,8 +189,11 @@ public class OrdersFragment extends Fragment
                         String username=jsonObjectNotis.getString("username");
                         String waiter_names=jsonObjectNotis.getString("waiter_names");
                         int table_number=jsonObjectNotis.getInt("table_number");
+                        int pre_order = jsonObjectNotis.getInt("pre_order");
+                        String collect_time = jsonObjectNotis.getString("collect_time");
 
-                        Orders orders =new Orders(id,user_id,user_email,item_id,order_number,order_status,item,selling_price, username,waiter_names,table_number,date_added,date_changed);
+                        Orders orders =new Orders(id,user_id,user_email,item_id,order_number,order_status,item,selling_price, username,waiter_names,table_number, pre_order, collect_time,
+                                date_added,date_changed);
                         ordersLinkedHashMap.put(id,orders);
                         ordersList.add(orders);
                         String[] date_pieces=date_added.split(" ");

@@ -53,8 +53,8 @@ public class LoginActivity extends AppCompatActivity
 {
     private static final int OVERLAY_PERMISSION_CODE=541;
     //REMEMBER TO CHANGE THIS WHEN CHANGING BETWEEN ONLINE AND LOCALHOST
-    public static final String base_url="https://www.spikingacacia.com/leta_project/android/"; //online
-    //public static final String base_url="http://10.0.2.2/leta_project/android/"; //localhost no connection for testing user accounts coz it doesnt require subscription checking
+    //public static final String base_url="https://www.spikingacacia.com/leta_project/android/"; //online
+    public static final String base_url="http://10.0.2.2/leta_project/android/"; //localhost no connection for testing user accounts coz it doesnt require subscription checking
 
     private String TAG="LoginActivity";
     private Intent intentLoginProgress;
@@ -540,6 +540,7 @@ public class LoginActivity extends AppCompatActivity
                     serverAccount.setOrderFormat(accountObject.getInt("order_format"));
                     serverAccount.setNumberOfTables(accountObject.getInt("number_of_tables"));
                     serverAccount.setImageType(accountObject.getString("image_type"));
+                    serverAccount.setmCode(accountObject.getString("m_code"));
                     serverAccount.setDateadded(accountObject.getString("dateadded"));
                     serverAccount.setDatechanged(accountObject.getString("datechanged"));
                     serverAccount.setDateToday(accountObject.getString("today"));
@@ -638,6 +639,7 @@ public class LoginActivity extends AppCompatActivity
                     serverAccount.setOrderRadius(accountObject.getInt("order_radius"));
                     serverAccount.setOrderFormat(accountObject.getInt("order_format"));
                     serverAccount.setNumberOfTables(accountObject.getInt("number_of_tables"));
+                    serverAccount.setmCode(accountObject.getString("m_code"));
                     serverAccount.setDateadded(accountObject.getString("dateadded"));
                     serverAccount.setDatechanged(accountObject.getString("datechanged"));
                     serverAccount.setDateToday(accountObject.getString("today"));

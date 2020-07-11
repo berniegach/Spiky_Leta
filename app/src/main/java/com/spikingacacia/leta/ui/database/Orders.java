@@ -13,10 +13,13 @@ public class Orders
     private String username;
     private String waiter_names;
     private int tableNumber;
+    private int preOrder;
+    private String collectTime;
     private String dateAdded;
     private String dateChanged;
 
-    public Orders(int id,int userId, String userEmail, int itemId, int orderNumber, int orderStatus, String orderName, double price, String username, String waiter_names, int tableNumber, String dateAdded, String dateChanged)
+    public Orders(int id,int userId, String userEmail, int itemId, int orderNumber, int orderStatus, String orderName, double price, String username, String waiter_names, int tableNumber,
+                  int preOrder, String collectTime, String dateAdded, String dateChanged)
     {
         this.id = id;
         this.userId = userId;
@@ -29,6 +32,8 @@ public class Orders
         this.username=username;
         this.waiter_names=waiter_names;
         this.tableNumber=tableNumber;
+        this.preOrder = preOrder;
+        this.collectTime = collectTime;
         this.dateAdded = dateAdded;
         this.dateChanged = dateChanged;
     }
@@ -141,7 +146,24 @@ public class Orders
     {
         this.tableNumber = tableNumber;
     }
+    public int getPreOrder()
+    {
+        return preOrder;
+    }
 
+    public void setPreOrder(int preOrder)
+    {
+        this.preOrder = preOrder;
+    }
+    public String getCollectTime()
+    {
+        return collectTime;
+    }
+
+    public void setCollectTime(String collectTime)
+    {
+        this.collectTime = collectTime;
+    }
 
     public String getDateAdded()
     {
