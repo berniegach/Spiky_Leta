@@ -195,6 +195,8 @@ public class SettingsActivity extends AppCompatActivity
            int online= serverAccount.getOnlineVisibility();
             final SwitchPreference pref_visible_online= (SwitchPreference) findPreference("online_visibility");
             pref_visible_online.setChecked(online==1);
+            pref_visible_online.setEnabled(false);
+            pref_visible_online.setVisible(false);
             pref_visible_online.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
             {
                 @Override
@@ -219,6 +221,8 @@ public class SettingsActivity extends AppCompatActivity
             int deliver= serverAccount.getDeliver();
             final SwitchPreference pref_deliver= (SwitchPreference) findPreference("online_delivery");
             pref_deliver.setChecked(deliver==1);
+            pref_deliver.setEnabled(false);
+            pref_deliver.setVisible(false);
             pref_deliver.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
             {
                 @Override
