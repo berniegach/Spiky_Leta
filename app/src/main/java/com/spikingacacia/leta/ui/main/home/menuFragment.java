@@ -260,11 +260,9 @@ public class menuFragment extends Fragment
             {
 
                 final String path = getPath(uri);
-                //String path= GetFilePathFromDevice.getPath(getContext(),uri);
                 Log.d("path",""+path);
 
                 final Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), uri);
-                //imageButton.setImageBitmap(bitmap);
                 //upload
                 if (path == null)
                 {
@@ -275,7 +273,7 @@ public class menuFragment extends Fragment
                     //Uploading code
                     try
                     {
-                        new CreateItemTask(newItem,newDescription,newCategoryId,".png", bitmap).execute((Void)null);
+                        new CreateItemTask(newItem,newDescription,newCategoryId,".jpg", bitmap).execute((Void)null);
                     }
                     catch (Exception e)
                     {
@@ -385,7 +383,7 @@ public class menuFragment extends Fragment
             protected Map<String, DataPart> getByteData() {
                 Map<String, DataPart> params = new HashMap<>();
                 long imagename = System.currentTimeMillis();
-                params.put("png", new DataPart(imagename + ".png", getFileDataFromDrawable(bitmap)));
+                params.put("png", new DataPart(imagename + ".jpg", getFileDataFromDrawable(bitmap)));
                 return params;
             }
 
@@ -403,14 +401,24 @@ public class menuFragment extends Fragment
         //adding the request to volley
         Volley.newRequestQueue(getContext()).add(volleyMultipartRequest);
     }
-    public byte[] getFileDataFromDrawable(Bitmap bitmap) {
+    public byte[] getFileDataFromDrawable(final Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        if(bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream))
+        int quality = 100;
+        while(true)
         {
-            Log.e(TAG,"bytes length "+byteArrayOutputStream.toByteArray().length);
-            return byteArrayOutputStream.toByteArray();
+            byteArrayOutputStream.reset();
+            if(bitmap.compress(Bitmap.CompressFormat.JPEG, quality, byteArrayOutputStream))
+            {
+
+                Log.e(TAG,"bytes length "+byteArrayOutputStream.toByteArray().length);
+                if(byteArrayOutputStream.toByteArray().length<=2000000)
+                    return byteArrayOutputStream.toByteArray();
+            }
+            else
+                return null;
+            quality-=10;
         }
-        return null;
+
     }
     public class CreateItemTask extends AsyncTask<Void, Void, Boolean>
     {

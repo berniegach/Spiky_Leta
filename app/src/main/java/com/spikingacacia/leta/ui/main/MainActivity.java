@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -201,6 +202,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onItemUpdated()
     {
+        Toast.makeText(getBaseContext(),"Successful",Toast.LENGTH_SHORT).show();
 
     }
     /**

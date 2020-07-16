@@ -162,7 +162,7 @@ public class ItemDialogEdit extends DialogFragment
                             editPrice.setError("Price empty");
                             return;
                         }
-                        new UpdateItemTask(dMenu.getId(),item,description,getCategoryId(category_title),price,".png").execute((Void)null);
+                        new UpdateItemTask(dMenu.getId(),item,description,getCategoryId(category_title),price,".jpg").execute((Void)null);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -339,8 +339,8 @@ public class ItemDialogEdit extends DialogFragment
             {
 
                 Log.d("adding new item", "done...");
-                Toast.makeText(getContext(),"Successful",Toast.LENGTH_SHORT).show();
-               listener.onItemUpdated();
+                //Toast.makeText(getContext(),"Successful",Toast.LENGTH_SHORT).show();
+               //listener.onItemUpdated();
 
             }
             else if(success==-2)
