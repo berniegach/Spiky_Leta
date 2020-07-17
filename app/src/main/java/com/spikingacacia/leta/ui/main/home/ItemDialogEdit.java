@@ -14,7 +14,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -58,6 +60,9 @@ public class ItemDialogEdit extends DialogFragment
     private DMenu dMenu;
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
     public static NetworkImageView imageView;
+    private LinearLayout layoutAddSizes;
+    private String sizes;
+    private String prices;
 
     public ItemDialogEdit(DMenu dMenu)
     {
@@ -109,13 +114,14 @@ public class ItemDialogEdit extends DialogFragment
         final EditText editDescription = view.findViewById(R.id.description);
         final EditText editPrice = view.findViewById(R.id.price);
         final ImageButton backButton = view.findViewById(R.id.edit_back);
+        final ImageButton add_sizes_Button = view.findViewById(R.id.add_sizes);
+        layoutAddSizes = view.findViewById(R.id.layout_sizes);
         //item
         editItem.setText(dMenu.getItem());
         //description
         editDescription.setText(dMenu.getDescription());
-        //price
-        editPrice.setText(Double.toString(dMenu.getSellingPrice()));
-
+        //sizes and prices
+        addNewSizeLayoutAndFillData();
         //categories
         final List<String> categories= getCategories();
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getContext(),   android.R.layout.simple_spinner_item, categories);
@@ -139,6 +145,15 @@ public class ItemDialogEdit extends DialogFragment
 
             }
         });
+        //add sizes
+        add_sizes_Button.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                addNewSizeLayout();
+            }
+        });
 
         builder.setView(view);
         builder.setPositiveButton("Edit", new DialogInterface.OnClickListener() {
@@ -146,7 +161,6 @@ public class ItemDialogEdit extends DialogFragment
                     {
                         String item = editItem.getText().toString();
                         String description = editDescription.getText().toString();
-                        String price = editPrice.getText().toString();
                         if(TextUtils.isEmpty(item))
                         {
                             editItem.setError("Item name empty");
@@ -157,12 +171,7 @@ public class ItemDialogEdit extends DialogFragment
                             editDescription.setError("Description empty");
                             return;
                         }
-                        if(TextUtils.isEmpty(price))
-                        {
-                            editPrice.setError("Price empty");
-                            return;
-                        }
-                        new UpdateItemTask(dMenu.getId(),item,description,getCategoryId(category_title),price,".jpg").execute((Void)null);
+                        formSizesPrices(item, description);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -273,6 +282,93 @@ public class ItemDialogEdit extends DialogFragment
         }
         return -1;
     }
+    private void addNewSizeLayoutAndFillData()
+    {
+        String[] sizes = dMenu.getSizes().split(":");
+        String[] prices = dMenu.getPrices().split(":");
+
+        final EditText t_size_first = layoutAddSizes.getChildAt(0).findViewById(R.id.edit_size);
+        final EditText t_price_first = layoutAddSizes.getChildAt(0).findViewById(R.id.edit_price);
+
+        for(int c=0; c<sizes.length; c++)
+        {
+            if( c==0 )
+            {
+                t_size_first.setText(sizes[0]);
+                t_price_first.setText(prices[0]);
+            }
+            else
+            {
+                final View view = getLayoutInflater().inflate(R.layout.item_dialog_sizes_prices, null);
+                final EditText t_size = view.findViewById(R.id.edit_size);
+                final EditText t_price = view.findViewById(R.id.edit_price);
+                final ImageButton deleteButton = view.findViewById(R.id.delete);
+
+                t_size.setText(sizes[c]);
+                t_price.setText(prices[c]);
+                deleteButton.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        layoutAddSizes.removeView(view);
+                    }
+                });
+                layoutAddSizes.addView(view);
+            }
+
+        }
+
+
+    }
+    private void addNewSizeLayout()
+    {
+        final View view = getLayoutInflater().inflate(R.layout.item_dialog_sizes_prices, null);
+        final ImageButton deleteButton = view.findViewById(R.id.delete);
+        deleteButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                layoutAddSizes.removeView(view);
+            }
+        });
+        layoutAddSizes.addView(view);
+    }
+    private void formSizesPrices(String item, String description)
+    {
+        sizes="";
+        prices="";
+        int count = layoutAddSizes.getChildCount();
+        for(int c = 0; c<count; c++)
+        {
+            View view = layoutAddSizes.getChildAt(c);
+            TextView t_size = view.findViewById(R.id.edit_size);
+            TextView t_price = view.findViewById(R.id.edit_price);
+            String s_size = t_size.getText().toString();
+            String s_price = t_price.getText().toString();
+            if(TextUtils.isEmpty(s_size))
+            {
+                t_size.setError("No size");
+                return;
+            }
+            if(TextUtils.isEmpty(s_price))
+            {
+                t_price.setError("No price");
+                return;
+            }
+            if(c != 0)
+            {
+                sizes+=":";
+                prices+=":";
+            }
+            sizes+=s_size;
+            prices+=s_price;
+
+        }
+        new UpdateItemTask(dMenu.getId(),item,description,getCategoryId(category_title),".jpg").execute((Void)null);
+    }
+
     public class UpdateItemTask extends AsyncTask<Void, Void, Boolean>
     {
         private String url_update_item = base_url+"update_seller_item.php";
@@ -283,17 +379,17 @@ public class ItemDialogEdit extends DialogFragment
         private String item;
         private String description;
         private Integer category_id;
-        private String selling_price;
+        //private String selling_price;
         private String image_type;
         private int success;
-        UpdateItemTask(int item_id, final String item, final String description, final Integer category_id, String selling_price,String image_type)
+        UpdateItemTask(int item_id, final String item, final String description, final Integer category_id,String image_type)
         {
             Toast.makeText(getContext(),"Please wait...",Toast.LENGTH_SHORT).show();
             this.item_id = item_id;
             this.item = item;
             this.description = description;
             this.category_id = category_id;
-            this.selling_price = selling_price;
+            //this.selling_price = selling_price;
             this.image_type = image_type;
             jsonParser = new JSONParser();
             Log.d("CRATEITEM"," started...");
@@ -309,7 +405,8 @@ public class ItemDialogEdit extends DialogFragment
             info.add(new BasicNameValuePair("group_id",Integer.toString(-1)));
             info.add(new BasicNameValuePair("item",item));
             info.add(new BasicNameValuePair("description",description));
-            info.add(new BasicNameValuePair("selling_price",selling_price));
+            info.add(new BasicNameValuePair("sizes",sizes));
+            info.add(new BasicNameValuePair("selling_price",prices));
             info.add(new BasicNameValuePair("image_type",image_type));
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_update_item,"POST",info);
             try

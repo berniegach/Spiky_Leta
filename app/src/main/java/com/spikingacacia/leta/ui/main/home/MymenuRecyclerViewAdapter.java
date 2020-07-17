@@ -61,7 +61,14 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
         holder.mItem = mValues.get(position);
         holder.mItemView.setText(mValues.get(position).getItem());
         holder.mDescriptionView.setText(mValues.get(position).getDescription());
-        holder.mPriceView.setText(String.valueOf(mValues.get(position).getSellingPrice()));
+        String[] sizes = mValues.get(position).getSizes().split(":");
+        String[] prices = mValues.get(position).getPrices().split(":");
+        String sizePrice="";
+        for(int c=0; c<sizes.length; c++)
+        {
+            sizePrice+=" "+sizes[c]+" @ "+prices[c];
+        }
+        holder.mPriceView.setText(sizePrice);
 
         // image
         String url=image_url+String.valueOf(mValues.get(position).getId())+'_'+String.valueOf(mValues.get(position).getImageType());

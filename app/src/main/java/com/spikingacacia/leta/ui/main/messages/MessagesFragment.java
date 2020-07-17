@@ -36,7 +36,7 @@ import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
  */
 public class MessagesFragment extends Fragment
 {
-
+    private RecyclerView recyclerView;
    private MyMessageRecyclerViewAdapter myMessageRecyclerViewAdapter;
     public MessagesFragment()
     {
@@ -66,7 +66,7 @@ public class MessagesFragment extends Fragment
         if (view instanceof RecyclerView)
         {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             myMessageRecyclerViewAdapter = new MyMessageRecyclerViewAdapter();
             recyclerView.setAdapter(myMessageRecyclerViewAdapter);
@@ -147,6 +147,7 @@ public class MessagesFragment extends Fragment
             if (successful)
             {
                 myMessageRecyclerViewAdapter.listUpdated(list);
+                recyclerView.scrollToPosition(myMessageRecyclerViewAdapter.getItemCount()-1);
             }
             else
             {

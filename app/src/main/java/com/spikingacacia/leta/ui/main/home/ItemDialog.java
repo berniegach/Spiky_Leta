@@ -12,7 +12,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
@@ -40,7 +42,7 @@ public class ItemDialog extends DialogFragment
     String category_title;
     String item;
     String description;
-    String price;
+    private LinearLayout layoutAddSizes;
 
     public ItemDialog()
     {
@@ -63,8 +65,10 @@ public class ItemDialog extends DialogFragment
         final Spinner spinner = view.findViewById(R.id.spinner);
         final EditText editItem = view.findViewById(R.id.item);
         final EditText editDescription = view.findViewById(R.id.description);
-        final EditText editPrice = view.findViewById(R.id.price);
         final ImageButton backButton = view.findViewById(R.id.edit_back);
+        final ImageButton add_sizes_Button = view.findViewById(R.id.add_sizes);
+        layoutAddSizes = view.findViewById(R.id.layout_sizes);
+
 
         //categories
         final List<String> categories= getCategories();
@@ -88,6 +92,15 @@ public class ItemDialog extends DialogFragment
 
             }
         });
+        //add sizes
+        add_sizes_Button.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                addNewSizeLayout();
+            }
+        });
 
         builder.setView(view);
         builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
@@ -95,7 +108,6 @@ public class ItemDialog extends DialogFragment
                     {
                         item = editItem.getText().toString();
                         description = editDescription.getText().toString();
-                        price = editPrice.getText().toString();
                         if(TextUtils.isEmpty(item))
                         {
                             editItem.setError("Item name empty");
@@ -106,16 +118,11 @@ public class ItemDialog extends DialogFragment
                             editDescription.setError("Description empty");
                             return;
                         }
-                        if(TextUtils.isEmpty(price))
-                        {
-                            editPrice.setError("Price empty");
-                            return;
-                        }
+
                         menuFragment.newItem = item;
                         menuFragment.newDescription = description;
                         menuFragment.newCategoryId = getCategoryId(category_title);
-                        menuFragment.newSellingPrice = price;
-                        addnewItem();
+                        formSizesPrices();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -131,7 +138,7 @@ public class ItemDialog extends DialogFragment
             {
                 spinner.setVisibility(hasFocus? View.GONE : View.VISIBLE);
                 editItem.setVisibility(hasFocus? View.GONE : View.VISIBLE);
-                editPrice.setVisibility(hasFocus? View.GONE : View.VISIBLE);
+                layoutAddSizes.setVisibility(hasFocus? View.GONE : View.VISIBLE);
                 backButton.setVisibility(hasFocus? View.VISIBLE : View.GONE);
             }
         });
@@ -142,7 +149,7 @@ public class ItemDialog extends DialogFragment
             {
                 spinner.setVisibility(View.VISIBLE);
                 editItem.setVisibility(View.VISIBLE);
-                editPrice.setVisibility(View.VISIBLE);
+                layoutAddSizes.setVisibility(View.VISIBLE);
                 backButton.setVisibility( View.GONE);
                 editDescription.clearFocus();
             }
@@ -200,6 +207,53 @@ public class ItemDialog extends DialogFragment
                 return id;
         }
         return -1;
+    }
+    private void addNewSizeLayout()
+    {
+        final View view = getLayoutInflater().inflate(R.layout.item_dialog_sizes_prices, null);
+        final ImageButton deleteButton = view.findViewById(R.id.delete);
+        deleteButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                layoutAddSizes.removeView(view);
+            }
+        });
+        layoutAddSizes.addView(view);
+    }
+    private void formSizesPrices()
+    {
+        menuFragment.sizes="";
+        menuFragment.prices="";
+        int count = layoutAddSizes.getChildCount();
+        for(int c = 0; c<count; c++)
+        {
+            View view = layoutAddSizes.getChildAt(c);
+            TextView t_size = view.findViewById(R.id.edit_size);
+            TextView t_price = view.findViewById(R.id.edit_price);
+            String s_size = t_size.getText().toString();
+            String s_price = t_price.getText().toString();
+            if(TextUtils.isEmpty(s_size))
+            {
+                t_size.setError("No size");
+                return;
+            }
+            if(TextUtils.isEmpty(s_price))
+            {
+                t_price.setError("No price");
+                return;
+            }
+            if(c != 0)
+            {
+                menuFragment.sizes+=":";
+                menuFragment.prices+=":";
+            }
+            menuFragment.sizes+=s_size;
+            menuFragment.prices+=s_price;
+
+        }
+        addnewItem();
     }
 
 

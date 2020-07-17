@@ -75,7 +75,8 @@ public class menuFragment extends Fragment
     public static int newCategoryId;
     public static String newItem;
     public static String newDescription;
-    public static String newSellingPrice;
+    public static String sizes;
+    public static String prices;
     private String TAG = "menuF";
 
     public menuFragment()
@@ -293,8 +294,7 @@ public class menuFragment extends Fragment
             {
 
                 final String path = getPath(uri);
-                //String path= GetFilePathFromDevice.getPath(getContext(),uri);
-                Log.d("path 2",""+path);
+                //Log.d("path 2",""+path);
 
                 final Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), uri);
                 if(bitmap == null)
@@ -364,7 +364,6 @@ public class menuFragment extends Fragment
                     {
                         //weve uploaded the image therefore its okay to proceed with adding the new item in the server
                         int statusCode = response.statusCode;
-                        Log.d("upload img menu 2","status code ");
                         Toast.makeText(getContext(),"Successful",Toast.LENGTH_SHORT).show();
                         new MenuTask().execute((Void)null);
                     }
@@ -410,7 +409,7 @@ public class menuFragment extends Fragment
             if(bitmap.compress(Bitmap.CompressFormat.JPEG, quality, byteArrayOutputStream))
             {
 
-                Log.e(TAG,"bytes length "+byteArrayOutputStream.toByteArray().length);
+                //Log.e(TAG,"bytes length "+byteArrayOutputStream.toByteArray().length);
                 if(byteArrayOutputStream.toByteArray().length<=2000000)
                     return byteArrayOutputStream.toByteArray();
             }
@@ -453,7 +452,8 @@ public class menuFragment extends Fragment
             info.add(new BasicNameValuePair("item",item));
             info.add(new BasicNameValuePair("description",description));
             info.add(new BasicNameValuePair("category_id",Integer.toString(category_id)));
-            info.add(new BasicNameValuePair("selling_price",newSellingPrice));
+            info.add(new BasicNameValuePair("sizes",sizes));
+            info.add(new BasicNameValuePair("prices",prices));
             info.add(new BasicNameValuePair("image_type",image_type));
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_add_item,"POST",info);
             try
@@ -615,20 +615,13 @@ public class menuFragment extends Fragment
                         }
                         String item=jsonObjectNotis.getString("item");
                         String description=jsonObjectNotis.getString("description");
-                        double selling_price;
-                        try
-                        {
-                            selling_price=jsonObjectNotis.getDouble("selling_price");
-                        }
-                        catch (Exception e)
-                        {
-                            selling_price = 0.0;
-                        }
+                        String sizes = jsonObjectNotis.getString("sizes");
+                        String prices = jsonObjectNotis.getString("prices");
                         String image_type=jsonObjectNotis.getString("image_type");
                         String date_added=jsonObjectNotis.getString("date_added");
                         String date_changed=jsonObjectNotis.getString("date_changed");
 
-                        DMenu dMenu =new DMenu(id,category_id,group_id,item,description,selling_price,image_type,date_added,date_changed);
+                        DMenu dMenu =new DMenu(id,category_id,group_id,item,description,sizes, prices,image_type,date_added,date_changed);
                         list.add(dMenu);
                         MainActivity.menuLinkedHashMap.put(id,dMenu);
 
