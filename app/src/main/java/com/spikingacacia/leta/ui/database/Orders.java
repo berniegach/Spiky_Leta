@@ -9,6 +9,7 @@ public class Orders
     private int orderNumber;
     private int orderStatus;
     private String orderName;
+    private String size;
     private double price;
     private String username;
     private String waiter_names;
@@ -18,7 +19,7 @@ public class Orders
     private String dateAdded;
     private String dateChanged;
 
-    public Orders(int id,int userId, String userEmail, int itemId, int orderNumber, int orderStatus, String orderName, double price, String username, String waiter_names, int tableNumber,
+    public Orders(int id,int userId, String userEmail, int itemId, int orderNumber, int orderStatus, String orderName, String size, double price, String username, String waiter_names, int tableNumber,
                   int preOrder, String collectTime, String dateAdded, String dateChanged)
     {
         this.id = id;
@@ -28,6 +29,7 @@ public class Orders
         this.orderNumber = orderNumber;
         this.orderStatus = orderStatus;
         this.orderName = orderName;
+        this.size = size;
         this.price = price;
         this.username=username;
         this.waiter_names=waiter_names;
@@ -105,6 +107,15 @@ public class Orders
     public void setOrderName(String orderName)
     {
         this.orderName = orderName;
+    }
+    public String getSize()
+    {
+        return size;
+    }
+
+    public void setSize(String size)
+    {
+        this.size = size;
     }
 
     public double getPrice()

@@ -5,6 +5,7 @@ public class DMenu
     private int id;
     private int categoryId;
     private int groupId;
+    private String linkedItems;
     private String item;
     private String description;
     private String sizes;
@@ -13,11 +14,12 @@ public class DMenu
     private String dateAdded;
     private String datechanged;
 
-    public DMenu(int id, int categoryId, int groupId, String item, String description, String sizes, String prices, String imageType, String dateAdded, String datechanged)
+    public DMenu(int id, int categoryId, int groupId, String linkedItems, String item, String description, String sizes, String prices, String imageType, String dateAdded, String datechanged)
     {
         this.id = id;
         this.categoryId = categoryId;
         this.groupId = groupId;
+        this.linkedItems = linkedItems;
         this.item = item;
         this.description = description;
         this.sizes = sizes;
@@ -55,6 +57,16 @@ public class DMenu
     public void setGroupId(int groupId)
     {
         this.groupId = groupId;
+    }
+
+    public String getLinkedItems()
+    {
+        return linkedItems;
+    }
+
+    public void setLinkedItems(String linkedItems)
+    {
+        this.linkedItems = linkedItems;
     }
 
     public String getItem()

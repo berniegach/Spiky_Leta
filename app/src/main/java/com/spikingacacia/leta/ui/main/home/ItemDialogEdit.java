@@ -366,10 +366,10 @@ public class ItemDialogEdit extends DialogFragment
             prices+=s_price;
 
         }
-        new UpdateItemTask(dMenu.getId(),item,description,getCategoryId(category_title),".jpg").execute((Void)null);
+        new UpdateItemTask(dMenu.getId(),item,description,getCategoryId(category_title), dMenu.getLinkedItems(),".jpg").execute((Void)null);
     }
 
-    public class UpdateItemTask extends AsyncTask<Void, Void, Boolean>
+    private class UpdateItemTask extends AsyncTask<Void, Void, Boolean>
     {
         private String url_update_item = base_url+"update_seller_item.php";
         private String TAG_SUCCESS="success";
@@ -379,16 +379,18 @@ public class ItemDialogEdit extends DialogFragment
         private String item;
         private String description;
         private Integer category_id;
+        private String linked_items;
         //private String selling_price;
         private String image_type;
         private int success;
-        UpdateItemTask(int item_id, final String item, final String description, final Integer category_id,String image_type)
+        UpdateItemTask(int item_id, final String item, final String description, final Integer category_id, String linked_items, String image_type)
         {
             Toast.makeText(getContext(),"Please wait...",Toast.LENGTH_SHORT).show();
             this.item_id = item_id;
             this.item = item;
             this.description = description;
             this.category_id = category_id;
+            this.linked_items = linked_items;
             //this.selling_price = selling_price;
             this.image_type = image_type;
             jsonParser = new JSONParser();
@@ -403,6 +405,7 @@ public class ItemDialogEdit extends DialogFragment
             info.add(new BasicNameValuePair("item_id",String.valueOf(item_id)));
             info.add(new BasicNameValuePair("category_id",Integer.toString(category_id)));
             info.add(new BasicNameValuePair("group_id",Integer.toString(-1)));
+            info.add(new BasicNameValuePair("linked_items",linked_items));
             info.add(new BasicNameValuePair("item",item));
             info.add(new BasicNameValuePair("description",description));
             info.add(new BasicNameValuePair("sizes",sizes));
@@ -448,7 +451,7 @@ public class ItemDialogEdit extends DialogFragment
 
         }
     }
-    public class DeleteItemTask extends AsyncTask<Void, Void, Boolean>
+    private class DeleteItemTask extends AsyncTask<Void, Void, Boolean>
     {
         private String url_delete_item = base_url+"delete_seller_item.php";
         private String TAG_SUCCESS="success";

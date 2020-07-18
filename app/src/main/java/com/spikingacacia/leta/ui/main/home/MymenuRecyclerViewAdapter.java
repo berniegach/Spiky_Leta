@@ -4,19 +4,31 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.AppController;
+import com.spikingacacia.leta.ui.JSONParser;
 import com.spikingacacia.leta.ui.database.DMenu;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -103,6 +115,14 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
                 }
             }
         });
+        holder.mLinkButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                updateLinkedFood(holder.mItem);
+            }
+        });
     }
 
     @Override
@@ -119,6 +139,7 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
         public final TextView mDescriptionView;
         public final TextView mPriceView;
         public final ImageButton mEditButton;
+        public final ImageButton mLinkButton;
         public DMenu mItem;
 
         public ViewHolder(View view)
@@ -130,6 +151,7 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
             mDescriptionView = view.findViewById(R.id.description);
             mPriceView = (TextView) view.findViewById(R.id.price);
             mEditButton = view.findViewById(R.id.edit);
+            mLinkButton = view.findViewById(R.id.link);
         }
 
         @Override
@@ -160,5 +182,133 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
         mValues.addAll(newitems);
         itemsCopy.addAll(newitems);
         notifyDataSetChanged();
+    }
+    private void updateLinkedFood(final DMenu dMenu)
+    {
+        String linked_foods = dMenu.getLinkedItems();
+        String[] links = linked_foods.split(":");
+        String[] items = new String[mValues.size()];
+        final String[] ids = new String[mValues.size()];
+        final boolean[] items_checked = new boolean[mValues.size()];
+
+        if(links.length==1 && links[0].contentEquals("null"))
+            links[0]="-1";
+        for(int c=0; c<items.length; c++)
+        {
+            boolean item_updated = false;
+            items[c] = mValues.get(c).getItem();
+            ids[c] = String.valueOf(mValues.get(c).getId());
+            //set the linked item to true
+            for( int d=0; d<links.length; d++)
+            {
+                int id = Integer.valueOf(links[d]);
+                for(int e=0; e<mValues.size(); e++)
+                {
+                    if( id==mValues.get(c).getId())
+                    {
+                        items_checked[c]=true;
+                    }
+                }
+            }
+        }
+        new AlertDialog.Builder(context)
+                .setTitle("Accompaniments")
+                .setMultiChoiceItems(items, items_checked, new DialogInterface.OnMultiChoiceClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked)
+                    {
+                        items_checked[which] = isChecked;
+                    }
+                })
+                .setPositiveButton("Update", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        String links="";
+                        for(int c=0; c<items_checked.length; c++)
+                        {
+                            if(!items_checked[c])
+                                continue;
+                            if(c != 0)
+                                links+=":";
+                            links+=ids[c];
+                        }
+                        new UpdateItemTask(dMenu,links).execute((Void)null);
+                    }
+                }).create().show();
+
+    }
+    private class UpdateItemTask extends AsyncTask<Void, Void, Boolean>
+    {
+        private String url_update_item = base_url+"update_seller_item.php";
+        private String TAG_SUCCESS="success";
+        private String TAG_MESSAGE="message";
+        private JSONParser jsonParser;
+        private DMenu dMenu;
+        private String linked_items;
+        private int success;
+        UpdateItemTask(DMenu dMenu, String linked_items)
+        {
+            Toast.makeText(context,"Please wait...",Toast.LENGTH_SHORT).show();
+            this.dMenu = dMenu;
+            this.linked_items = linked_items;
+            jsonParser = new JSONParser();
+        }
+        @Override
+        protected Boolean doInBackground(Void... params)
+        {
+            //building parameters
+            List<NameValuePair> info=new ArrayList<NameValuePair>();
+            info.add(new BasicNameValuePair("seller_email",serverAccount.getEmail()));
+            info.add(new BasicNameValuePair("item_id",String.valueOf(dMenu.getId())));
+            info.add(new BasicNameValuePair("category_id",Integer.toString(dMenu.getCategoryId())));
+            info.add(new BasicNameValuePair("group_id",Integer.toString(-1)));
+            info.add(new BasicNameValuePair("linked_items",linked_items));
+            info.add(new BasicNameValuePair("item",dMenu.getItem()));
+            info.add(new BasicNameValuePair("description",dMenu.getDescription()));
+            info.add(new BasicNameValuePair("sizes",dMenu.getSizes()));
+            info.add(new BasicNameValuePair("selling_price",dMenu.getPrices()));
+            info.add(new BasicNameValuePair("image_type",dMenu.getImageType()));
+            JSONObject jsonObject= jsonParser.makeHttpRequest(url_update_item,"POST",info);
+            try
+            {
+                success=jsonObject.getInt(TAG_SUCCESS);
+                if(success==1)
+                {
+                    return true;
+                }
+                else
+                {
+                    String message=jsonObject.getString(TAG_MESSAGE);
+                    Log.e(TAG_MESSAGE,""+message);
+                    return false;
+                }
+            }
+            catch (JSONException e)
+            {
+                Log.e("JSON",""+e.getMessage());
+                return false;
+            }
+        }
+        @Override
+        protected void onPostExecute(final Boolean successful)
+        {
+            if(successful)
+            {
+
+                Log.d("adding new item", "done...");
+                Toast.makeText(context,"Successfully updated",Toast.LENGTH_SHORT).show();
+                //listener.onItemUpdated();
+
+            }
+            else if(success==-2)
+            {
+                Log.e("adding item", "error");
+                Toast.makeText(context,"Item already defined",Toast.LENGTH_SHORT).show();
+            }
+
+        }
     }
 }
