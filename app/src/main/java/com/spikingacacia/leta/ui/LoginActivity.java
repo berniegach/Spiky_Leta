@@ -65,7 +65,6 @@ public class LoginActivity extends AppCompatActivity
     //sellers
     public static ServerAccount serverAccount;
     public static LinkedHashMap<Integer, DMenu> sItemsList;
-    public static int who;
     public static String currentSubscription="Non";
     //billing
     //subscription information

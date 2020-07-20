@@ -191,7 +191,7 @@ public class QrCodeActivity extends AppCompatActivity
                         int id = set.getKey();
                         QrCodes qrCodes = set.getValue();
                         String table_number = "#"+qrCodes.getTableNumber();
-                        String filename = "Image_Leta_QR_table_" + String.valueOf(id) + ".jpg";
+                        String filename = "Image_Order_QR_table_" + String.valueOf(id) + ".jpg";
                         final Bitmap bitmap_qr = Encoder.encode(getBaseContext(), qrCodes.getUrlCode(), table_number);
                         save_bitmap(bitmap_qr, filename);
                     }

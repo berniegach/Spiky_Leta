@@ -89,7 +89,7 @@ public class Encoder
 
         canvas.drawBitmap(bitmapBack, new Matrix(),null);
         canvas.drawBitmap(bitmapTable,x1,y1,null);
-        canvas.drawBitmap(bitmapLink,x2,y2,null);
+        //canvas.drawBitmap(bitmapLink,x2,y2,null);
         // draw table number text
         Paint paint = new Paint();
         //canvas.drawPaint(paint);
