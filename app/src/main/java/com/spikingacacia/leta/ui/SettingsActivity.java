@@ -288,6 +288,27 @@ public class SettingsActivity extends AppCompatActivity
         }
 
     }
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public static class TermsAndConditionsPreferenceFragment extends PreferenceFragmentCompat
+    {
+        @Override
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
+        {
+            setPreferencesFromResource(R.xml.pref_terms_and_conditions,rootKey);
+        }
+
+    }
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public static class PrivacyPolicyPreferenceFragment extends PreferenceFragmentCompat
+    {
+        @Override
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
+        {
+            setPreferencesFromResource(R.xml.pref_privacy_policy,rootKey);
+
+        }
+
+    }
     public class UpdateAccount extends AsyncTask<Void, Void, Boolean>
     {
         private String url_update_account= LoginActivity.base_url+"update_seller_account.php";

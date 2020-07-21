@@ -64,6 +64,16 @@
             android:title="Delivery"
             android:summary="Do you make delivery" />
    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Legal">
+        <Preference
+            app:fragment="com.spikingacacia.leta.ui.SettingsActivity$TermsAndConditionsPreferenceFragment"
+            app:title="Terms and Conditions" />
+        <Preference
+            app:fragment="com.spikingacacia.leta.ui.SettingsActivity$PrivacyPolicyPreferenceFragment"
+            app:title="Privacy Policy" />
+
+    </PreferenceCategory>
     <Preference
         app:fragment="com.spikingacacia.leta.ui.SettingsActivity$AboutPreferenceFragment"
         app:icon="@drawable/ic_help"
