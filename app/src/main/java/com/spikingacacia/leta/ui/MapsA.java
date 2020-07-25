@@ -80,7 +80,7 @@ public class MapsA extends FragmentActivity implements
                 try
                 {
                     addresses=geocoder.getFromLocation(latMyPos.latitude,latMyPos.longitude,10);
-                    SettingsActivity.settingsChanged = true;
+                    SettingsActivity.updateSettings();
                     SettingsActivity.tempServerAccount.setLocation(String.format("%f,%f,%s,%s",latMyPos.latitude,latMyPos.longitude,addresses.get(0).getLocality(), addresses.get(0).getCountryCode()));
                     for(int c=0; c<addresses.size(); c+=1)
                         Log.d("loc: ",addresses.get(c).getLocality()+"\n");

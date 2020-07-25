@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_orders, R.id.navigation_messages)
+                R.id.navigation_home, R.id.navigation_orders, R.id.navigation_dashboard, R.id.navigation_messages)
                 .build();
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements
         if(serverAccount.getPersona()==2)
         {
             nav_messages.findItem(R.id.navigation_messages).setVisible(false);
+            nav_messages.findItem(R.id.navigation_dashboard).setVisible(false);
         }
 
         progressBar = findViewById(R.id.progress);

@@ -159,19 +159,7 @@ public class ItemDialogEdit extends DialogFragment
         builder.setPositiveButton("Edit", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id)
                     {
-                        String item = editItem.getText().toString();
-                        String description = editDescription.getText().toString();
-                        if(TextUtils.isEmpty(item))
-                        {
-                            editItem.setError("Item name empty");
-                            return;
-                        }
-                        if(TextUtils.isEmpty(description))
-                        {
-                            editDescription.setError("Description empty");
-                            return;
-                        }
-                        formSizesPrices(item, description);
+
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -188,7 +176,6 @@ public class ItemDialogEdit extends DialogFragment
                 imageView.setVisibility(hasFocus? View.GONE : View.VISIBLE);
                 spinner.setVisibility(hasFocus? View.GONE : View.VISIBLE);
                 editItem.setVisibility(hasFocus? View.GONE : View.VISIBLE);
-                editPrice.setVisibility(hasFocus? View.GONE : View.VISIBLE);
                 backButton.setVisibility(hasFocus? View.VISIBLE : View.GONE);
             }
         });
@@ -200,13 +187,37 @@ public class ItemDialogEdit extends DialogFragment
                 imageView.setVisibility( View.VISIBLE);
                 spinner.setVisibility(View.VISIBLE);
                 editItem.setVisibility(View.VISIBLE);
-                editPrice.setVisibility(View.VISIBLE);
                 backButton.setVisibility( View.GONE);
                 editDescription.clearFocus();
             }
         });
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+        //Overriding the handler immediately after show is probably a better approach than OnShowListener as described below
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                String item = editItem.getText().toString();
+                String description = editDescription.getText().toString();
+                if(TextUtils.isEmpty(item))
+                {
+                    editItem.setError("Item name empty");
+                }
+                else if(TextUtils.isEmpty(description))
+                {
+                    editDescription.setError("Description empty");
+                }
+                else
+                {
+                    if(formSizesPrices(item, description))
+                        dialog.dismiss();
+                }
+            }
+        });
         // Create the AlertDialog object and return it
-        return builder.create();
+        return dialog;
     }
 
     // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
@@ -335,7 +346,7 @@ public class ItemDialogEdit extends DialogFragment
         });
         layoutAddSizes.addView(view);
     }
-    private void formSizesPrices(String item, String description)
+    private boolean formSizesPrices(String item, String description)
     {
         sizes="";
         prices="";
@@ -350,12 +361,12 @@ public class ItemDialogEdit extends DialogFragment
             if(TextUtils.isEmpty(s_size))
             {
                 t_size.setError("No size");
-                return;
+                return false;
             }
             if(TextUtils.isEmpty(s_price))
             {
                 t_price.setError("No price");
-                return;
+                return false;
             }
             if(c != 0)
             {
@@ -367,6 +378,7 @@ public class ItemDialogEdit extends DialogFragment
 
         }
         new UpdateItemTask(dMenu.getId(),item,description,getCategoryId(category_title), dMenu.getLinkedItems(),".jpg").execute((Void)null);
+        return true;
     }
 
     private class UpdateItemTask extends AsyncTask<Void, Void, Boolean>
@@ -439,6 +451,7 @@ public class ItemDialogEdit extends DialogFragment
             {
 
                 Log.d("adding new item", "done...");
+                menuFragment.reRunMenuTask();
                 //Toast.makeText(getContext(),"Successful",Toast.LENGTH_SHORT).show();
                //listener.onItemUpdated();
 

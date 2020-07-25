@@ -68,7 +68,7 @@ public class menuFragment extends Fragment
     private static final String ARG_COLUMN_COUNT = "column-count";
     private RecyclerView recyclerViewCategories;
     private RecyclerView recyclerViewMenu;
-    private MymenuRecyclerViewAdapter mymenuRecyclerViewAdapter;
+    private static  MymenuRecyclerViewAdapter mymenuRecyclerViewAdapter;
     private MymenuCategoryRecyclerViewAdapter mymenuCategoryRecyclerViewAdapter;
     private OnListFragmentInteractionListener mListener;
     public static int itemIdToEdit;
@@ -410,7 +410,7 @@ public class menuFragment extends Fragment
             {
 
                 //Log.e(TAG,"bytes length "+byteArrayOutputStream.toByteArray().length);
-                if(byteArrayOutputStream.toByteArray().length<=2000000)
+                if(byteArrayOutputStream.toByteArray().length<=1000000)
                     return byteArrayOutputStream.toByteArray();
             }
             else
@@ -568,7 +568,11 @@ public class menuFragment extends Fragment
             }
         }
     }
-    private class MenuTask extends AsyncTask<Void, Void, Boolean>
+    public static void reRunMenuTask()
+    {
+        new MenuTask().execute((Void)null);
+    }
+    public static  class MenuTask extends AsyncTask<Void, Void, Boolean>
     {
         private String url_get_s_items = base_url + "get_seller_items.php";
         private String TAG_SUCCESS="success";

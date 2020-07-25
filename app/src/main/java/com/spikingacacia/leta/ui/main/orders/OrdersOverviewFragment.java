@@ -1,14 +1,20 @@
 package com.spikingacacia.leta.ui.main.orders;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,6 +44,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static com.spikingacacia.leta.ui.LoginActivity.base_url;
@@ -57,16 +64,18 @@ public class OrdersOverviewFragment extends Fragment
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private String TAG = "orders_overview_f";
+    private  String default_notification_channel_id = "default";
     private String mParam1;
     private String mParam2;
     private OnFragmentInteractionListener mListener;
     private Button bOrderFormat;
     private TextView tMainCount;
-    private int pendingCount=0;
-    private int inProgressCount=0;
-    private int deliveryCount=0;
-    private int paymentCount=0;
-    private int finishedCount=0;
+    private int[] pendingCount = new int[]{0,0};
+    private int[] inProgressCount=new int[]{0,0};
+    private int[] deliveryCount=new int[]{0,0};
+    private int[] paymentCount=new int[]{0,0};
+    private int[] finishedCount=new int[]{0,0};
     private LinearLayout lPending;
     private LinearLayout lInProgress;
     private LinearLayout lDelivery;
@@ -82,6 +91,7 @@ public class OrdersOverviewFragment extends Fragment
     private TextView tPaymentName;
     private int countToShow=0;
     Preferences preferences;
+    private Thread ordersThread;
 
     public OrdersOverviewFragment()
     {
@@ -163,8 +173,31 @@ public class OrdersOverviewFragment extends Fragment
         //2. so we can set the texviews after setting the values. if not done here the texviews will show 0 during the initial run
         //3 so we can set the piechart with correct values during the initial run as above 2
         super.onResume();
-        new OrdersTask().execute((Void)null);
-
+        //set the
+        getOrders();
+    }
+    private void getOrders()
+    {
+        ordersThread=new Thread()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    while(true)
+                    {
+                        new OrdersTask().execute((Void)null);
+                        sleep(5000);
+                    }
+                }
+                catch (InterruptedException e)
+                {
+                    //Log.e(TAG,"order thread quit");
+                }
+            }
+        };
+        ordersThread.start();
     }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -176,7 +209,6 @@ public class OrdersOverviewFragment extends Fragment
         final String[] strings_format_1=new String[]{"Pending", "In Progress", "Delivery", "Payment", "Finished"};
         final String[] strings_format_2=new String[]{"Pending", "Payment", "In Progress", "Delivery", "Finished"};
         final LinearLayout[] layouts_format=new LinearLayout[]{ lPending, lInProgress, lDelivery, lPayment, lFinished};
-        final int[] counts=new int[]{ pendingCount, inProgressCount, deliveryCount, paymentCount, finishedCount};
         final MenuItem menu_station=menu.findItem(R.id.station);
         menu_station.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()
         {
@@ -194,6 +226,7 @@ public class OrdersOverviewFragment extends Fragment
                                 {
                                     if(count==i)
                                     {
+                                        final int[] counts=new int[]{ pendingCount[1], inProgressCount[1], deliveryCount[1], paymentCount[1], finishedCount[1]};
                                         countToShow=i;
                                         preferences.setOrder_format_to_show_count(i);
                                         tMainCount.setText(String.valueOf(counts[count]));
@@ -240,6 +273,7 @@ public class OrdersOverviewFragment extends Fragment
     public void onDetach()
     {
         super.onDetach();
+        ordersThread.interrupt();
         mListener = null;
     }
     public interface OnFragmentInteractionListener
@@ -249,16 +283,16 @@ public class OrdersOverviewFragment extends Fragment
     private void onClickListeners()
     {
         final int format= LoginActivity.serverAccount.getOrderFormat();
-        tInProgressCount.setText(String.valueOf(paymentCount));
-        tDeliveryCount.setText(String.valueOf(inProgressCount));
-        tPaymentCount.setText(String.valueOf(deliveryCount));
+        tInProgressCount.setText(String.valueOf(paymentCount[1]));
+        tDeliveryCount.setText(String.valueOf(inProgressCount[1]));
+        tPaymentCount.setText(String.valueOf(deliveryCount[1]));
 
         lPending.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                if (pendingCount==0)
+                if (pendingCount[1]==0)
                 {
                     Snackbar.make(tMainCount,"Empty",Snackbar.LENGTH_SHORT).show();
                     return;
@@ -272,7 +306,7 @@ public class OrdersOverviewFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                if (inProgressCount==0 )
+                if (inProgressCount[1]==0 )
                 {
                     Snackbar.make(tMainCount,"Empty",Snackbar.LENGTH_SHORT).show();
                     return;
@@ -286,7 +320,7 @@ public class OrdersOverviewFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                if (deliveryCount==0)
+                if (deliveryCount[1]==0)
                 {
                     Snackbar.make(tMainCount,"Empty",Snackbar.LENGTH_SHORT).show();
                     return;
@@ -300,7 +334,7 @@ public class OrdersOverviewFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                if (paymentCount==0)
+                if (paymentCount[1]==0)
                 {
                     Snackbar.make(tMainCount,"Empty",Snackbar.LENGTH_SHORT).show();
                     return;
@@ -314,7 +348,7 @@ public class OrdersOverviewFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                if (finishedCount==0)
+                if (finishedCount[1]==0)
                 {
                     Snackbar.make(tMainCount,"Empty",Snackbar.LENGTH_SHORT).show();
                     return;
@@ -348,28 +382,29 @@ public class OrdersOverviewFragment extends Fragment
             String unique_name=iterator_2.next();
             String[] pieces=unique_name.split(":");
             if(pieces[2].contentEquals("1") || pieces[2].contentEquals("-1"))
-                pendingCount+=1;
+                pendingCount[1]+=1;
 
             else if(pieces[2].contentEquals("2"))
-                inProgressCount+=1;
+                inProgressCount[1]+=1;
             else if(pieces[2].contentEquals("3"))
-                deliveryCount+=1;
+                deliveryCount[1]+=1;
             else if(pieces[2].contentEquals("4"))
-                paymentCount+=1;
+                paymentCount[1]+=1;
 
             else if(pieces[2].contentEquals("5"))
-                finishedCount+=1;
+                finishedCount[1]+=1;
 
         }
     }
     private void updateGui()
     {
+        boolean countChanged = false;
         countToShow=preferences.getOrder_format_to_show_count();
-        pendingCount=0;
-        inProgressCount=0;
-        deliveryCount=0;
-        paymentCount=0;
-        finishedCount=0;
+        pendingCount[1]=0;
+        inProgressCount[1]=0;
+        deliveryCount[1]=0;
+        paymentCount[1]=0;
+        finishedCount[1]=0;
         setCounts();
         //set the formats
         final int format= LoginActivity.serverAccount.getOrderFormat();
@@ -389,20 +424,45 @@ public class OrdersOverviewFragment extends Fragment
             bOrderFormat.setText("Pay First");
 
         }
-        tPendingCount.setText(String.valueOf(pendingCount));
-        tFinishedCount.setText(String.valueOf(finishedCount));
+        if(pendingCount[0]!=pendingCount[1])
+        {
+            tPendingCount.setText(String.valueOf(pendingCount[1]));
+            pendingCount[0] = pendingCount[1];
+            countChanged = true;
+        }
+        if(finishedCount[0] != finishedCount[1])
+        {
+            tFinishedCount.setText(String.valueOf(finishedCount[1]));
+            finishedCount[0] = finishedCount[1];
+            countChanged = true;
+        }
         //set the counts
-        tInProgressCount.setText(String.valueOf(inProgressCount));
-        tDeliveryCount.setText(String.valueOf(deliveryCount));
-        tPaymentCount.setText(String.valueOf(paymentCount));
+        if(inProgressCount[0]!=inProgressCount[1])
+        {
+            tInProgressCount.setText(String.valueOf(inProgressCount[1]));
+            inProgressCount[0]=inProgressCount[1];
+            countChanged = true;
+        }
+        if(deliveryCount[0]!=deliveryCount[1])
+        {
+            tDeliveryCount.setText(String.valueOf(deliveryCount[1]));
+            deliveryCount[0] = deliveryCount[1];
+            countChanged = true;
+        }
+        if(paymentCount[0] != paymentCount[1])
+        {
+            tPaymentCount.setText(String.valueOf(paymentCount[1]));
+            paymentCount[0] = paymentCount[1];
+        }
 
 
-        final int[] counts=new int[]{ pendingCount, inProgressCount, deliveryCount, paymentCount, finishedCount};
+        final int[] counts=new int[]{ pendingCount[1], inProgressCount[1], deliveryCount[1], paymentCount[1], finishedCount[1]};
         for(int count=0; count<=4; count+=1)
         {
-            if(count==countToShow)
+            if(count==countToShow && countChanged)
             {
                 tMainCount.setText(String.valueOf(counts[count]));
+                play_notification();
             }
             else
             {
@@ -411,6 +471,32 @@ public class OrdersOverviewFragment extends Fragment
         }
 
 
+    }
+    private void play_notification()
+    {
+        Uri alarmSound =
+                RingtoneManager. getDefaultUri (RingtoneManager. TYPE_NOTIFICATION );
+        MediaPlayer mp = MediaPlayer. create (getContext(), alarmSound);
+        mp.start();
+        vibrate_on_click();
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(getContext(), default_notification_channel_id )
+                        .setSmallIcon(R.mipmap.ic_launcher )
+                        .setContentTitle( "New Order" )
+                        .setContentText( "a new order has arrived" ) ;
+        NotificationManager mNotificationManager = (NotificationManager)
+                getContext().getSystemService(Context. NOTIFICATION_SERVICE );
+        mNotificationManager.notify(( int ) System. currentTimeMillis () ,
+                mBuilder.build());
+    }
+    private void vibrate_on_click()
+    {
+        Vibrator vibrator = (Vibrator) (getContext()).getSystemService(Context.VIBRATOR_SERVICE);
+        if(vibrator == null)
+            Log.e(TAG,"No vibrator");
+        else
+            vibrator.vibrate(100);
     }
     public class UpdateOrderFormatTask extends AsyncTask<Void, Void, Boolean>
     {
@@ -482,8 +568,7 @@ public class OrdersOverviewFragment extends Fragment
         @Override
         protected void onPreExecute()
         {
-            Log.d("BORDERS: ","starting....");
-            if(!ordersLinkedHashMap.isEmpty()) ordersLinkedHashMap.clear();
+            //if(!ordersLinkedHashMap.isEmpty()) ordersLinkedHashMap.clear();
             jsonParser = new JSONParser();
             super.onPreExecute();
         }
@@ -495,7 +580,7 @@ public class OrdersOverviewFragment extends Fragment
             info.add(new BasicNameValuePair("email",serverAccount.getEmail()));
             // making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_orders,"POST",info);
-            Log.d("sItems",""+jsonObject.toString());
+            //Log.d("sItems",""+jsonObject.toString());
             try
             {
                 JSONArray itemsArrayList=null;

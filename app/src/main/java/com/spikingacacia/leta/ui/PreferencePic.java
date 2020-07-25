@@ -233,7 +233,7 @@ public class PreferencePic extends Preference
                             //weve uploaded the image therefore its okay to proceed with adding the new item in the server
                             int statusCode = response.statusCode;
                             SettingsActivity.tempServerAccount.setImageType(".jpg");
-                            SettingsActivity.settingsChanged = true;
+                            SettingsActivity.updateSettings();
                         }
                     },
                     new Response.ErrorListener()
@@ -279,7 +279,7 @@ public class PreferencePic extends Preference
                 {
 
                     //Log.e(TAG,"bytes length "+byteArrayOutputStream.toByteArray().length);
-                    if(byteArrayOutputStream.toByteArray().length<=2000000)
+                    if(byteArrayOutputStream.toByteArray().length<=1000000)
                         return byteArrayOutputStream.toByteArray();
                 }
                 else

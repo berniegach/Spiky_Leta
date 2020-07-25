@@ -106,23 +106,7 @@ public class ItemDialog extends DialogFragment
         builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id)
                     {
-                        item = editItem.getText().toString();
-                        description = editDescription.getText().toString();
-                        if(TextUtils.isEmpty(item))
-                        {
-                            editItem.setError("Item name empty");
-                            return;
-                        }
-                        if(TextUtils.isEmpty(description))
-                        {
-                            editDescription.setError("Description empty");
-                            return;
-                        }
 
-                        menuFragment.newItem = item;
-                        menuFragment.newDescription = description;
-                        menuFragment.newCategoryId = getCategoryId(category_title);
-                        formSizesPrices();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -154,8 +138,36 @@ public class ItemDialog extends DialogFragment
                 editDescription.clearFocus();
             }
         });
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+        //Overriding the handler immediately after show is probably a better approach than OnShowListener as described below
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                item = editItem.getText().toString();
+                description = editDescription.getText().toString();
+                if(TextUtils.isEmpty(item))
+                {
+                    editItem.setError("Item name empty");
+                }
+                else if(TextUtils.isEmpty(description))
+                {
+                    editDescription.setError("Description empty");
+                }
+                else
+                {
+                    menuFragment.newItem = item;
+                    menuFragment.newDescription = description;
+                    menuFragment.newCategoryId = getCategoryId(category_title);
+                    if(formSizesPrices())
+                        dialog.dismiss();
+                }
+            }
+        });
         // Create the AlertDialog object and return it
-        return builder.create();
+        return dialog;
     }
     // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
     @Override
@@ -222,7 +234,7 @@ public class ItemDialog extends DialogFragment
         });
         layoutAddSizes.addView(view);
     }
-    private void formSizesPrices()
+    private boolean formSizesPrices()
     {
         menuFragment.sizes="";
         menuFragment.prices="";
@@ -237,12 +249,12 @@ public class ItemDialog extends DialogFragment
             if(TextUtils.isEmpty(s_size))
             {
                 t_size.setError("No size");
-                return;
+                return false;
             }
             if(TextUtils.isEmpty(s_price))
             {
                 t_price.setError("No price");
-                return;
+                return false;
             }
             if(c != 0)
             {
@@ -254,6 +266,7 @@ public class ItemDialog extends DialogFragment
 
         }
         addnewItem();
+        return true;
     }
 
 

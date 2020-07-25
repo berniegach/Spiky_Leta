@@ -37,7 +37,7 @@ import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 public class SettingsActivity extends AppCompatActivity
 {
     private UpdateAccount updateTask;
-    public static boolean settingsChanged;
+    public static boolean settingsChange;
     public static ServerAccount tempServerAccount;
     static private Context context;
 
@@ -59,7 +59,7 @@ public class SettingsActivity extends AppCompatActivity
         tempServerAccount =new ServerAccount();
         tempServerAccount = serverAccount;
         updateTask=new UpdateAccount();
-        settingsChanged=false;
+        //settingsChanged=false;
         context=this;
     }
 
@@ -94,7 +94,7 @@ public class SettingsActivity extends AppCompatActivity
                 {
                     String name = o.toString();
                     tempServerAccount.setUsername(name);
-                    settingsChanged=true;
+                    updateSettings();
                     preference.setTitle(name);
                     return false;
                 }
@@ -113,7 +113,7 @@ public class SettingsActivity extends AppCompatActivity
                     int range=(int)newValue;
                     pref_order_radius.setValue(range);
                     tempServerAccount.setOrderRadius(range);
-                    settingsChanged=true;
+                    updateSettings();
                     return false;
                 }
             });
@@ -185,7 +185,7 @@ public class SettingsActivity extends AppCompatActivity
                 {
                     String till_number = newValue.toString();
                     tempServerAccount.setmCode(till_number);
-                    settingsChanged = true;
+                    updateSettings();
                     ((EditTextPreference)preference).setText(till_number);
                     return false;
                 }
@@ -206,13 +206,13 @@ public class SettingsActivity extends AppCompatActivity
                     {
                         pref_visible_online.setChecked(false);
                         serverAccount.setOnlineVisibility(0);
-                        settingsChanged=true;
+                        updateSettings();
                     }
                     else
                     {
                         pref_visible_online.setChecked(true);
                         serverAccount.setOnlineVisibility(1);
-                        settingsChanged=true;
+                        updateSettings();
                     }
                     return false;
                 }
@@ -232,13 +232,13 @@ public class SettingsActivity extends AppCompatActivity
                     {
                         pref_deliver.setChecked(false);
                         serverAccount.setDeliver(0);
-                        settingsChanged=true;
+                        updateSettings();
                     }
                     else
                     {
                         pref_deliver.setChecked(true);
                         serverAccount.setDeliver(1);
-                        settingsChanged=true;
+                        updateSettings();
                     }
                     return false;
                 }
@@ -265,7 +265,7 @@ public class SettingsActivity extends AppCompatActivity
     @Override
     protected void onDestroy()
     {
-        new Thread(new Runnable()
+        /*new Thread(new Runnable()
         {
             @Override
             public void run()
@@ -275,7 +275,7 @@ public class SettingsActivity extends AppCompatActivity
                     updateTask.execute((Void)null);
                 }
             }
-        }).start();
+        }).start();*/
         super.onDestroy();
     }
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -309,7 +309,11 @@ public class SettingsActivity extends AppCompatActivity
         }
 
     }
-    public class UpdateAccount extends AsyncTask<Void, Void, Boolean>
+    public static void updateSettings()
+    {
+        new UpdateAccount().execute((Void)null);
+    }
+    public static class UpdateAccount extends AsyncTask<Void, Void, Boolean>
     {
         private String url_update_account= LoginActivity.base_url+"update_seller_account.php";
         private JSONParser jsonParser;
@@ -366,7 +370,7 @@ public class SettingsActivity extends AppCompatActivity
             {
                 Log.d("settings", "update done");
                 serverAccount = tempServerAccount;
-                settingsChanged=false;
+                //settingsChanged=false;
             }
             else
             {
