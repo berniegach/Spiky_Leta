@@ -64,6 +64,23 @@
                     android:padding="5dp"
                     android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/c_order_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                app:cardCornerRadius="6dp"
+                app:cardElevation="6dp">
+                <TextView
+                    android:id="@+id/order_type"
+                    android:background="@android:color/holo_orange_dark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="In house"
+                    android:textColor="@android:color/white"
+                    android:padding="5dp"
+                    android:textStyle="bold" />
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
         <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"

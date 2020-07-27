@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.spikingacacia.leta.ui.billing.BillingManager.BILLING_MANAGER_NOT_INITIALIZED;
+import static java.lang.Thread.sleep;
 
 public class LoginActivity extends AppCompatActivity
     implements BillingProvider,View.OnClickListener
@@ -89,6 +90,13 @@ public class LoginActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        try
+        {
+            sleep(5000);
+        } catch (InterruptedException e)
+        {
+            Log.e(TAG,"failed to sleep");
+        }
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);

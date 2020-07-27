@@ -192,8 +192,9 @@ public class OrdersFragment extends Fragment
                         int table_number=jsonObjectNotis.getInt("table_number");
                         int pre_order = jsonObjectNotis.getInt("pre_order");
                         String collect_time = jsonObjectNotis.getString("collect_time");
+                        int order_type = jsonObjectNotis.getInt("order_type");
 
-                        Orders orders =new Orders(id,user_id,user_email,item_id,order_number,order_status,item,size,selling_price, username,waiter_names,table_number, pre_order, collect_time,
+                        Orders orders =new Orders(id,user_id,user_email,item_id,order_number,order_status,item,size,selling_price, username,waiter_names,table_number, pre_order, collect_time, order_type,
                                 date_added,date_changed);
                         ordersLinkedHashMap.put(id,orders);
                         ordersList.add(orders);

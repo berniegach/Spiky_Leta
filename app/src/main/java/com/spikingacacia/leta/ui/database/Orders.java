@@ -16,11 +16,12 @@ public class Orders
     private int tableNumber;
     private int preOrder;
     private String collectTime;
+    private int orderType;
     private String dateAdded;
     private String dateChanged;
 
     public Orders(int id,int userId, String userEmail, int itemId, int orderNumber, int orderStatus, String orderName, String size, double price, String username, String waiter_names, int tableNumber,
-                  int preOrder, String collectTime, String dateAdded, String dateChanged)
+                  int preOrder, String collectTime, int order_type,String dateAdded, String dateChanged)
     {
         this.id = id;
         this.userId = userId;
@@ -36,6 +37,7 @@ public class Orders
         this.tableNumber=tableNumber;
         this.preOrder = preOrder;
         this.collectTime = collectTime;
+        this.orderType = order_type;
         this.dateAdded = dateAdded;
         this.dateChanged = dateChanged;
     }
@@ -174,6 +176,16 @@ public class Orders
     public void setCollectTime(String collectTime)
     {
         this.collectTime = collectTime;
+    }
+
+    public int getOrderType()
+    {
+        return orderType;
+    }
+
+    public void setOrderType(int orderType)
+    {
+        this.orderType = orderType;
     }
 
     public String getDateAdded()

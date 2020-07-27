@@ -93,6 +93,7 @@ public class OrderOverviewFragment extends Fragment
         CardView c_pre_order = view.findViewById(R.id.pre_order);
         CardView c_collect_time = view.findViewById(R.id.c_collect_time);
         TextView t_collect_time = view.findViewById(R.id.collect_time);
+        TextView t_order_type = view.findViewById(R.id.order_type);
         CardView c_paid = view.findViewById(R.id.paid);
         //set the buttons listeners
         Button b_accept=view.findViewById(R.id.accept);
@@ -183,6 +184,7 @@ public class OrderOverviewFragment extends Fragment
         String date_to_show="";
         String waiter="";
         String collect_time="";
+        int i_order_type=0;
         Iterator iterator= OrdersFragment.ordersLinkedHashMap.entrySet().iterator();
         while (iterator.hasNext())
         {
@@ -203,6 +205,7 @@ public class OrderOverviewFragment extends Fragment
             waiter= orders.getWaiter_names();
             table= orders.getTableNumber();
             collect_time = orders.getCollectTime();
+            i_order_type = orders.getOrderType();
             if(count==0)
             {
                 progressBar.setProgress(orderStatus);
@@ -235,6 +238,8 @@ public class OrderOverviewFragment extends Fragment
         else
             c_table.setVisibility(View.GONE);
         t_waiter.setText(waiter);
+        String[] order_types = new String[]{"In house", "Take away", "Delivery"};
+        t_order_type.setText(order_types[i_order_type]);
         return view;
     }
     @Override
