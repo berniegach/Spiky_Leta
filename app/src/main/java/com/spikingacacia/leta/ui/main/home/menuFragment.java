@@ -41,6 +41,7 @@ import com.spikingacacia.leta.ui.database.Categories;
 import com.spikingacacia.leta.ui.database.DMenu;
 import com.spikingacacia.leta.ui.main.MainActivity;
 import com.spikingacacia.leta.ui.util.VolleyMultipartRequest;
+import com.spikingacacia.leta.ui.waiters.WaitersActivity;
 
 
 import org.apache.http.NameValuePair;
@@ -70,13 +71,7 @@ public class menuFragment extends Fragment
     private RecyclerView recyclerViewMenu;
     private static  MymenuRecyclerViewAdapter mymenuRecyclerViewAdapter;
     private MymenuCategoryRecyclerViewAdapter mymenuCategoryRecyclerViewAdapter;
-    private OnListFragmentInteractionListener mListener;
-    public static int itemIdToEdit;
-    public static int newCategoryId;
-    public static String newItem;
-    public static String newDescription;
-    public static String sizes;
-    public static String prices;
+    private static  OnListFragmentInteractionListener mListener;
     private String TAG = "menuF";
 
     public menuFragment()
@@ -161,9 +156,9 @@ public class menuFragment extends Fragment
             @Override
             public boolean onMenuItemClick(MenuItem item)
             {
-                onAddNewItem();
-                /*if(mListener!=null)
-                    mListener.onAddNewItem();*/
+                //onAddNewItem();
+                if(mListener!=null)
+                    mListener.onAddNewItemClicked();
                 return false;
             }
         });
@@ -196,9 +191,9 @@ public class menuFragment extends Fragment
 
     public interface OnListFragmentInteractionListener
     {
-        //void onEditMenu(int which, DMenu dMenu);
-        //void onMenuItemInteraction(DMenu item);
-        //void onCategoryItemInteraction(Categories item);
+        void onAddNewItemClicked();
+        void onEditItemClicked(DMenu dMenu);
+
     }
     private int getHorizontalItemCount()
     {
@@ -245,256 +240,9 @@ public class menuFragment extends Fragment
             }
         }
     }
-    public void onAddNewItem()
-    {
-        DialogFragment dialog = new ItemDialog();
-        dialog.show(getChildFragmentManager(), "ItemDialogFragment");
-    }
-    @Override
-    public void onActivityResult(final int requestCode, int resultCode, Intent data)
-    {
-        super.onActivityResult(requestCode,resultCode,data);
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null)
-        {
-            final Uri uri = data.getData();
-            try
-            {
-
-                final String path = getPath(uri);
-                Log.d("path",""+path);
-
-                final Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), uri);
-                //upload
-                if (path == null)
-                {
-                    Log.e("upload cert","its null");
-                }
-                else
-                {
-                    //Uploading code
-                    try
-                    {
-                        new CreateItemTask(newItem,newDescription,newCategoryId,".jpg", bitmap).execute((Void)null);
-                    }
-                    catch (Exception e)
-                    {
-                        Log.e("uploading",""+e.getMessage());
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Log.e("bitmap", "" + e.getMessage());
-            }
-        }
-        else if (requestCode == 2 && resultCode == RESULT_OK && data != null && data.getData() != null)
-        {
-            final Uri uri = data.getData();
-            try
-            {
-
-                final String path = getPath(uri);
-                //Log.d("path 2",""+path);
-
-                final Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), uri);
-                if(bitmap == null)
-                {
-                    Log.e(TAG,"failed to compress image");
-                    Toast.makeText(getContext(),"Image upload failed",Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                ItemDialogEdit.imageView.setImageBitmap(bitmap);
-                //imageButton.setImageBitmap(bitmap);
-                //upload
-                if (path == null)
-                {
-                    Log.e("upload cert","its null");
-                }
-                else
-                {
-                    //Uploading code
-                    try
-                    {
-                        uploadBitmap(bitmap, itemIdToEdit);
-                    }
-                    catch (Exception e)
-                    {
-                        Log.e("uploading",""+e.getMessage());
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Log.e("bitmap", "" + e.getMessage());
-            }
-        }
-    }
-    private String getPath(Uri uri)
-    {
-        if(uri==null)
-            return null;
-        String res=null;
-
-        if (DocumentsContract.isDocumentUri(getContext(), uri))
-        {
-            //emulator
-            String[] path = uri.getPath().split(":");
-            res = path[1];
-            Log.i("debinf ProdAct", "Real file path on Emulator: "+res);
-        }
-        else {
-            String[] proj = {MediaStore.Images.Media.DATA};
-            Cursor cursor = getContext().getContentResolver().query(uri, proj, null, null, null);
-            if (cursor.moveToFirst()) {
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                res = cursor.getString(column_index);
-            }
-            cursor.close();
-        }
-        return res;
-    }
-    private void uploadBitmap(final Bitmap bitmap, final int insert_id)
-    {
-        String url_upload_profile_pic= LoginActivity.base_url+"upload_inventory_pic.php";
-        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url_upload_profile_pic,
-                new Response.Listener<NetworkResponse>()
-                {
-                    @Override
-                    public void onResponse(NetworkResponse response)
-                    {
-                        //weve uploaded the image therefore its okay to proceed with adding the new item in the server
-                        int statusCode = response.statusCode;
-                        Toast.makeText(getContext(),"Successful",Toast.LENGTH_SHORT).show();
-                        new MenuTask().execute((Void)null);
-                    }
-                },
-                new Response.ErrorListener()
-                {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.e("GotError",""+error.getMessage());
-                    }
-                }) {
 
 
-            @Override
-            protected Map<String, DataPart> getByteData() {
-                Map<String, DataPart> params = new HashMap<>();
-                long imagename = System.currentTimeMillis();
-                params.put("png", new DataPart(imagename + ".jpg", getFileDataFromDrawable(bitmap)));
-                return params;
-            }
 
-
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError
-            {
-                Map<String , String >params = new HashMap<>();
-                params.put("name", "name"); //Adding text parameter to the request
-                params.put("id",String.valueOf(insert_id));
-                return params;
-            }
-        };
-
-        //adding the request to volley
-        Volley.newRequestQueue(getContext()).add(volleyMultipartRequest);
-    }
-    public byte[] getFileDataFromDrawable(final Bitmap bitmap) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        int quality = 100;
-        while(true)
-        {
-            byteArrayOutputStream.reset();
-            if(bitmap.compress(Bitmap.CompressFormat.JPEG, quality, byteArrayOutputStream))
-            {
-
-                //Log.e(TAG,"bytes length "+byteArrayOutputStream.toByteArray().length);
-                if(byteArrayOutputStream.toByteArray().length<=1000000)
-                    return byteArrayOutputStream.toByteArray();
-            }
-            else
-                return null;
-            quality-=10;
-        }
-
-    }
-    public class CreateItemTask extends AsyncTask<Void, Void, Boolean>
-    {
-        private String url_add_item = base_url+"create_seller_item.php";
-        private String TAG_SUCCESS="success";
-        private String TAG_MESSAGE="message";
-        private JSONParser jsonParser;
-        private String item;
-        private String description;
-        private Integer category_id;
-        private String image_type;
-        private Bitmap bitmap;
-        private  int insert_id;
-        private int success;
-        CreateItemTask(final String item, final String description, final Integer category_id, String image_type, Bitmap bitmap)
-        {
-            Toast.makeText(getContext(),"Please wait...",Toast.LENGTH_SHORT).show();
-            this.item = item;
-            this.description = description;
-            this.category_id = category_id;
-            this.image_type = image_type;
-            this.bitmap = bitmap;
-            jsonParser = new JSONParser();
-            Log.d("CRATEITEM"," started...");
-        }
-        @Override
-        protected Boolean doInBackground(Void... params)
-        {
-            //building parameters
-            List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("seller_email",serverAccount.getEmail()));
-            info.add(new BasicNameValuePair("item",item));
-            info.add(new BasicNameValuePair("description",description));
-            info.add(new BasicNameValuePair("category_id",Integer.toString(category_id)));
-            info.add(new BasicNameValuePair("sizes",sizes));
-            info.add(new BasicNameValuePair("prices",prices));
-            info.add(new BasicNameValuePair("image_type",image_type));
-            JSONObject jsonObject= jsonParser.makeHttpRequest(url_add_item,"POST",info);
-            try
-            {
-                success=jsonObject.getInt(TAG_SUCCESS);
-                if(success==1)
-                {
-                    insert_id = jsonObject.getInt("id");
-                    return true;
-                }
-                else
-                {
-                    String message=jsonObject.getString(TAG_MESSAGE);
-                    Log.e(TAG_MESSAGE,""+message);
-                    return false;
-                }
-            }
-            catch (JSONException e)
-            {
-                Log.e("JSON",""+e.getMessage());
-                return false;
-            }
-        }
-        @Override
-        protected void onPostExecute(final Boolean successful)
-        {
-            if(successful)
-            {
-
-                Log.d("adding new item", "done...");
-                uploadBitmap(bitmap, insert_id);
-
-            }
-            else if(success==-2)
-            {
-                Log.e("adding item", "error");
-                Toast.makeText(getContext(),"Item already defined",Toast.LENGTH_SHORT).show();
-            }
-
-        }
-    }
     private class CategoriesTask extends AsyncTask<Void, Void, Boolean>
     {
         private String TAG_SUCCESS="success";
@@ -568,11 +316,12 @@ public class menuFragment extends Fragment
             }
         }
     }
-    public static void reRunMenuTask()
+    public static void editItem(DMenu dMenu)
     {
-        new MenuTask().execute((Void)null);
+        if(mListener!=null)
+            mListener.onEditItemClicked(dMenu);
     }
-    public static  class MenuTask extends AsyncTask<Void, Void, Boolean>
+    public static class MenuTask extends AsyncTask<Void, Void, Boolean>
     {
         private String url_get_s_items = base_url + "get_seller_items.php";
         private String TAG_SUCCESS="success";

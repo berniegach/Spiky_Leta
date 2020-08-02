@@ -1,6 +1,8 @@
 package com.spikingacacia.leta.ui.database;
 
-public class DMenu
+import java.io.Serializable;
+
+public class DMenu implements Serializable
 {
     private int id;
     private int categoryId;

@@ -1,6 +1,5 @@
 package com.spikingacacia.leta.ui.main;
 
-import android.app.Instrumentation;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -28,8 +26,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.spikingacacia.leta.ui.main.dashboard.DashboardFragment;
-import com.spikingacacia.leta.ui.main.home.ItemDialog;
-import com.spikingacacia.leta.ui.main.home.ItemDialogEdit;
+import com.spikingacacia.leta.ui.main.home.AddItemActivity;
+import com.spikingacacia.leta.ui.main.home.EditItemActivity;
 import com.spikingacacia.leta.ui.main.home.menuFragment;
 import com.spikingacacia.leta.ui.main.orders.OrdersOverviewFragment;
 import com.spikingacacia.leta.ui.orders.OrdersActivity;
@@ -43,7 +41,7 @@ import static com.spikingacacia.leta.ui.LoginActivity.mGoogleSignInClient;
 import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 public class MainActivity extends AppCompatActivity implements
-        menuFragment.OnListFragmentInteractionListener, ItemDialog.NoticeDialogListener, ItemDialogEdit.NoticeDialogListener,
+        menuFragment.OnListFragmentInteractionListener,
         OrdersOverviewFragment.OnFragmentInteractionListener, DashboardFragment.OnListFragmentInteractionListener
 {
     private ProgressBar progressBar;
@@ -192,20 +190,7 @@ public class MainActivity extends AppCompatActivity implements
         startActivity(intent);
     }
 
-    @Override
-    public void onItemAdded()
-    {
-        navController.navigate(R.id.navigation_home);
-    }
-/*
-* Implementation of ItemDialogEdit.java
- */
-    @Override
-    public void onItemUpdated()
-    {
-        Toast.makeText(getBaseContext(),"Successful",Toast.LENGTH_SHORT).show();
 
-    }
     /**
      * implementation of OrdersOverviewFragment.java*/
     @Override
@@ -248,6 +233,25 @@ public class MainActivity extends AppCompatActivity implements
         Intent intent=new Intent(MainActivity.this, HostActivity.class);
         //prevent this activity from flickering as we call the next one
         intent.putExtra(HostActivity.ARG_WHICH_FRAGMENT,which);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(intent);
+    }
+    /*
+     * *implementation of menuFragment.java
+     * */
+    @Override
+    public void onAddNewItemClicked()
+    {
+        Intent intent=new Intent(MainActivity.this, AddItemActivity.class);
+        //prevent this activity from flickering as we call the next one
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(intent);
+    }
+    public void onEditItemClicked(DMenu dMenu)
+    {
+        Intent intent=new Intent(MainActivity.this, EditItemActivity.class);
+        //prevent this activity from flickering as we call the next one
+        intent.putExtra("item",dMenu);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
     }

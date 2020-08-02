@@ -7,6 +7,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.http.DelegatingSSLSession;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,6 +49,7 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
     private Context context;
     private FragmentManager fragmentManager;
     private static int lastImageFaded = -1;
+    private String TAG = "my_menu_rva";
 
     public MymenuRecyclerViewAdapter(OnListFragmentInteractionListener listener, Context context, FragmentManager fragmentManager)
     {
@@ -92,8 +96,7 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
             @Override
             public void onClick(View v)
             {
-                DialogFragment dialog = new ItemDialogEdit(holder.mItem);
-                dialog.show(fragmentManager, "ItemDialogFragment");
+                menuFragment.editItem(holder.mItem);
             }
         });
         holder.mView.setOnClickListener(new View.OnClickListener()
