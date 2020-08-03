@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -95,6 +96,11 @@ public class OrderOverviewFragment extends Fragment
         TextView t_collect_time = view.findViewById(R.id.collect_time);
         TextView t_order_type = view.findViewById(R.id.order_type);
         CardView c_paid = view.findViewById(R.id.paid);
+        ImageButton button_location = view.findViewById(R.id.location);
+        CardView c_mobile = view.findViewById(R.id.c_mobile);
+        final ImageButton button_mobile = view.findViewById(R.id.mobile);
+        CardView c_delivery_info = view.findViewById(R.id.c_delivery_info);
+        TextView t_delivery_info = view.findViewById(R.id.t_delivery_info);
         //set the buttons listeners
         Button b_accept=view.findViewById(R.id.accept);
         Button b_decline=view.findViewById(R.id.decline);
@@ -114,6 +120,24 @@ public class OrderOverviewFragment extends Fragment
             {
                 if(mListener!=null)
                     mListener.onAcceptDecline(2, mOrderStatus);
+            }
+        });
+        button_location.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if(mListener!=null)
+                    mListener.gotoMaps((String)v.getTag());
+            }
+        });
+        button_mobile.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if(mListener!=null)
+                    mListener.gotoPhone((String)button_mobile.getTag());
             }
         });
         //show the respective buttons and change their labels accordingly
@@ -185,6 +209,9 @@ public class OrderOverviewFragment extends Fragment
         String waiter="";
         String collect_time="";
         int i_order_type=0;
+        String mobile="";
+        String instructions = "";
+        String location = "";
         Iterator iterator= OrdersFragment.ordersLinkedHashMap.entrySet().iterator();
         while (iterator.hasNext())
         {
@@ -206,6 +233,9 @@ public class OrderOverviewFragment extends Fragment
             table= orders.getTableNumber();
             collect_time = orders.getCollectTime();
             i_order_type = orders.getOrderType();
+            mobile = orders.getDeliveryMobile();
+            instructions = orders.getDeliveryInstructions();
+            location = orders.getDeliveryLocation();
             if(count==0)
             {
                 progressBar.setProgress(orderStatus);
@@ -240,6 +270,19 @@ public class OrderOverviewFragment extends Fragment
         t_waiter.setText(waiter);
         String[] order_types = new String[]{"In house", "Take away", "Delivery"};
         t_order_type.setText(order_types[i_order_type]);
+        if(mPreOrder == 1)
+        {
+            //check if delivery
+            if(i_order_type == 2)
+            {
+                button_location.setVisibility(View.VISIBLE);
+                c_mobile.setVisibility(View.VISIBLE);
+                c_delivery_info.setVisibility(View.VISIBLE);
+                button_location.setTag(location);
+                button_mobile.setTag(mobile);
+                t_delivery_info.setText(instructions);
+            }
+        }
         return view;
     }
     @Override
@@ -265,5 +308,7 @@ public class OrderOverviewFragment extends Fragment
     public interface OnFragmentInteractionListener
     {
         void onAcceptDecline(int which, int status);
+        void gotoMaps(String location);
+        public void gotoPhone(String number);
     }
 }

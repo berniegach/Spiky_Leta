@@ -17,11 +17,15 @@ public class Orders
     private int preOrder;
     private String collectTime;
     private int orderType;
+    private String deliveryMobile;
+    private String deliveryInstructions;
+    private String deliveryLocation;
     private String dateAdded;
     private String dateChanged;
 
     public Orders(int id,int userId, String userEmail, int itemId, int orderNumber, int orderStatus, String orderName, String size, double price, String username, String waiter_names, int tableNumber,
-                  int preOrder, String collectTime, int order_type,String dateAdded, String dateChanged)
+                  int preOrder, String collectTime, int order_type, String deliveryMobile, String deliveryInstructions, String deliveryLocation,
+                  String dateAdded, String dateChanged)
     {
         this.id = id;
         this.userId = userId;
@@ -38,6 +42,9 @@ public class Orders
         this.preOrder = preOrder;
         this.collectTime = collectTime;
         this.orderType = order_type;
+        this.deliveryMobile = deliveryMobile;
+        this.deliveryInstructions = deliveryInstructions;
+        this.deliveryLocation = deliveryLocation;
         this.dateAdded = dateAdded;
         this.dateChanged = dateChanged;
     }
@@ -186,6 +193,36 @@ public class Orders
     public void setOrderType(int orderType)
     {
         this.orderType = orderType;
+    }
+
+    public String getDeliveryMobile()
+    {
+        return deliveryMobile;
+    }
+
+    public void setDeliveryMobile(String deliveryMobile)
+    {
+        this.deliveryMobile = deliveryMobile;
+    }
+
+    public String getDeliveryInstructions()
+    {
+        return deliveryInstructions;
+    }
+
+    public void setDeliveryInstructions(String deliveryInstructions)
+    {
+        this.deliveryInstructions = deliveryInstructions;
+    }
+
+    public String getDeliveryLocation()
+    {
+        return deliveryLocation;
+    }
+
+    public void setDeliveryLocation(String deliveryLocation)
+    {
+        this.deliveryLocation = deliveryLocation;
     }
 
     public String getDateAdded()
