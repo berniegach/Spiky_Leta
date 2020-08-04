@@ -1,14 +1,17 @@
 package com.spikingacacia.leta.ui.main.home;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.bumptech.glide.Glide;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.AppController;
 import com.spikingacacia.leta.ui.database.Categories;
@@ -24,14 +27,13 @@ public class MymenuCategoryRecyclerViewAdapter extends RecyclerView.Adapter<Myme
     private String image_url= base_url+"src/categories_pics/";
     private List<Categories> mValues;
     private final OnListFragmentInteractionListener mListener;
-    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
+    private Context context;
 
-    public MymenuCategoryRecyclerViewAdapter(OnListFragmentInteractionListener listener)
+    public MymenuCategoryRecyclerViewAdapter(OnListFragmentInteractionListener listener, Context context)
     {
         mListener = listener;
         mValues = new LinkedList<>();
-        if (imageLoader == null)
-            imageLoader = AppController.getInstance().getImageLoader();
+        this.context = context;
     }
 
     @Override
@@ -59,7 +61,7 @@ public class MymenuCategoryRecyclerViewAdapter extends RecyclerView.Adapter<Myme
         });
         // thumbnail image
         String url=image_url+String.valueOf(mValues.get(position).getId())+'_'+String.valueOf(mValues.get(position).getImageType());
-        holder.thumbNail.setImageUrl(url, imageLoader);
+        Glide.with(context).load(url).into(holder.thumbNail);
     }
 
     @Override
@@ -71,7 +73,7 @@ public class MymenuCategoryRecyclerViewAdapter extends RecyclerView.Adapter<Myme
     public class ViewHolder extends RecyclerView.ViewHolder
     {
         public final View mView;
-        public final NetworkImageView thumbNail;
+        public final ImageView thumbNail;
         public final TextView mTitleView;
         public Categories mItem;
 

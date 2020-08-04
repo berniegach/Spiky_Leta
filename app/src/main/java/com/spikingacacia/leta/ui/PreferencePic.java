@@ -33,9 +33,8 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.util.VolleyMultipartRequest;
 
@@ -55,19 +54,16 @@ public class PreferencePic extends Preference
 {
     private static final int PERMISSION_REQUEST_INTERNET=2;
     private static String url_upload_profile_pic= LoginActivity.base_url+"upload_profile_pic_s.php";
-    public static NetworkImageView imageView;
+    public static ImageView imageView;
     public static TextView textView;
     private static Context context;
     private FragmentManager fragmentManager;
-    private ImageLoader imageLoader = AppController.getInstance().getImageLoader();
     public PreferencePic(Context context)
     {
         super(context);
         setLayoutResource(R.layout.settings_profilepic);
         this.context=context;
         fragmentManager=((AppCompatActivity)context).getFragmentManager();
-        if (imageLoader == null)
-            imageLoader = AppController.getInstance().getImageLoader();
     }
 
     public PreferencePic(Context context, AttributeSet attrs)
@@ -76,8 +72,6 @@ public class PreferencePic extends Preference
         setLayoutResource(R.layout.settings_profilepic);
         this.context=context;
         fragmentManager=((AppCompatActivity)context).getFragmentManager();
-        if (imageLoader == null)
-            imageLoader = AppController.getInstance().getImageLoader();
     }
     public PreferencePic(Context context, AttributeSet attrs, int defStyleAttr)
     {
@@ -85,8 +79,6 @@ public class PreferencePic extends Preference
         setLayoutResource(R.layout.settings_profilepic);
         this.context=context;
         fragmentManager=((AppCompatActivity)context).getFragmentManager();
-        if (imageLoader == null)
-            imageLoader = AppController.getInstance().getImageLoader();
     }
     @Override
     public void onBindViewHolder(PreferenceViewHolder view)
@@ -107,10 +99,10 @@ public class PreferencePic extends Preference
             url=image_url+String.valueOf(serverAccount.getWaiter_id())+'_'+String.valueOf(serverAccount.getWaiterImageType());
             b_edit.setVisibility(View.GONE);
         }
-        imageView= (NetworkImageView) view.findViewById(R.id.image);
+        imageView= (ImageView) view.findViewById(R.id.image);
         // thumbnail image
 
-        imageView.setImageUrl(url, imageLoader);
+        Glide.with(context).load(url).into(imageView);
         view.findViewById(R.id.edit).setOnClickListener(new View.OnClickListener()
         {
             @Override

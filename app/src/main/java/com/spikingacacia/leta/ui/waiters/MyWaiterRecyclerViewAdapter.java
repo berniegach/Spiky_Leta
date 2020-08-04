@@ -10,11 +10,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.bumptech.glide.Glide;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.AppController;
 import com.spikingacacia.leta.ui.JSONParser;
@@ -39,7 +41,6 @@ public class MyWaiterRecyclerViewAdapter extends RecyclerView.Adapter<MyWaiterRe
     private final OnListFragmentInteractionListener mListener;
     private final Context mContext;
     private List<Waiters>itemsCopy;
-    private ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
     public MyWaiterRecyclerViewAdapter(OnListFragmentInteractionListener listener, Context context)
     {
@@ -47,8 +48,6 @@ public class MyWaiterRecyclerViewAdapter extends RecyclerView.Adapter<MyWaiterRe
         itemsCopy=new ArrayList<>();
         mListener = listener;
         mContext=context;
-        if (imageLoader == null)
-            imageLoader = AppController.getInstance().getImageLoader();
     }
 
     @Override
@@ -70,7 +69,7 @@ public class MyWaiterRecyclerViewAdapter extends RecyclerView.Adapter<MyWaiterRe
 
         // thumbnail image
         String url=image_url+String.valueOf(mValues.get(position).getId())+'_'+String.valueOf(mValues.get(position).getImageType());
-        holder.mImageView.setImageUrl(url, imageLoader);
+        Glide.with(mContext).load(url).into(holder.mImageView);
 
         holder.mView.setOnClickListener(new View.OnClickListener()
         {
@@ -146,7 +145,7 @@ public class MyWaiterRecyclerViewAdapter extends RecyclerView.Adapter<MyWaiterRe
     public class ViewHolder extends RecyclerView.ViewHolder
     {
         public final View mView;
-        public final NetworkImageView mImageView;
+        public final ImageView mImageView;
         public final TextView mNamesView;
         public final TextView mEmailView;
         public Waiters mItem;

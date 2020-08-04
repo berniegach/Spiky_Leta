@@ -34,6 +34,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.AppController;
 import com.spikingacacia.leta.ui.JSONParser;
@@ -65,7 +66,7 @@ public class EditItemActivity extends AppCompatActivity
     private DMenu dMenu;
     private ProgressBar progressBar;
     private View mainView;
-    private NetworkImageView imageView;
+    private ImageView imageView;
     private LinearLayout layoutAddSizes;
     private String imagePath;
     private Bitmap bitmap;
@@ -113,7 +114,7 @@ public class EditItemActivity extends AppCompatActivity
         //image
         String image_url= base_url+"src/items_pics/";
         String url=image_url+String.valueOf(dMenu.getId())+'_'+dMenu.getImageType();
-        imageView.setImageUrl(url, imageLoader);
+        Glide.with(getBaseContext()).load(url).into(imageView);
         //item
         editItem.setText(dMenu.getItem());
         //description

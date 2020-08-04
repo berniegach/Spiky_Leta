@@ -6,10 +6,12 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.bumptech.glide.Glide;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.AppController;
 import com.spikingacacia.leta.ui.LoginActivity;
@@ -34,7 +36,6 @@ public class MyOrdersRecyclerViewAdapter extends RecyclerView.Adapter<MyOrdersRe
     private final OnListFragmentInteractionListener mListener;
     private Context mContext;
     private  int mWhichOrder;
-    private ImageLoader imageLoader = AppController.getInstance().getImageLoader();
     public MyOrdersRecyclerViewAdapter(OnListFragmentInteractionListener listener, Context context, int whichOrder)
     {
         mValues = new ArrayList<>();
@@ -43,8 +44,6 @@ public class MyOrdersRecyclerViewAdapter extends RecyclerView.Adapter<MyOrdersRe
         itemsCopy = new ArrayList<>();
         mContext=context;
         mWhichOrder=whichOrder;
-        if (imageLoader == null)
-            imageLoader = AppController.getInstance().getImageLoader();
     }
 
     @Override
@@ -90,7 +89,7 @@ public class MyOrdersRecyclerViewAdapter extends RecyclerView.Adapter<MyOrdersRe
             }
         });
         String url=image_url+String.valueOf(mValues.get(position).getUserId())+'_'+String.valueOf(serverAccount.getImageType());
-        holder.image.setImageUrl(url, imageLoader);
+        Glide.with(mContext).load(url).into(holder.image);
     }
 
     @Override
@@ -123,7 +122,7 @@ public class MyOrdersRecyclerViewAdapter extends RecyclerView.Adapter<MyOrdersRe
     public class ViewHolder extends RecyclerView.ViewHolder
     {
         public final View mView;
-        public final NetworkImageView image;
+        public final ImageView image;
         public final TextView mOrderView;
         public final TextView mTableView;
         public final TextView mUsernameView;

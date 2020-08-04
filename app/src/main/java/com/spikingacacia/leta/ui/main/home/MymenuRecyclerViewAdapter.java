@@ -16,11 +16,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.bumptech.glide.Glide;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.AppController;
 import com.spikingacacia.leta.ui.JSONParser;
@@ -45,7 +47,6 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
     private List<DMenu> mValues;
     private List<DMenu>itemsCopy;
     private final OnListFragmentInteractionListener mListener;
-    private ImageLoader imageLoader = AppController.getInstance().getImageLoader();
     private Context context;
     private FragmentManager fragmentManager;
     private static int lastImageFaded = -1;
@@ -56,8 +57,6 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
         mListener = listener;
         mValues = new LinkedList<>();
         itemsCopy = new LinkedList<>();
-        if (imageLoader == null)
-            imageLoader = AppController.getInstance().getImageLoader();
         this.context = context;
         this.fragmentManager = fragmentManager;
     }
@@ -88,7 +87,7 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
 
         // image
         String url=image_url+String.valueOf(mValues.get(position).getId())+'_'+String.valueOf(mValues.get(position).getImageType());
-        holder.image.setImageUrl(url, imageLoader);
+        Glide.with(context).load(url).into(holder.image);
         if(serverAccount.getPersona()==2)
             holder.mEditButton.setVisibility(View.GONE);
         holder.mEditButton.setOnClickListener(new View.OnClickListener()
@@ -137,7 +136,7 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
     public class ViewHolder extends RecyclerView.ViewHolder
     {
         public final View mView;
-        public final NetworkImageView image;
+        public final ImageView image;
         public final TextView mItemView;
         public final TextView mDescriptionView;
         public final TextView mPriceView;
