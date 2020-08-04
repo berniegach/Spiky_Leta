@@ -270,6 +270,7 @@ public class EditItemActivity extends AppCompatActivity
             }
         });
         layoutAddSizes.addView(view);
+        view.requestFocus();
     }
     private int getCategoryId(String item)
     {

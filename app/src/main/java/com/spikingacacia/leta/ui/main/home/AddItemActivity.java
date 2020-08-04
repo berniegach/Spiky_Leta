@@ -179,6 +179,7 @@ public class AddItemActivity extends AppCompatActivity
             }
         });
         layoutAddSizes.addView(view);
+        view.requestFocus();
     }
     private int getCategoryId(String item)
     {
@@ -342,7 +343,7 @@ public class AddItemActivity extends AppCompatActivity
             {
 
                 //Log.e(TAG,"bytes length "+byteArrayOutputStream.toByteArray().length);
-                if(byteArrayOutputStream.toByteArray().length<=1000000)
+                if(byteArrayOutputStream.toByteArray().length<=500000)
                     return byteArrayOutputStream.toByteArray();
             }
             else

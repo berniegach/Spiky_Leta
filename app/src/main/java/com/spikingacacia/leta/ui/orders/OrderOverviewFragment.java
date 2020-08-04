@@ -309,6 +309,6 @@ public class OrderOverviewFragment extends Fragment
     {
         void onAcceptDecline(int which, int status);
         void gotoMaps(String location);
-        public void gotoPhone(String number);
+        void gotoPhone(String number);
     }
 }
