@@ -34,8 +34,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import static com.spikingacacia.leta.ui.LoginActivity.base_url;
 import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
@@ -70,7 +72,7 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position)
+    public void onBindViewHolder(final ViewHolder holder, final int position)
     {
         String image_url= base_url+"src/items_pics/";
         holder.mItem = mValues.get(position);
@@ -81,7 +83,12 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
         String sizePrice="";
         for(int c=0; c<sizes.length; c++)
         {
-            sizePrice+=" "+sizes[c]+" @ "+prices[c];
+            String location = serverAccount.getLocation();
+            String[] location_pieces = location.split(",");
+            if(location_pieces.length==4)
+                sizePrice+=" "+sizes[c]+" @ "+getCurrencyCode(location_pieces[3])+" "+prices[c];
+            else
+                sizePrice+=" "+sizes[c]+" @ "+prices[c];
         }
         holder.mPriceView.setText(sizePrice);
 
@@ -122,7 +129,7 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
             @Override
             public void onClick(View v)
             {
-                updateLinkedFood(holder.mItem);
+                updateLinkedFood(holder.mItem, position);
             }
         });
     }
@@ -162,6 +169,15 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
             return super.toString() + " '" + mItemView.getText() + "'";
         }
     }
+    //to retrieve currency code
+    private String getCurrencyCode(String countryCode) {
+        return Currency.getInstance(new Locale("", countryCode)).getCurrencyCode();
+    }
+
+    //to retrieve currency symbol
+    private String getCurrencySymbol(String countryCode) {
+        return Currency.getInstance(new Locale("", countryCode)).getSymbol();
+    }
     public void filter(String text)
     {
         mValues.clear();
@@ -185,7 +201,7 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
         itemsCopy.addAll(newitems);
         notifyDataSetChanged();
     }
-    private void updateLinkedFood(final DMenu dMenu)
+    private void updateLinkedFood(final DMenu dMenu,final int menu_index)
     {
         String linked_foods = dMenu.getLinkedItems();
         String[] links = linked_foods.split(":");
@@ -229,15 +245,19 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
                     public void onClick(DialogInterface dialog, int which)
                     {
                         String links="";
+                        int count = 0;
                         for(int c=0; c<items_checked.length; c++)
                         {
                             if(!items_checked[c])
                                 continue;
-                            if(c != 0)
+                            if(count != 0)
+                            {
                                 links+=":";
+                            }
                             links+=ids[c];
+                            count+=1;
                         }
-                        new UpdateItemTask(dMenu,links).execute((Void)null);
+                        new UpdateItemTask(dMenu,links, menu_index).execute((Void)null);
                     }
                 }).create().show();
 
@@ -250,12 +270,14 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
         private JSONParser jsonParser;
         private DMenu dMenu;
         private String linked_items;
+        private int menu_index;
         private int success;
-        UpdateItemTask(DMenu dMenu, String linked_items)
+        UpdateItemTask(DMenu dMenu, String linked_items, int menu_index)
         {
             Toast.makeText(context,"Please wait...",Toast.LENGTH_SHORT).show();
             this.dMenu = dMenu;
             this.linked_items = linked_items;
+            this.menu_index = menu_index;
             jsonParser = new JSONParser();
         }
         @Override
@@ -302,6 +324,7 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
 
                 Log.d("adding new item", "done...");
                 Toast.makeText(context,"Successfully updated",Toast.LENGTH_SHORT).show();
+                mValues.get(menu_index).setLinkedItems(linked_items);
                 //listener.onItemUpdated();
 
             }
