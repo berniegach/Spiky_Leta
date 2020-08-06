@@ -62,6 +62,7 @@ public class WaiterFragment extends Fragment
     private  RecyclerView recyclerView;
     private String TAG = "WaiterFragment";
     private MyWaiterRecyclerViewAdapter myWaiterRecyclerViewAdapter;
+    public static List<Waiters> waitersList;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -115,6 +116,7 @@ public class WaiterFragment extends Fragment
             recyclerView.setAdapter(myWaiterRecyclerViewAdapter);
             recyclerView.addItemDecoration(new SpacesItemDecoration(16));
         }
+        waitersList = new LinkedList<>();
         return view;
     }
 
@@ -210,8 +212,20 @@ public class WaiterFragment extends Fragment
                         Dialog dialog1 = (Dialog) dialog;
                         EditText editText = dialog1.findViewById(R.id.edittext);
                         String str = editText.getText().toString();
-                        new CreateWaiterTask(str).execute((Void)null);
-                        dialog.dismiss();
+                        //check if waiter is already added
+                        boolean error = false;
+                        for(int c=0; c<waitersList.size(); c++)
+                            if(str.contentEquals(waitersList.get(c).getEmail()))
+                            {
+                                Toast.makeText(getContext(),"The waiter is already added", Toast.LENGTH_SHORT).show();
+                                editText.setError("Already a waiter");
+                                error = true;
+                            }
+                        if(!error)
+                        {
+                            new CreateWaiterTask(str).execute((Void)null);
+                            dialog.dismiss();
+                        }
                     }
                 }).create().show();
     }
@@ -262,15 +276,23 @@ public class WaiterFragment extends Fragment
     }
     public class CreateWaiterTask extends AsyncTask<Void, Void, Boolean>
     {
+        String url_add_waiter = base_url + "add_waiter.php";
         private String email;
         private int success;
         private int id=-1;
         private String waiter_name="";
         private JSONParser jsonParser;
 
+        @Override
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+            //check whether the waiter is already available
+        }
+
         CreateWaiterTask(final String name)
         {
-            Toast.makeText(getContext(),"Adding the waiter started. Please wait...",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(),"Please wait...",Toast.LENGTH_SHORT).show();
             jsonParser = new JSONParser();
             this.email =name;
         }
@@ -281,8 +303,8 @@ public class WaiterFragment extends Fragment
             List<NameValuePair> info=new ArrayList<NameValuePair>();
             info.add(new BasicNameValuePair("seller_id",Integer.toString(serverAccount.getId())));
             info.add(new BasicNameValuePair("waiter_username", email));
-            String url_add_waiter = base_url + "add_waiter.php";
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_add_waiter,"POST",info);
+            Log.d(TAG,""+jsonObject.toString());
             try
             {
                 String TAG_SUCCESS = "success";
@@ -320,7 +342,10 @@ public class WaiterFragment extends Fragment
             else
             {
                 Log.e("adding waiter", "error");
-                Toast.makeText(getContext(),"Error adding the waiter",Toast.LENGTH_SHORT).show();
+                if(success == -1)
+                    Toast.makeText(getContext(),"Wrong email. Make sure the user is registered as an order customer first.",Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getContext(),"Error adding the waiter",Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -390,6 +415,7 @@ public class WaiterFragment extends Fragment
             if (successful)
             {
                 myWaiterRecyclerViewAdapter.listUpdated(list);
+                waitersList = list;
             }
             else
             {

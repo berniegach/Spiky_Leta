@@ -234,6 +234,7 @@ public class MyWaiterRecyclerViewAdapter extends RecyclerView.Adapter<MyWaiterRe
                 Toast.makeText(mContext,"Deleted Successfully",Toast.LENGTH_SHORT).show();
                 mValues.remove(mPosition);
                 notifyDataSetChanged();
+                WaiterFragment.waitersList = mValues;
             }
             else
             {
