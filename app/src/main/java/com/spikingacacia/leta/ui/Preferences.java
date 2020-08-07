@@ -7,7 +7,28 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class Preferences
 {
-
+    private boolean dark_theme_enabled=false;
+    private boolean verify_email =false;
+    private boolean reset_password=false;
+    private boolean remember_me=false;
+    private SharedPreferences shared_preferences;
+    private SharedPreferences.Editor preferences_editor;
+    private String email_to_verify;
+    private String email_to_reset_password;
+    private String email_to_remember;
+    private String password_to_remember;
+    int persona;
+    int order_format_to_show_count;
+    //order types
+    //-2 = unpaid, -1 = paid, 0 = deleted, 1 = pending, 2 = payment, 3 = in progress, 4 = delivery,  5 = finished
+    int unpaid_count;
+    int paid_count;
+    int deleted_count;
+    int pending_count;
+    int payment_count;
+    int in_progress_count;
+    int delivery_count;
+    int finished_count;
     public Preferences(Context context)
     {
         shared_preferences=context.getSharedPreferences("loginPrefs",MODE_PRIVATE);
@@ -22,6 +43,15 @@ public class Preferences
         password_to_remember = shared_preferences.getString("password","");
         order_format_to_show_count = shared_preferences.getInt("order_format_to_show_count",0);
         persona=shared_preferences.getInt("persona",2);
+
+        unpaid_count = shared_preferences.getInt("unpaid_count",0);
+        paid_count = shared_preferences.getInt("paid_count",0);
+        deleted_count = shared_preferences.getInt("deleted_count",0);
+        pending_count = shared_preferences.getInt("pending_count",0);
+        payment_count = shared_preferences.getInt("payment_count",0);
+        in_progress_count = shared_preferences.getInt("in_progress_count",0);
+        delivery_count = shared_preferences.getInt("delivery_count",0);
+        finished_count = shared_preferences.getInt("finished_count",0);
     }
     public boolean isDark_theme_enabled()
     {
@@ -143,17 +173,104 @@ public class Preferences
         preferences_editor.putInt("order_format_to_show_count",order_format_to_show_count);
         preferences_editor.commit();
     }
-    private boolean dark_theme_enabled=false;
-    private boolean verify_email =false;
-    private boolean reset_password=false;
-    private boolean remember_me=false;
-    private SharedPreferences shared_preferences;
-    private SharedPreferences.Editor preferences_editor;
-    private String email_to_verify;
-    private String email_to_reset_password;
-    private String email_to_remember;
-    private String password_to_remember;
-    int persona;
-    int order_format_to_show_count;
+    public int getUnpaid_count()
+    {
+        return unpaid_count;
+    }
+
+    public void setUnpaid_count(int unpaid_count)
+    {
+        this.unpaid_count = unpaid_count;
+        preferences_editor.putInt("unpaid_count", unpaid_count);
+        preferences_editor.commit();
+    }
+
+    public int getPaid_count()
+    {
+        return paid_count;
+    }
+
+    public void setPaid_count(int paid_count)
+    {
+        this.paid_count = paid_count;
+        preferences_editor.putInt("paid_count", paid_count);
+        preferences_editor.commit();
+    }
+
+    public int getDeleted_count()
+    {
+        return deleted_count;
+    }
+
+    public void setDeleted_count(int deleted_count)
+    {
+        this.deleted_count = deleted_count;
+        preferences_editor.putInt("deleted_count", deleted_count);
+        preferences_editor.commit();
+    }
+
+    public int getPending_count()
+    {
+        return pending_count;
+    }
+
+    public void setPending_count(int pending_count)
+    {
+        this.pending_count = pending_count;
+        preferences_editor.putInt("pending_count", pending_count);
+        preferences_editor.commit();
+
+    }
+
+    public int getPayment_count()
+    {
+        return payment_count;
+    }
+
+    public void setPayment_count(int payment_count)
+    {
+        this.payment_count = payment_count;
+        preferences_editor.putInt("payment_count", payment_count);
+        preferences_editor.commit();
+    }
+
+    public int getIn_progress_count()
+    {
+        return in_progress_count;
+    }
+
+    public void setIn_progress_count(int in_progress_count)
+    {
+        this.in_progress_count = in_progress_count;
+        preferences_editor.putInt("in_progress_count", in_progress_count);
+        preferences_editor.commit();
+    }
+
+    public int getDelivery_count()
+    {
+        return delivery_count;
+    }
+
+    public void setDelivery_count(int delivery_count)
+    {
+        this.delivery_count = delivery_count;
+        preferences_editor.putInt("delivery_count", delivery_count);
+        preferences_editor.commit();
+
+    }
+
+    public int getFinished_count()
+    {
+        return finished_count;
+    }
+
+    public void setFinished_count(int finished_count)
+    {
+        this.finished_count = finished_count;
+        preferences_editor.putInt("finished_count", finished_count);
+        preferences_editor.commit();
+    }
+
+
 
 }

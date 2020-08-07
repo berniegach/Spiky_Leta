@@ -403,6 +403,8 @@ public class LoginActivity extends AppCompatActivity
 
     private void startBackgroundTasks()
     {
+        Intent intent = new Intent(this, OrdersService.class);
+        startService(intent);
         proceedToLogin();
     }
     public class RegisterTask extends AsyncTask<Void, Void, Boolean>

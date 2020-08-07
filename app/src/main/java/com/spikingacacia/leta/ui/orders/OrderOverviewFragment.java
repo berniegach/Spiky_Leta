@@ -44,7 +44,7 @@ public class OrderOverviewFragment extends Fragment
     private int mStation;
     private int mPreOrder;
     private OnFragmentInteractionListener mListener;
-    Preferences preferences;
+    //Preferences preferences;
 
     public OrderOverviewFragment()
     {

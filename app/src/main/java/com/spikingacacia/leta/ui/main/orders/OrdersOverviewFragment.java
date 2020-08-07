@@ -30,6 +30,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
 import com.spikingacacia.leta.ui.LoginActivity;
+import com.spikingacacia.leta.ui.OrdersService;
 import com.spikingacacia.leta.ui.Preferences;
 import com.spikingacacia.leta.ui.database.Orders;
 
@@ -49,6 +50,7 @@ import java.util.Set;
 
 import static com.spikingacacia.leta.ui.LoginActivity.base_url;
 import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
+import static com.spikingacacia.leta.ui.OrdersService.preferences;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -90,7 +92,7 @@ public class OrdersOverviewFragment extends Fragment
     private TextView tDeliveryName;
     private TextView tPaymentName;
     private int countToShow=0;
-    Preferences preferences;
+    //Preferences preferences;
     private Thread ordersThread;
 
     public OrdersOverviewFragment()
@@ -126,7 +128,7 @@ public class OrdersOverviewFragment extends Fragment
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_orders_overview, container, false);
         //preference
-        preferences=new Preferences(getContext());
+        //preferences=new Preferences(getContext());
 
         //layouts
         lPending = ((LinearLayout)view.findViewById(R.id.pending));
@@ -187,7 +189,8 @@ public class OrdersOverviewFragment extends Fragment
                 {
                     while(true)
                     {
-                        new OrdersTask().execute((Void)null);
+                        //new OrdersTask().execute((Void)null);
+                        setCounts();
                         sleep(5000);
                     }
                 }
@@ -206,18 +209,15 @@ public class OrdersOverviewFragment extends Fragment
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.soorders_menu, menu);
 
-        final String[] strings_format_1=new String[]{"Pending", "In Progress", "Delivery", "Payment", "Finished"};
-        final String[] strings_format_2=new String[]{"Pending", "Payment", "In Progress", "Delivery", "Finished"};
-        final LinearLayout[] layouts_format=new LinearLayout[]{ lPending, lInProgress, lDelivery, lPayment, lFinished};
+        final String[] strings_format=new String[]{"Pending", "Payment", "In Progress", "Delivery", "Finished"};
         final MenuItem menu_station=menu.findItem(R.id.station);
         menu_station.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()
         {
             @Override
             public boolean onMenuItemClick(MenuItem item)
             {
-                final int format= LoginActivity.serverAccount.getOrderFormat();
                 new AlertDialog.Builder(getContext())
-                        .setItems(format==1?strings_format_1:strings_format_2, new DialogInterface.OnClickListener()
+                        .setItems(strings_format, new DialogInterface.OnClickListener()
                         {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i)
@@ -226,7 +226,7 @@ public class OrdersOverviewFragment extends Fragment
                                 {
                                     if(count==i)
                                     {
-                                        final int[] counts=new int[]{ pendingCount[1], inProgressCount[1], deliveryCount[1], paymentCount[1], finishedCount[1]};
+                                        final int[] counts=new int[]{ pendingCount[1], paymentCount[1],inProgressCount[1], deliveryCount[1], finishedCount[1]};
                                         countToShow=i;
                                         preferences.setOrder_format_to_show_count(i);
                                         tMainCount.setText(String.valueOf(counts[count]));
@@ -276,6 +276,13 @@ public class OrdersOverviewFragment extends Fragment
         ordersThread.interrupt();
         mListener = null;
     }
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        ordersThread.interrupt();
+    }
+
     public interface OnFragmentInteractionListener
     {
         void onChoiceClicked(int id);
@@ -301,12 +308,12 @@ public class OrdersOverviewFragment extends Fragment
                     mListener.onChoiceClicked(1);
             }
         });
-        lInProgress.setOnClickListener(new View.OnClickListener()
+        lPayment.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                if (inProgressCount[1]==0 )
+                if (paymentCount[1]==0 )
                 {
                     Snackbar.make(tMainCount,"Empty",Snackbar.LENGTH_SHORT).show();
                     return;
@@ -315,12 +322,12 @@ public class OrdersOverviewFragment extends Fragment
                     mListener.onChoiceClicked(2);
             }
         });
-        lDelivery.setOnClickListener(new View.OnClickListener()
+        lInProgress.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                if (deliveryCount[1]==0)
+                if (inProgressCount[1]==0)
                 {
                     Snackbar.make(tMainCount,"Empty",Snackbar.LENGTH_SHORT).show();
                     return;
@@ -329,12 +336,12 @@ public class OrdersOverviewFragment extends Fragment
                     mListener.onChoiceClicked(3);
             }
         });
-        lPayment.setOnClickListener(new View.OnClickListener()
+        lDelivery.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                if (paymentCount[1]==0)
+                if (deliveryCount[1]==0)
                 {
                     Snackbar.make(tMainCount,"Empty",Snackbar.LENGTH_SHORT).show();
                     return;
@@ -360,7 +367,7 @@ public class OrdersOverviewFragment extends Fragment
     }
     private void setCounts()
     {
-        int format= LoginActivity.serverAccount.getOrderFormat();
+        /*int format= LoginActivity.serverAccount.getOrderFormat();
         List<String> order_numbers=new ArrayList<>();
         Iterator iterator= ordersLinkedHashMap.entrySet().iterator();
         while (iterator.hasNext())
@@ -394,36 +401,36 @@ public class OrdersOverviewFragment extends Fragment
             else if(pieces[2].contentEquals("5"))
                 finishedCount[1]+=1;
 
+        }*/
+        pendingCount[1] = preferences.getPending_count();
+        inProgressCount[1] = preferences.getIn_progress_count();
+        deliveryCount[1] = preferences.getDelivery_count();
+        paymentCount[1] = preferences.getPayment_count();
+        finishedCount[1] = preferences.getFinished_count();
+
+        try
+        {
+            getActivity().runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    updateGui();
+                }
+            });
         }
+        catch (Exception e)
+        {
+            Log.d(TAG,"run on ui thread");
+        }
+
     }
+
     private void updateGui()
     {
         boolean countChanged = false;
         countToShow=preferences.getOrder_format_to_show_count();
-        pendingCount[1]=0;
-        inProgressCount[1]=0;
-        deliveryCount[1]=0;
-        paymentCount[1]=0;
-        finishedCount[1]=0;
-        setCounts();
-        //set the formats
-        final int format= LoginActivity.serverAccount.getOrderFormat();
-        if(format==1)
-        {
-            tInProgressName.setText("In Progress");
-            tDeliveryName.setText("Delivery");
-            tPaymentName.setText("Payment");
-            bOrderFormat.setText("Pay Last");
 
-        }
-        else
-        {
-            tInProgressName.setText("Payment");
-            tDeliveryName.setText("In Progress");
-            tPaymentName.setText("Delivery");
-            bOrderFormat.setText("Pay First");
-
-        }
         if(pendingCount[0]!=pendingCount[1])
         {
             tPendingCount.setText(String.valueOf(pendingCount[1]));
@@ -462,7 +469,6 @@ public class OrdersOverviewFragment extends Fragment
             if(count==countToShow && countChanged)
             {
                 tMainCount.setText(String.valueOf(counts[count]));
-                play_notification();
             }
             else
             {
@@ -472,32 +478,7 @@ public class OrdersOverviewFragment extends Fragment
 
 
     }
-    private void play_notification()
-    {
-        Uri alarmSound =
-                RingtoneManager. getDefaultUri (RingtoneManager. TYPE_NOTIFICATION );
-        MediaPlayer mp = MediaPlayer. create (getContext(), alarmSound);
-        mp.start();
-        vibrate_on_click();
 
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(getContext(), default_notification_channel_id )
-                        .setSmallIcon(R.mipmap.ic_launcher )
-                        .setContentTitle( "New Order" )
-                        .setContentText( "a new order has arrived" ) ;
-        NotificationManager mNotificationManager = (NotificationManager)
-                getContext().getSystemService(Context. NOTIFICATION_SERVICE );
-        mNotificationManager.notify(( int ) System. currentTimeMillis () ,
-                mBuilder.build());
-    }
-    private void vibrate_on_click()
-    {
-        Vibrator vibrator = (Vibrator) (getContext()).getSystemService(Context.VIBRATOR_SERVICE);
-        if(vibrator == null)
-            Log.e(TAG,"No vibrator");
-        else
-            vibrator.vibrate(100);
-    }
     public class UpdateOrderFormatTask extends AsyncTask<Void, Void, Boolean>
     {
         private String url_update_order_format = base_url + "update_seller_order_format.php";
@@ -557,92 +538,6 @@ public class OrdersOverviewFragment extends Fragment
                 Snackbar.make(lFinished,"Error updating format",Snackbar.LENGTH_SHORT).show();
             }
 
-        }
-    }
-    private class OrdersTask extends AsyncTask<Void, Void, Boolean>
-    {
-        private String url_get_s_orders = base_url + "get_seller_orders.php";
-        private String TAG_SUCCESS="success";
-        private String TAG_MESSAGE="message";
-        private  JSONParser jsonParser;
-        @Override
-        protected void onPreExecute()
-        {
-            //if(!ordersLinkedHashMap.isEmpty()) ordersLinkedHashMap.clear();
-            jsonParser = new JSONParser();
-            super.onPreExecute();
-        }
-        @Override
-        protected Boolean doInBackground(Void... params)
-        {
-            //getting columns list
-            List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("email",serverAccount.getEmail()));
-            // making HTTP request
-            JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_orders,"POST",info);
-            //Log.d("sItems",""+jsonObject.toString());
-            try
-            {
-                JSONArray itemsArrayList=null;
-                int success=jsonObject.getInt(TAG_SUCCESS);
-                if(success==1)
-                {
-                    itemsArrayList=jsonObject.getJSONArray("items");
-                    for(int count=0; count<itemsArrayList.length(); count+=1)
-                    {
-                        JSONObject jsonObjectNotis=itemsArrayList.getJSONObject(count);
-                        int id=jsonObjectNotis.getInt("id");
-                        int user_id = jsonObjectNotis.getInt("user_id");
-                        String user_email=jsonObjectNotis.getString("user_email");
-                        int item_id=jsonObjectNotis.getInt("item_id");
-                        int order_number=jsonObjectNotis.getInt("order_number");
-                        int order_status=jsonObjectNotis.getInt("order_status");
-                        String date_added=jsonObjectNotis.getString("date_added");
-                        String date_changed=jsonObjectNotis.getString("date_changed");
-                        String item=jsonObjectNotis.getString("item");
-                        String size = jsonObjectNotis.getString("size");
-                        double selling_price=jsonObjectNotis.getDouble("price");
-                        String username=jsonObjectNotis.getString("username");
-                        String waiter_names=jsonObjectNotis.getString("waiter_names");
-                        int table_number=jsonObjectNotis.getInt("table_number");
-                        int pre_order = jsonObjectNotis.getInt("pre_order");
-                        String collect_time = jsonObjectNotis.getString("collect_time");
-                        int order_type = jsonObjectNotis.getInt("order_type");
-                        String delivery_mobile = jsonObjectNotis.getString("delivery_mobile");
-                        String delivery_instructions = jsonObjectNotis.getString("delivery_instructions");
-                        String delivery_location = jsonObjectNotis.getString("delivery_location");
-
-                        Orders orders =new Orders(id,user_id,user_email,item_id,order_number,order_status,item, size, selling_price, username,waiter_names,table_number, pre_order,collect_time, order_type,
-                                delivery_mobile, delivery_instructions, delivery_location,
-                                date_added,date_changed);
-                        ordersLinkedHashMap.put(id, orders);
-                    }
-                    return true;
-                }
-                else
-                {
-                    String message=jsonObject.getString(TAG_MESSAGE);
-                    Log.e(TAG_MESSAGE,""+message);
-                    return false;
-                }
-            }
-            catch (JSONException e)
-            {
-                Log.e("JSON",""+e.getMessage());
-                return false;
-            }
-        }
-        @Override
-        protected void onPostExecute(final Boolean successful) {
-
-            if (successful)
-            {
-                updateGui();
-            }
-            else
-            {
-
-            }
         }
     }
 }

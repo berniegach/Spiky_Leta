@@ -207,13 +207,13 @@ public class MainActivity extends AppCompatActivity implements
                 title = "Pending";
                 break;
             case 2:
-                title= format==1?"In Progress":"Payment";
+                title= "Payment";
                 break;
             case 3:
-                title= format==1?"Delivery":"In Progress";
+                title= "In Progress";
                 break;
             case 4:
-                title= format==1?"Payment":"Delivery";
+                title= "Delivery";
                 break;
             case 5:
                 title="Finished";
