@@ -7,6 +7,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -150,16 +152,43 @@ public class LoginActivity extends AppCompatActivity
     {
 
         super.onStart();
-        // Check for existing Google Sign In account, if the user is already signed in
-        // the GoogleSignInAccount will be non-null.
-        account = GoogleSignIn.getLastSignedInAccount(this);
-        //proceed to sign in
-        if(account!=null)
+        //check internet connection
+        if(isNetworkAvailable())
         {
-            new RegisterTask(account.getEmail(),"null").execute((Void)null);
+            // Check for existing Google Sign In account, if the user is already signed in
+            // the GoogleSignInAccount will be non-null.
+            account = GoogleSignIn.getLastSignedInAccount(this);
+            //proceed to sign in
+            if(account!=null)
+            {
+                new RegisterTask(account.getEmail(),"null").execute((Void)null);
+            }
+            else
+                showProgress(false);
         }
         else
-            showProgress(false);
+        {
+            new androidx.appcompat.app.AlertDialog.Builder(LoginActivity.this)
+                    .setTitle("Error")
+                    .setMessage("There is not internet connection")
+                    /*.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            dialog.dismiss();
+                        }
+                    })*/
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            finishAffinity();
+                        }
+                    }).create().show();
+        }
+
 
     }
     @Override
@@ -319,6 +348,12 @@ public class LoginActivity extends AppCompatActivity
         //prevent this activity from flickering as we call the next one
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
     public void onSuccesfullLogin()
     {

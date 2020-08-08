@@ -195,8 +195,6 @@ public class SettingsActivity extends AppCompatActivity
            int online= serverAccount.getOnlineVisibility();
             final SwitchPreference pref_visible_online= (SwitchPreference) findPreference("online_visibility");
             pref_visible_online.setChecked(online==1);
-            pref_visible_online.setEnabled(false);
-            pref_visible_online.setVisible(false);
             pref_visible_online.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
             {
                 @Override
