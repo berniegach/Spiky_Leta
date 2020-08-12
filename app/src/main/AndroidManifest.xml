@@ -13,8 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.main.home.AddItemActivity"/>
-        <activity android:name=".ui.main.home.EditItemActivity"/>
+        <activity android:name=".ui.main.wallet.WalletActivity"></activity>
+        <activity android:name=".ui.main.home.AddItemActivity" />
+        <activity android:name=".ui.main.home.EditItemActivity" />
         <activity android:name=".ui.main.HostActivity" />
         <activity android:name=".ui.qr_code.QrCodeActivity" />
         <activity
@@ -23,7 +24,7 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:label="@string/title_activity_main"
-            android:parentActivityName=".ui.LoginActivity"/>
+            android:parentActivityName=".ui.LoginActivity" />
         <activity android:name=".ui.board.BoardA" />
         <activity android:name=".ui.waiters.WaitersActivity" />
         <activity
@@ -48,8 +49,8 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-        <service
-            android:name=".ui.OrdersService" />
+
+        <service android:name=".ui.OrdersService" />
         <!--
         This is required if the app targets api level 28(android 9.0) or above and uses the google maps sdk
         for android 16.0.0 or below (or if the app uses the apache http legacy library)
@@ -70,6 +71,7 @@
     <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.VIBRATE" />
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 </manifest>

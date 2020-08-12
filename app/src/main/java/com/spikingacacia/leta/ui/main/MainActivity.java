@@ -30,6 +30,7 @@ import com.spikingacacia.leta.ui.main.home.AddItemActivity;
 import com.spikingacacia.leta.ui.main.home.EditItemActivity;
 import com.spikingacacia.leta.ui.main.home.menuFragment;
 import com.spikingacacia.leta.ui.main.orders.OrdersOverviewFragment;
+import com.spikingacacia.leta.ui.main.wallet.WalletActivity;
 import com.spikingacacia.leta.ui.orders.OrdersActivity;
 import com.spikingacacia.leta.ui.qr_code.QrCodeActivity;
 import com.spikingacacia.leta.ui.waiters.WaitersActivity;
@@ -132,11 +133,11 @@ public class MainActivity extends AppCompatActivity implements
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(intent);
         }
-
-        else if (id == R.id.action_settings)
+        else if(id == R.id.action_wallet)
         {
-            proceedToSettings();
-            return true;
+            Intent intent=new Intent(MainActivity.this, WalletActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(intent);
         }
         else if( id == R.id.action_sign_out)
         {
@@ -150,6 +151,12 @@ public class MainActivity extends AppCompatActivity implements
                 }
             });
         }
+        else if (id == R.id.action_settings)
+        {
+            proceedToSettings();
+            return true;
+        }
+
 
 
         return super.onOptionsItemSelected(item);

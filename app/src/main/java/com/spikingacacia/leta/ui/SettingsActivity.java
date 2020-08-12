@@ -10,9 +10,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.EditTextPreference;
@@ -174,10 +176,16 @@ public class SettingsActivity extends AppCompatActivity
             pref_location.setSummary(pos.length==4?pos[2]:"Please set your location");
 
             //mpesa tillnumber
-            if(pos.length == 4)
+            /*if(pos.length == 4)
                 if(pos[3].contentEquals("KE"))
                     mpesa_till_number_preference.setVisible(true);
             mpesa_till_number_preference.setText(serverAccount.getmCode());
+            mpesa_till_number_preference.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
+                @Override
+                public void onBindEditText(@NonNull EditText editText) {
+                    editText.setSingleLine();
+                }
+            });
             mpesa_till_number_preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
             {
                 @Override
@@ -189,7 +197,7 @@ public class SettingsActivity extends AppCompatActivity
                     ((EditTextPreference)preference).setText(till_number);
                     return false;
                 }
-            });
+            });*/
 
             //visible online
            int online= serverAccount.getOnlineVisibility();

@@ -216,6 +216,7 @@ public class OrdersService extends Service
                                     preferences.setUnpaid_count(count);
                                 }
                                 break;
+                                //this is pending orders that have been paid
                             case -1:
                                 message = "Payment for an order applied";
                                 if(preferences.getPaid_count()!=count)
@@ -225,6 +226,7 @@ public class OrdersService extends Service
                                     preferences.setPaid_count(count);
                                 }
                                 break;
+                                //these are pending orders that have not been paid
                             case 1:
                                 message = "There is a new pending order";
                                 if(preferences.getPending_count()!=count)

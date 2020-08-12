@@ -402,7 +402,7 @@ public class OrdersOverviewFragment extends Fragment
                 finishedCount[1]+=1;
 
         }*/
-        pendingCount[1] = preferences.getPending_count();
+        pendingCount[1] = preferences.getPaid_count() + preferences.getPending_count(); //pending orders are a combination of those paid and those which are unpaid
         inProgressCount[1] = preferences.getIn_progress_count();
         deliveryCount[1] = preferences.getDelivery_count();
         paymentCount[1] = preferences.getPayment_count();

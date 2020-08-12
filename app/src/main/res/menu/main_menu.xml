@@ -5,11 +5,15 @@
     <item
         android:id="@+id/action_waiter"
         app:showAsAction="never"
-        android:title="Waiters"/>
+        android:title="Runners"/>
     <item
         android:id="@+id/action_qr_codes"
         app:showAsAction="never"
         android:title="QR codes"/>
+    <item
+        android:id="@+id/action_wallet"
+        android:title="Wallet"
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_sign_out"
         android:title="Sign out"

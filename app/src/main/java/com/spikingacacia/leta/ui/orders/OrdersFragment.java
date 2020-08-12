@@ -95,6 +95,7 @@ public class OrdersFragment extends Fragment
             recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             myOrdersRecyclerViewAdapter = new MyOrdersRecyclerViewAdapter(mListener,getContext(),mWhichOrder);
+            Log.e("AJSGSAJHGS","WHICH "+mWhichOrder);
             recyclerView.setAdapter(myOrdersRecyclerViewAdapter);
         }
         return view;
@@ -178,7 +179,7 @@ public class OrdersFragment extends Fragment
                         int order_number=jsonObjectNotis.getInt("order_number");
                         int order_status=jsonObjectNotis.getInt("order_status");
                         if(mWhichOrder == 1 && order_status == -1)
-                            ;
+                            ; //this is a pending order which has been paid
                         else if(mWhichOrder!=order_status)
                             continue;
 
