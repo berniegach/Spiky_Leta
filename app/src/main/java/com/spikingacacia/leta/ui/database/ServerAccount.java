@@ -9,6 +9,7 @@ public class ServerAccount
     private String username;
     private int onlineVisibility;
     private int deliver;
+    private String diningOptions;
     private String country;
     private String location;
     private int orderRadius;
@@ -27,7 +28,7 @@ public class ServerAccount
 
     public ServerAccount(){}
 
-    public ServerAccount(int persona, int id, String email, String password, String username, String country, int online, int deliver, String location, int orderRadius, int orderFormat,
+    public ServerAccount(int persona, int id, String email, String password, String username, String country, int online, int deliver, String diningOptions, String location, int orderRadius, int orderFormat,
                          int numberOfTables, String imageType, String dateadded, String datechanged, String dateToday,
                          int waiter_id, String waiter_email, String waiter_names, String waiterImageType, String mCode) {
         this.persona=persona;
@@ -37,9 +38,9 @@ public class ServerAccount
         this.username = username;
         this.onlineVisibility=online;
         this.deliver=deliver;
+        this.diningOptions = diningOptions;
         this.country = country;
         this.location = location;
-        this.orderRadius=orderRadius;
         this.orderRadius=orderRadius;
         this.orderFormat=orderFormat;
         this.numberOfTables=numberOfTables;
@@ -101,7 +102,15 @@ public class ServerAccount
     public void setDeliver(int deliver) {
         this.deliver = deliver;
     }
+    public String getDiningOptions()
+    {
+        return diningOptions;
+    }
 
+    public void setDiningOptions(String diningOptions)
+    {
+        this.diningOptions = diningOptions;
+    }
     public int getOnlineVisibility() {
         return onlineVisibility;
     }

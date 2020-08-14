@@ -63,7 +63,7 @@
                 android:id="@+id/radio_waiter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Waiter" />
+                android:text="Runner" />
         </RadioGroup>
 
         <com.google.android.gms.common.SignInButton

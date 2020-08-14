@@ -106,10 +106,12 @@ public class MainActivity extends AppCompatActivity implements
         getMenuInflater().inflate(R.menu.main_menu, menu);
         MenuItem menu_waiters = menu.findItem(R.id.action_waiter);
         MenuItem menu_qr_codes = menu.findItem(R.id.action_qr_codes);
+        MenuItem menu_wallet = menu.findItem(R.id.action_wallet);
         if(serverAccount.getPersona()==2)
         {
             menu_waiters.setVisible(false);
             menu_qr_codes.setVisible(false);
+            menu_wallet.setVisible(false);
         }
         return true;
     }

@@ -28,6 +28,8 @@ public class MymenuCategoryRecyclerViewAdapter extends RecyclerView.Adapter<Myme
     private List<Categories> mValues;
     private final OnListFragmentInteractionListener mListener;
     private Context context;
+    private TextView t_last_checked = null;
+
 
     public MymenuCategoryRecyclerViewAdapter(OnListFragmentInteractionListener listener, Context context)
     {
@@ -45,17 +47,27 @@ public class MymenuCategoryRecyclerViewAdapter extends RecyclerView.Adapter<Myme
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position)
+    public void onBindViewHolder(final ViewHolder holder, final int position)
     {
         holder.mItem = mValues.get(position);
         holder.mTitleView.setText(mValues.get(position).getTitle());
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    ;//mListener.onCategoryItemInteraction(holder.mItem);
+                if(holder.mTitleView.getCurrentTextColor() == context.getResources().getColor(R.color.colorAccent))
+                {
+                    menuFragment.mymenuRecyclerViewAdapter.filterCategory(0);
+                    holder.mTitleView.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+                }
+                else
+                {
+                    //if we had clicked on any category before remove the color
+                    if(t_last_checked!=null)
+                        t_last_checked.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+
+                    menuFragment.mymenuRecyclerViewAdapter.filterCategory(mValues.get(position).getId());
+                    holder.mTitleView.setTextColor(context.getResources().getColor(R.color.colorAccent));
+                    t_last_checked = holder.mTitleView;
                 }
             }
         });

@@ -60,11 +60,7 @@ public class LoginActivity extends AppCompatActivity
     //public static final String base_url="http://10.0.2.2/leta_project/android/"; //localhost no connection for testing user accounts coz it doesnt require subscription checking
 
     private String TAG="LoginActivity";
-    private Intent intentLoginProgress;
-    public static int loginProgress;
     public static boolean AppRunningInThisActivity=true;//check if the app is running the in this activity
-    //whenever you add a background asynctask make sure to update the finalprogress variables accordingly
-    public static int sFinalProgress=6;
     //sellers
     public static ServerAccount serverAccount;
     public static LinkedHashMap<Integer, DMenu> sItemsList;
@@ -121,9 +117,6 @@ public class LoginActivity extends AppCompatActivity
         radioAdmin = findViewById(R.id.radio_admin);
         radioWaiter = findViewById(R.id.radio_waiter);
 
-        //background intent
-        intentLoginProgress=new Intent(LoginActivity.this,ProgressView.class);
-        loginProgress=0;
         //initialize the containers
         //sellers
         serverAccount =new ServerAccount();
@@ -131,7 +124,7 @@ public class LoginActivity extends AppCompatActivity
 
 
         //billing
-        mContext=this;
+        /*mContext=this;
         mViewController = new MainViewController(this);
 
         if (getPackageName().startsWith(DEFAULT_PACKAGE_PREFIX)) {
@@ -145,7 +138,7 @@ public class LoginActivity extends AppCompatActivity
         }
 
         // Create and initialize BillingManager which talks to BillingLibrary
-        mBillingManager = new BillingManager(this, mViewController.getUpdateListener());
+        mBillingManager = new BillingManager(this, mViewController.getUpdateListener());*/
     }
     @Override
     public void onStart()
@@ -161,7 +154,9 @@ public class LoginActivity extends AppCompatActivity
             //proceed to sign in
             if(account!=null)
             {
-                new RegisterTask(account.getEmail(),"null").execute((Void)null);
+                Intent intent = new Intent(this, OrdersService.class);
+                startService(intent);
+                proceedToLogin();
             }
             else
                 showProgress(false);
@@ -204,18 +199,15 @@ public class LoginActivity extends AppCompatActivity
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
-    @Override
+   /* @Override
     protected void onDestroy()
     {
-        //super.onDestroy();
-        if(intentLoginProgress!=null)
-            stopService(intentLoginProgress);
         Log.d(TAG, "Destroying helper.");
         if (mBillingManager != null) {
             mBillingManager.destroy();
         }
         super.onDestroy();
-    }
+    }*/
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -237,7 +229,7 @@ public class LoginActivity extends AppCompatActivity
             if(account!=null)
             {
                 Log.d(TAG, "email: " + account.getEmail());
-                new RegisterTask(account.getEmail(),"null").execute((Void)null);
+                proceedToLogin();
             }
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
@@ -245,12 +237,10 @@ public class LoginActivity extends AppCompatActivity
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
         }
     }
-    @Override
+    /*@Override
     protected void onResume()
     {
         super.onResume();
-        //clear the variables . if not done youll find some list contents add up on top of the previous ones
-        loginProgress=0;
         //sellers
         if(!sItemsList.isEmpty())sItemsList.clear();
         AppRunningInThisActivity=true;
@@ -263,7 +253,7 @@ public class LoginActivity extends AppCompatActivity
                 && mBillingManager.getBillingClientResponseCode() == BillingClient.BillingResponse.OK) {
             mBillingManager.queryPurchases();
         }
-    }
+    }*/
     /**
      * Billing functions*/
     @Override
@@ -344,10 +334,16 @@ public class LoginActivity extends AppCompatActivity
     }
     private void proceedToLogin()
     {
-        Intent intent=new Intent(LoginActivity.this, MainActivity.class);
-        //prevent this activity from flickering as we call the next one
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        startActivity(intent);
+        //get the account details
+        if(radioAdmin.isChecked())
+            new LoginTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
+        else if(radioWaiter.isChecked())
+            new LoginWaiterTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
+        else if(preferences.getPersona()==2)
+            new LoginWaiterTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
+        else
+            new LoginTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
+
     }
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
@@ -355,7 +351,7 @@ public class LoginActivity extends AppCompatActivity
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
-    public void onSuccesfullLogin()
+    /*public void onSuccesfullLogin()
     {
         long days=0;
         try
@@ -434,14 +430,14 @@ public class LoginActivity extends AppCompatActivity
             Log.d(TAG, "NO subscriptions");
 
         }
-    }
+    }*/
 
-    private void startBackgroundTasks()
+    /*private void startBackgroundTasks()
     {
         Intent intent = new Intent(this, OrdersService.class);
         startService(intent);
         proceedToLogin();
-    }
+    }*/
     public class RegisterTask extends AsyncTask<Void, Void, Boolean>
     {
         private String url_create_account_seller = LoginActivity.base_url+"create_seller_account.php";
@@ -493,10 +489,8 @@ public class LoginActivity extends AppCompatActivity
             {
                 Toast.makeText(getBaseContext(), "Successfully registered", Toast.LENGTH_SHORT).show();
                 //proceed to login
-                if(radioAdmin.isChecked())
-                    new LoginTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
-                else
-                    new LoginWaiterTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
+                //only the admin can register an account
+                new LoginTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
             }
             else if(success==-1)
             {
@@ -504,14 +498,7 @@ public class LoginActivity extends AppCompatActivity
                 Log.d(TAG,"email already there");
                 //proceed to login
                 // we have already set the persona so...
-                if(radioAdmin.isChecked())
-                    new LoginTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
-                else if(radioWaiter.isChecked())
-                    new LoginWaiterTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
-                else if(preferences.getPersona()==2)
-                    new LoginWaiterTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
-                else
-                    new LoginTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
+                new LoginTask(account.getEmail(),"pass_wjdjsdbsjdgshjg").execute((Void)null);
 
             }
             else
@@ -578,6 +565,7 @@ public class LoginActivity extends AppCompatActivity
                     serverAccount.setUsername(accountObject.getString("username"));
                     serverAccount.setOnlineVisibility(accountObject.getInt("online"));
                     serverAccount.setDeliver(accountObject.getInt("deliver"));
+                    serverAccount.setDiningOptions(accountObject.getString("dining_options"));
                     serverAccount.setCountry(accountObject.getString("country"));
                     serverAccount.setLocation(accountObject.getString("location"));
                     serverAccount.setOrderRadius(accountObject.getInt("order_radius"));
@@ -612,20 +600,47 @@ public class LoginActivity extends AppCompatActivity
             if (successfull) {
                 Log.d(TAG,"successful login admin");
                 preferences.setPersona(1);
-                onSuccesfullLogin();
+
+                Intent intent=new Intent(LoginActivity.this, MainActivity.class);
+                //prevent this activity from flickering as we call the next one
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
             }
             else
             {
                 showProgress(false);
-                Toast.makeText(getBaseContext(), "Sign in failed", Toast.LENGTH_SHORT).show();
-                mGoogleSignInClient.signOut().addOnCompleteListener(LoginActivity.this, new OnCompleteListener<Void>()
+                if(success==-2)
                 {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task)
-                    {
-                        Log.d(TAG,"gmail signed out");
-                    }
-                });
+                    //the email is not registered
+                    new androidx.appcompat.app.AlertDialog.Builder(LoginActivity.this)
+                            .setTitle("No account")
+                            .setMessage("Would you like to create a new Restaurant account with the email?")
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which)
+                                {
+                                    Toast.makeText(getBaseContext(), "Sign in failed", Toast.LENGTH_SHORT).show();
+                                    mGoogleSignInClient.signOut().addOnCompleteListener(LoginActivity.this, new OnCompleteListener<Void>()
+                                    {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task)
+                                        {
+                                            Log.d(TAG,"gmail signed out");
+                                        }
+                                    });
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which)
+                                {
+                                    new RegisterTask(account.getEmail(),"null").execute((Void)null);
+                                }
+                            }).create().show();
+                }
             }
         }
 
@@ -678,6 +693,7 @@ public class LoginActivity extends AppCompatActivity
                     serverAccount.setUsername(accountObject.getString("username"));
                     serverAccount.setOnlineVisibility(accountObject.getInt("online"));
                     serverAccount.setDeliver(accountObject.getInt("deliver"));
+                    serverAccount.setDiningOptions(accountObject.getString("dining_options"));
                     serverAccount.setCountry(accountObject.getString("country"));
                     serverAccount.setLocation(accountObject.getString("location"));
                     serverAccount.setOrderRadius(accountObject.getInt("order_radius"));
@@ -715,7 +731,10 @@ public class LoginActivity extends AppCompatActivity
             if (successfull) {
                 Log.d(TAG,"successful login waiter");
                 preferences.setPersona(2);
-                onSuccesfullLogin();
+                Intent intent=new Intent(LoginActivity.this, MainActivity.class);
+                //prevent this activity from flickering as we call the next one
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
 
             }
             else

@@ -38,9 +38,22 @@
             app:key="number_of_tables"
             app:title="Number of tables" />-->
         <Preference
+            app:isPreferenceVisible="false"
             app:key="subscription"
             app:title="Subscription "
             app:enabled="false" />
+
+        <PreferenceCategory android:title="Dining Options">
+            <CheckBoxPreference
+                app:key="c_sit_in"
+                android:title="Sit in"/>
+            <CheckBoxPreference
+                app:key="c_take_away"
+                android:title="Take away"/>
+            <CheckBoxPreference
+                app:key="c_delivery"
+                android:title="Delivery"/>
+        </PreferenceCategory>
     </PreferenceCategory>
 
 

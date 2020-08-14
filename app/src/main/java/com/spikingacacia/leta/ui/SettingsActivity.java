@@ -17,7 +17,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.CheckBoxPreference;
 import androidx.preference.EditTextPreference;
+import androidx.preference.MultiSelectListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SeekBarPreference;
@@ -78,6 +80,9 @@ public class SettingsActivity extends AppCompatActivity
             final Preference preference_tables=findPreference("number_of_tables");
             final EditTextPreference mpesa_till_number_preference = findPreference("mpesa_code");
             final Preference preference_subscription=findPreference("subscription");
+            final CheckBoxPreference preference_c_sit_in = findPreference("c_sit_in");
+            final CheckBoxPreference preference_c_take_away = findPreference("c_take_away");
+            final CheckBoxPreference preference_c_delivery = findPreference("c_delivery");
             //check if we have the waiter logged on
             if(serverAccount.getPersona()==2)
             {
@@ -168,6 +173,68 @@ public class SettingsActivity extends AppCompatActivity
             //subscription change
 
             preference_subscription.setSummary(LoginActivity.currentSubscription);
+            //dining options
+            String[] s_dining_options = serverAccount.getDiningOptions().split(":");
+            if(s_dining_options.length==1 || s_dining_options.length==0)
+                s_dining_options = new String[]{"1","1","1"};
+            int[] dining_options = new int[]{Integer.parseInt(s_dining_options[0]), Integer.parseInt(s_dining_options[1]), Integer.parseInt(s_dining_options[2])};
+            preference_c_sit_in.setChecked(dining_options[0] == 1);
+            preference_c_take_away.setChecked(dining_options[1] == 1);
+            preference_c_delivery.setChecked(dining_options[2] == 1);
+           preference_c_sit_in.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+           {
+               @Override
+               public boolean onPreferenceChange(Preference preference, Object newValue)
+               {
+                   ((CheckBoxPreference)preference).setChecked( !((CheckBoxPreference)preference).isChecked());
+                   String options=""+(preference_c_sit_in.isChecked()?1:0)+":"+(preference_c_take_away.isChecked()?1:0)+":"+(preference_c_delivery.isChecked()?1:0);
+                   if(options.contentEquals("0:0:0"))
+                   {
+                       Toast.makeText(context,"You cannot disable all the dining options",Toast.LENGTH_SHORT).show();
+                       ((CheckBoxPreference)preference).setChecked( true);
+                       return false;
+                   }
+                   tempServerAccount.setDiningOptions(options);
+                   updateSettings();
+                   return false;
+               }
+           });
+           preference_c_take_away.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+           {
+               @Override
+               public boolean onPreferenceChange(Preference preference, Object newValue)
+               {
+                   ((CheckBoxPreference)preference).setChecked( !((CheckBoxPreference)preference).isChecked());
+                   String options=""+(preference_c_sit_in.isChecked()?1:0)+":"+(preference_c_take_away.isChecked()?1:0)+":"+(preference_c_delivery.isChecked()?1:0);
+                   if(options.contentEquals("0:0:0"))
+                   {
+                       Toast.makeText(context,"You cannot disable all the dining options",Toast.LENGTH_SHORT).show();
+                       ((CheckBoxPreference)preference).setChecked( true);
+                       return false;
+                   }
+                   tempServerAccount.setDiningOptions(options);
+                   updateSettings();
+                   return false;
+               }
+           });
+           preference_c_delivery.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+           {
+               @Override
+               public boolean onPreferenceChange(Preference preference, Object newValue)
+               {
+                   ((CheckBoxPreference)preference).setChecked( !((CheckBoxPreference)preference).isChecked());
+                   String options=""+(preference_c_sit_in.isChecked()?1:0)+":"+(preference_c_take_away.isChecked()?1:0)+":"+(preference_c_delivery.isChecked()?1:0);
+                   if(options.contentEquals("0:0:0"))
+                   {
+                       Toast.makeText(context,"You cannot disable all the dining options",Toast.LENGTH_SHORT).show();
+                       ((CheckBoxPreference)preference).setChecked( true);
+                       return false;
+                   }
+                   tempServerAccount.setDiningOptions(options);
+                   updateSettings();
+                   return false;
+               }
+           });
             ///LOCATION
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //location
@@ -340,6 +407,7 @@ public class SettingsActivity extends AppCompatActivity
             info.add(new BasicNameValuePair("username", tempServerAccount.getUsername()));
             info.add(new BasicNameValuePair("online", Integer.toString(tempServerAccount.getOnlineVisibility())));
             info.add(new BasicNameValuePair("deliver", Integer.toString(tempServerAccount.getDeliver())));
+            info.add(new BasicNameValuePair("dining_options", tempServerAccount.getDiningOptions()));
             info.add(new BasicNameValuePair("country", tempServerAccount.getCountry()));
             info.add(new BasicNameValuePair("location", tempServerAccount.getLocation()));
             info.add(new BasicNameValuePair("order_range", Integer.toString(tempServerAccount.getOrderRadius())));
