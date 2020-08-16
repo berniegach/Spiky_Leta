@@ -167,6 +167,7 @@ public class OrdersActivity extends AppCompatActivity
             info.add(new BasicNameValuePair("order_number",String.valueOf(orderNumber)));
             info.add(new BasicNameValuePair("status",String.valueOf(status)));
             info.add(new BasicNameValuePair("update_seller_total","0"));
+            info.add(new BasicNameValuePair("m_message",""));
             info.add(new BasicNameValuePair("date_added",dateAdded));
             // making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_update_order_status,"POST",info);

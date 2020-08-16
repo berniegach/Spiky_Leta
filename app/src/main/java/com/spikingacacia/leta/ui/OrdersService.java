@@ -241,7 +241,9 @@ public class OrdersService extends Service
                                 if(preferences.getPayment_count()!=count)
                                 {
                                     if(preferences.getPayment_count()<count)
+                                    {
                                         show = true;
+                                    }
                                     preferences.setPayment_count(count);
                                 }
                                 break;
@@ -250,8 +252,13 @@ public class OrdersService extends Service
                                 if(preferences.getIn_progress_count()!=count)
                                 {
                                     if(preferences.getIn_progress_count()<count)
+                                    {
                                         show = true;
+                                        //one order moved from payment count to in progress
+                                        //preferences.setPaid_count(preferences.getPaid_count()-1);
+                                    }
                                     preferences.setIn_progress_count(count);
+
                                 }
                                 break;
                             case 4:
@@ -259,7 +266,11 @@ public class OrdersService extends Service
                                 if(preferences.getDelivery_count()!=count)
                                 {
                                     if(preferences.getDelivery_count()<count)
+                                    {
                                         show = true;
+                                        //one order moved from in progress count to delivery count
+                                        //preferences.setIn_progress_count(preferences.getIn_progress_count()-1);
+                                    }
                                     preferences.setDelivery_count(count);
                                 }
                                 break;
@@ -268,8 +279,13 @@ public class OrdersService extends Service
                                 if(preferences.getFinished_count()!=count)
                                 {
                                     if(preferences.getFinished_count()<count)
+                                    {
                                         show = false;
+                                        //one order moved from delivery to finished count
+                                        //preferences.setDelivery_count(preferences.getDelivery_count()-1);
+                                    }
                                     preferences.setFinished_count(count);
+
                                 }
                                 break;
                             default:

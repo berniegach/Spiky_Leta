@@ -95,7 +95,6 @@ public class OrdersFragment extends Fragment
             recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             myOrdersRecyclerViewAdapter = new MyOrdersRecyclerViewAdapter(mListener,getContext(),mWhichOrder);
-            Log.e("AJSGSAJHGS","WHICH "+mWhichOrder);
             recyclerView.setAdapter(myOrdersRecyclerViewAdapter);
         }
         return view;

@@ -476,7 +476,7 @@ public class LoginActivity extends AppCompatActivity
                     return false;
                 }
             }
-            catch (JSONException e)
+            catch (JSONException | NullPointerException e)
             {
                 Log.e("JSON",""+e.getMessage());
                 return false;
