@@ -13,7 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.main.wallet.WalletActivity"></activity>
+        <activity android:name=".ui.tasty.AddTastyBoardActivity"></activity>
+        <activity android:name=".ui.tasty.TastyBoardActivity" />
+        <activity android:name=".ui.main.wallet.WalletActivity" />
         <activity android:name=".ui.main.home.AddItemActivity" />
         <activity android:name=".ui.main.home.EditItemActivity" />
         <activity android:name=".ui.main.HostActivity" />

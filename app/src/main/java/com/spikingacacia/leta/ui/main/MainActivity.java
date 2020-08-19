@@ -33,6 +33,7 @@ import com.spikingacacia.leta.ui.main.orders.OrdersOverviewFragment;
 import com.spikingacacia.leta.ui.main.wallet.WalletActivity;
 import com.spikingacacia.leta.ui.orders.OrdersActivity;
 import com.spikingacacia.leta.ui.qr_code.QrCodeActivity;
+import com.spikingacacia.leta.ui.tasty.TastyBoardActivity;
 import com.spikingacacia.leta.ui.waiters.WaitersActivity;
 
 
@@ -107,11 +108,13 @@ public class MainActivity extends AppCompatActivity implements
         MenuItem menu_waiters = menu.findItem(R.id.action_waiter);
         MenuItem menu_qr_codes = menu.findItem(R.id.action_qr_codes);
         MenuItem menu_wallet = menu.findItem(R.id.action_wallet);
+        MenuItem menu_tasty_board = menu.findItem(R.id.action_tasty_board);
         if(serverAccount.getPersona()==2)
         {
             menu_waiters.setVisible(false);
             menu_qr_codes.setVisible(false);
             menu_wallet.setVisible(false);
+            menu_tasty_board.setVisible(false);
         }
         return true;
     }
@@ -138,6 +141,12 @@ public class MainActivity extends AppCompatActivity implements
         else if(id == R.id.action_wallet)
         {
             Intent intent=new Intent(MainActivity.this, WalletActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(intent);
+        }
+        else if( id == R.id.action_tasty_board)
+        {
+            Intent intent=new Intent(MainActivity.this, TastyBoardActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(intent);
         }
