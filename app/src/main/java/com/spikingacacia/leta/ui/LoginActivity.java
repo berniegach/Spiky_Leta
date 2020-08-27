@@ -56,13 +56,13 @@ public class LoginActivity extends AppCompatActivity
 {
     private static final int OVERLAY_PERMISSION_CODE=541;
     //REMEMBER TO CHANGE THIS WHEN CHANGING BETWEEN ONLINE AND LOCALHOST
-    public static final String base_url="https://3.20.17.200/order/"; //online
-    //public static final String base_url="http://10.0.2.2/leta_project/android/"; //localhost no connection for testing user accounts coz it doesnt require subscription checking
+    //public static final String base_url="https://3.20.17.200/order/"; //online
+    public static final String base_url="http://10.0.2.2/leta_project/android/"; //localhost no connection for testing user accounts coz it doesnt require subscription checking
 
     private String TAG="LoginActivity";
     public static boolean AppRunningInThisActivity=true;//check if the app is running the in this activity
     //sellers
-    public static ServerAccount serverAccount;
+    private static ServerAccount serverAccount;
     public static LinkedHashMap<Integer, DMenu> sItemsList;
     public static String currentSubscription="Non";
     //billing
@@ -236,6 +236,14 @@ public class LoginActivity extends AppCompatActivity
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
         }
+    }
+    public static ServerAccount getServerAccount()
+    {
+        return serverAccount;
+    }
+    public static void setServerAccount(ServerAccount serverAccount1)
+    {
+        serverAccount = serverAccount1;
     }
     /*@Override
     protected void onResume()
@@ -573,6 +581,7 @@ public class LoginActivity extends AppCompatActivity
                     serverAccount.setNumberOfTables(accountObject.getInt("number_of_tables"));
                     serverAccount.setImageType(accountObject.getString("image_type"));
                     serverAccount.setmCode(accountObject.getString("m_code"));
+                    serverAccount.setCommision(accountObject.getDouble("commision"));
                     serverAccount.setDateadded(accountObject.getString("dateadded"));
                     serverAccount.setDatechanged(accountObject.getString("datechanged"));
                     serverAccount.setDateToday(accountObject.getString("today"));
@@ -700,6 +709,7 @@ public class LoginActivity extends AppCompatActivity
                     serverAccount.setOrderFormat(accountObject.getInt("order_format"));
                     serverAccount.setNumberOfTables(accountObject.getInt("number_of_tables"));
                     serverAccount.setmCode(accountObject.getString("m_code"));
+                    serverAccount.setCommision(accountObject.getDouble("commision"));
                     serverAccount.setDateadded(accountObject.getString("dateadded"));
                     serverAccount.setDatechanged(accountObject.getString("datechanged"));
                     serverAccount.setDateToday(accountObject.getString("today"));

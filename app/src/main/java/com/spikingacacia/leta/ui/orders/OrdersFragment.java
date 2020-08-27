@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
+import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.database.Orders;
 
 import org.apache.http.NameValuePair;
@@ -30,7 +31,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.spikingacacia.leta.ui.LoginActivity.base_url;
-import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 /**
  * A fragment representing a list of Items.
@@ -157,7 +157,7 @@ public class OrdersFragment extends Fragment
         {
             //getting columns list
             List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("email",serverAccount.getEmail()));
+            info.add(new BasicNameValuePair("email", LoginActivity.getServerAccount().getEmail()));
             // making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_orders,"POST",info);
             //Log.d("sItems",""+jsonObject.toString());

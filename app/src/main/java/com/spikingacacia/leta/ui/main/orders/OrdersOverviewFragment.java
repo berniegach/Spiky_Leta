@@ -49,7 +49,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import static com.spikingacacia.leta.ui.LoginActivity.base_url;
-import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 import static com.spikingacacia.leta.ui.OrdersService.preferences;
 
 /**
@@ -159,7 +158,7 @@ public class OrdersOverviewFragment extends Fragment
         });
        onClickListeners();
         ordersLinkedHashMap = new LinkedHashMap<>();
-        if(serverAccount.getPersona()==2)
+        if(LoginActivity.getServerAccount().getPersona()==2)
         {
             bOrderFormat.setVisibility(View.GONE);
             ((CardView)view.findViewById(R.id.cardview_finished)).setVisibility(View.GONE);
@@ -289,7 +288,7 @@ public class OrdersOverviewFragment extends Fragment
     }
     private void onClickListeners()
     {
-        final int format= LoginActivity.serverAccount.getOrderFormat();
+        final int format= LoginActivity.getServerAccount().getOrderFormat();
         tInProgressCount.setText(String.valueOf(paymentCount[1]));
         tDeliveryCount.setText(String.valueOf(inProgressCount[1]));
         tPaymentCount.setText(String.valueOf(deliveryCount[1]));
@@ -496,7 +495,7 @@ public class OrdersOverviewFragment extends Fragment
         {
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("id",Integer.toString(LoginActivity.serverAccount.getId())));
+            info.add(new BasicNameValuePair("id",Integer.toString(LoginActivity.getServerAccount().getId())));
             info.add(new BasicNameValuePair("order_format", Integer.toString(format)));
             //getting all account details by making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_update_order_format,"POST",info);
@@ -528,8 +527,8 @@ public class OrdersOverviewFragment extends Fragment
             Log.d("settings","finished");
             if(success)
             {
-                int previous_format= LoginActivity.serverAccount.getOrderFormat();
-                LoginActivity.serverAccount.setOrderFormat(format);
+                int previous_format= LoginActivity.getServerAccount().getOrderFormat();
+                LoginActivity.getServerAccount().setOrderFormat(format);
                 Snackbar.make(lFinished,"Format updated",Snackbar.LENGTH_SHORT).show();
                 updateGui();
             }

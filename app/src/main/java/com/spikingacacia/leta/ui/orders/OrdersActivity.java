@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
+import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.database.Orders;
 
 import org.apache.http.NameValuePair;
@@ -28,7 +29,6 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.spikingacacia.leta.ui.LoginActivity.base_url;
-import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 public class OrdersActivity extends AppCompatActivity
         implements OrdersFragment.OnListFragmentInteractionListener,
@@ -65,7 +65,7 @@ public class OrdersActivity extends AppCompatActivity
      * */
     public void onListFragmentInteraction(Orders item)
     {
-        final int format = serverAccount.getOrderFormat();
+        final int format = LoginActivity.getServerAccount().getOrderFormat();
         buyerEmail = item.getUserEmail();
         orderId = item.getId();
         orderNumber = item.getOrderNumber();
@@ -88,7 +88,7 @@ public class OrdersActivity extends AppCompatActivity
     @Override
     public void onAcceptDecline(int which, int status)
     {
-        final int format = serverAccount.getOrderFormat();
+        final int format = LoginActivity.getServerAccount().getOrderFormat();
         int new_status = 1;
         if (which == 1)
         {
@@ -145,8 +145,8 @@ public class OrdersActivity extends AppCompatActivity
         public BOrdersFormatUpdateTask(int status)
         {
             this.status=status;
-            if(serverAccount.getPersona()==2)
-                waiter_email= serverAccount.getWaiter_email();
+            if(LoginActivity.getServerAccount().getPersona()==2)
+                waiter_email= LoginActivity.getServerAccount().getWaiter_email();
             jsonParser = new JSONParser();
             Log.d(TAG,"WAITER EMAIL"+waiter_email);
         }
@@ -160,7 +160,7 @@ public class OrdersActivity extends AppCompatActivity
         {
             //getting columns list
             List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("seller_email",serverAccount.getEmail()));
+            info.add(new BasicNameValuePair("seller_email",LoginActivity.getServerAccount().getEmail()));
             info.add(new BasicNameValuePair("buyer_email",String.valueOf(buyerEmail)));
             info.add(new BasicNameValuePair("waiter_email",waiter_email));
             info.add(new BasicNameValuePair("order_id",String.valueOf(orderId)));

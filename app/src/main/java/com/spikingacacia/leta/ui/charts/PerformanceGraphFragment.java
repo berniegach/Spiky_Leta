@@ -25,6 +25,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
+import com.spikingacacia.leta.ui.LoginActivity;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -46,7 +47,6 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 import static com.spikingacacia.leta.ui.LoginActivity.base_url;
-import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 
 public class PerformanceGraphFragment extends Fragment implements
@@ -675,7 +675,7 @@ public class PerformanceGraphFragment extends Fragment implements
         {
             //getting columns list
             List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("seller_email",serverAccount.getEmail()));
+            info.add(new BasicNameValuePair("seller_email", LoginActivity.getServerAccount().getEmail()));
             // making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_data,"POST",info);
             //Log.d("data 1",""+jsonObject.toString());

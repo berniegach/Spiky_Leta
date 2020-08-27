@@ -32,6 +32,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
+import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.database.Waiters;
 
 import org.apache.http.NameValuePair;
@@ -45,7 +46,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.spikingacacia.leta.ui.LoginActivity.base_url;
-import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 /**
  * A fragment representing a list of Items.
@@ -301,7 +301,7 @@ public class WaiterFragment extends Fragment
         {
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("seller_id",Integer.toString(serverAccount.getId())));
+            info.add(new BasicNameValuePair("seller_id",Integer.toString(LoginActivity.getServerAccount().getId())));
             info.add(new BasicNameValuePair("waiter_username", email));
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_add_waiter,"POST",info);
             Log.d(TAG,""+jsonObject.toString());
@@ -370,7 +370,7 @@ public class WaiterFragment extends Fragment
         {
             //getting columns list
             List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("seller_id",Integer.toString(serverAccount.getId())));
+            info.add(new BasicNameValuePair("seller_id",Integer.toString(LoginActivity.getServerAccount().getId())));
             // making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_waiters,"POST",info);
             Log.d("sItems",""+jsonObject.toString());

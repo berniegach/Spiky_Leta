@@ -36,13 +36,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 public class SettingsActivity extends AppCompatActivity
 {
     private UpdateAccount updateTask;
     public static boolean settingsChange;
-    public static ServerAccount tempServerAccount;
+    private static ServerAccount tempServerAccount;
     static private Context context;
 
     @Override
@@ -61,7 +60,7 @@ public class SettingsActivity extends AppCompatActivity
         }
         ///
         tempServerAccount =new ServerAccount();
-        tempServerAccount = serverAccount;
+        tempServerAccount = LoginActivity.getServerAccount();
         updateTask=new UpdateAccount();
         //settingsChanged=false;
         context=this;
@@ -84,16 +83,19 @@ public class SettingsActivity extends AppCompatActivity
             final CheckBoxPreference preference_c_take_away = findPreference("c_take_away");
             final CheckBoxPreference preference_c_delivery = findPreference("c_delivery");
             //check if we have the waiter logged on
-            if(serverAccount.getPersona()==2)
+            if(LoginActivity.getServerAccount().getPersona()==2)
             {
                 preference_est.setEnabled(false);
                 pref_order_radius.setVisible(false);
                 //preference_tables.setVisible(false);
                 mpesa_till_number_preference.setEnabled(false);
+                preference_c_sit_in.setEnabled(false);
+                preference_c_take_away.setEnabled(false);
+                preference_c_delivery.setEnabled(false);
             }
             //feedback preference click listener
 
-            preference_est.setText(serverAccount.getUsername());
+            preference_est.setText(LoginActivity.getServerAccount().getUsername());
             preference_est.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
             {
                 @Override
@@ -108,10 +110,10 @@ public class SettingsActivity extends AppCompatActivity
             });
             //you cannot change the email
 
-            preference_est_type.setText(serverAccount.getPersona()==1?serverAccount.getEmail(): serverAccount.getWaiter_email());
+            preference_est_type.setText(LoginActivity.getServerAccount().getPersona()==1?LoginActivity.getServerAccount().getEmail(): LoginActivity.getServerAccount().getWaiter_email());
             //order radius
 
-            pref_order_radius.setValue(serverAccount.getOrderRadius());
+            pref_order_radius.setValue(LoginActivity.getServerAccount().getOrderRadius());
             pref_order_radius.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
             {
                 @Override
@@ -126,7 +128,7 @@ public class SettingsActivity extends AppCompatActivity
             });
             //number of tables change
 
-            /*preference_tables.setSummary(String.valueOf(serverAccount.getNumberOfTables()));
+            /*preference_tables.setSummary(String.valueOf(LoginActivity.getServerAccount().getNumberOfTables()));
             preference_tables.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
             {
                 @Override
@@ -138,7 +140,7 @@ public class SettingsActivity extends AppCompatActivity
                     final NumberPicker numberPicker=new NumberPicker(context);
                     numberPicker.setMinValue(1);
                     numberPicker.setMaxValue(500);
-                    numberPicker.setValue(serverAccount.getNumberOfTables());
+                    numberPicker.setValue(LoginActivity.getServerAccount().getNumberOfTables());
                     builderPass.setView(numberPicker);
                     builderPass.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
                     {
@@ -154,7 +156,7 @@ public class SettingsActivity extends AppCompatActivity
                         public void onClick(DialogInterface dialog, int which)
                         {
                             int tableNumber=numberPicker.getValue();
-                            if(tableNumber!= serverAccount.getNumberOfTables())
+                            if(tableNumber!= LoginActivity.getServerAccount().getNumberOfTables())
                             {
                                 preference_tables.setSummary(String.valueOf(tableNumber));
                                 tempServerAccount.setNumberOfTables(tableNumber);
@@ -174,7 +176,7 @@ public class SettingsActivity extends AppCompatActivity
 
             preference_subscription.setSummary(LoginActivity.currentSubscription);
             //dining options
-            String[] s_dining_options = serverAccount.getDiningOptions().split(":");
+            String[] s_dining_options = LoginActivity.getServerAccount().getDiningOptions().split(":");
             if(s_dining_options.length==1 || s_dining_options.length==0)
                 s_dining_options = new String[]{"1","1","1"};
             int[] dining_options = new int[]{Integer.parseInt(s_dining_options[0]), Integer.parseInt(s_dining_options[1]), Integer.parseInt(s_dining_options[2])};
@@ -238,7 +240,7 @@ public class SettingsActivity extends AppCompatActivity
             ///LOCATION
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //location
-            String[] pos= serverAccount.getLocation().split(",");
+            String[] pos= LoginActivity.getServerAccount().getLocation().split(",");
             final Preference pref_location=findPreference("location");
             pref_location.setSummary(pos.length==4?pos[2]:"Please set your location");
 
@@ -246,7 +248,7 @@ public class SettingsActivity extends AppCompatActivity
             /*if(pos.length == 4)
                 if(pos[3].contentEquals("KE"))
                     mpesa_till_number_preference.setVisible(true);
-            mpesa_till_number_preference.setText(serverAccount.getmCode());
+            mpesa_till_number_preference.setText(LoginActivity.getServerAccount().getmCode());
             mpesa_till_number_preference.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
                 @Override
                 public void onBindEditText(@NonNull EditText editText) {
@@ -267,7 +269,7 @@ public class SettingsActivity extends AppCompatActivity
             });*/
 
             //visible online
-           int online= serverAccount.getOnlineVisibility();
+           int online= LoginActivity.getServerAccount().getOnlineVisibility();
             final SwitchPreference pref_visible_online= (SwitchPreference) findPreference("online_visibility");
             pref_visible_online.setChecked(online==1);
             pref_visible_online.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
@@ -278,20 +280,20 @@ public class SettingsActivity extends AppCompatActivity
                     if(pref_visible_online.isChecked())
                     {
                         pref_visible_online.setChecked(false);
-                        serverAccount.setOnlineVisibility(0);
+                        LoginActivity.getServerAccount().setOnlineVisibility(0);
                         updateSettings();
                     }
                     else
                     {
                         pref_visible_online.setChecked(true);
-                        serverAccount.setOnlineVisibility(1);
+                        LoginActivity.getServerAccount().setOnlineVisibility(1);
                         updateSettings();
                     }
                     return false;
                 }
             });
             //deliver
-            int deliver= serverAccount.getDeliver();
+            int deliver= LoginActivity.getServerAccount().getDeliver();
             final SwitchPreference pref_deliver= (SwitchPreference) findPreference("online_delivery");
             pref_deliver.setChecked(deliver==1);
             pref_deliver.setEnabled(false);
@@ -304,19 +306,19 @@ public class SettingsActivity extends AppCompatActivity
                     if(pref_deliver.isChecked())
                     {
                         pref_deliver.setChecked(false);
-                        serverAccount.setDeliver(0);
+                        LoginActivity.getServerAccount().setDeliver(0);
                         updateSettings();
                     }
                     else
                     {
                         pref_deliver.setChecked(true);
-                        serverAccount.setDeliver(1);
+                        LoginActivity.getServerAccount().setDeliver(1);
                         updateSettings();
                     }
                     return false;
                 }
             });
-            if(serverAccount.getPersona()==2)
+            if(LoginActivity.getServerAccount().getPersona()==2)
             {
                 pref_location.setEnabled(false);
                 pref_visible_online.setEnabled(false);
@@ -350,6 +352,14 @@ public class SettingsActivity extends AppCompatActivity
             }
         }).start();*/
         super.onDestroy();
+    }
+    public static void setTempServerAccountImageType(String imageType)
+    {
+        tempServerAccount.setImageType(imageType);
+    }
+    public static void setTempServerAccountLocation(String location)
+    {
+        tempServerAccount.setLocation(location);
     }
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class AboutPreferenceFragment extends PreferenceFragmentCompat
@@ -443,7 +453,7 @@ public class SettingsActivity extends AppCompatActivity
             if(success)
             {
                 Log.d("settings", "update done");
-                serverAccount = tempServerAccount;
+                LoginActivity.setServerAccount(tempServerAccount);
                 //settingsChanged=false;
             }
             else
@@ -470,7 +480,7 @@ public class SettingsActivity extends AppCompatActivity
         {
             //building parameters
             List<NameValuePair>info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("id",String.valueOf(serverAccount.getId())));
+            info.add(new BasicNameValuePair("id",String.valueOf(LoginActivity.getServerAccount().getId())));
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_delete_account,"POST",info);
             Log.d("jsonaccountdelete",jsonObject.toString());
             try

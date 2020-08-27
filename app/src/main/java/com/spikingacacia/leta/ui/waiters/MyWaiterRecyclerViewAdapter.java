@@ -199,7 +199,7 @@ public class MyWaiterRecyclerViewAdapter extends RecyclerView.Adapter<MyWaiterRe
             //logIn=handler.LogInStaff(mEmail,mPassword);
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("seller_id",Integer.toString(LoginActivity.serverAccount.getId())));
+            info.add(new BasicNameValuePair("seller_id",Integer.toString(LoginActivity.getServerAccount().getId())));
             info.add(new BasicNameValuePair("waiter_id",Integer.toString(waiter_id)));
             //getting all account details by making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_delete_waiter,"POST",info);

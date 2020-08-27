@@ -25,8 +25,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
-
 
 public class MyOrdersRecyclerViewAdapter extends RecyclerView.Adapter<MyOrdersRecyclerViewAdapter.ViewHolder>
 {
@@ -88,7 +86,7 @@ public class MyOrdersRecyclerViewAdapter extends RecyclerView.Adapter<MyOrdersRe
                 }
             }
         });
-        String url=image_url+String.valueOf(mValues.get(position).getUserId())+'_'+String.valueOf(serverAccount.getImageType());
+        String url=image_url+String.valueOf(mValues.get(position).getUserId())+'_'+String.valueOf(LoginActivity.getServerAccount().getImageType());
         Glide.with(mContext).load(url).into(holder.image);
     }
 

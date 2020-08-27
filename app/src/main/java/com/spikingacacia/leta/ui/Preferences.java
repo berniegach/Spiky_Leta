@@ -29,6 +29,8 @@ public class Preferences
     int in_progress_count;
     int delivery_count;
     int finished_count;
+    //wallet
+    private String mobileNumber;
     public Preferences(Context context)
     {
         shared_preferences=context.getSharedPreferences("loginPrefs",MODE_PRIVATE);
@@ -52,6 +54,7 @@ public class Preferences
         in_progress_count = shared_preferences.getInt("in_progress_count",0);
         delivery_count = shared_preferences.getInt("delivery_count",0);
         finished_count = shared_preferences.getInt("finished_count",0);
+        mobileNumber = shared_preferences.getString("mobile_number",null);
     }
     public boolean isDark_theme_enabled()
     {
@@ -268,6 +271,17 @@ public class Preferences
     {
         this.finished_count = finished_count;
         preferences_editor.putInt("finished_count", finished_count);
+        preferences_editor.commit();
+    }
+    public String getMobileNumber()
+    {
+        return mobileNumber;
+    }
+
+    public void setMobileNumber(String mobileNumber)
+    {
+        this.mobileNumber = mobileNumber;
+        preferences_editor.putString("mobile_number", mobileNumber);
         preferences_editor.commit();
     }
 

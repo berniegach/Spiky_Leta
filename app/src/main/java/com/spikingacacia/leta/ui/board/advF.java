@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.spikingacacia.leta.ui.LoginActivity.base_url;
-import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 public class advF extends Fragment
 {
@@ -254,7 +253,7 @@ public class advF extends Fragment
         {
             //getting columns list
             List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("seller_id",Integer.toString(serverAccount.getId())));
+            info.add(new BasicNameValuePair("seller_id",Integer.toString(LoginActivity.getServerAccount().getId())));
             info.add(new BasicNameValuePair("last_id",Integer.toString(last_id)));
             // making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_ads,"POST",info);

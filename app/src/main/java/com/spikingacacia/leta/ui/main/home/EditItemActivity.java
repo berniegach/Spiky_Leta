@@ -58,7 +58,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.spikingacacia.leta.ui.LoginActivity.base_url;
-import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 public class EditItemActivity extends AppCompatActivity
 {
@@ -492,7 +491,7 @@ public class EditItemActivity extends AppCompatActivity
         {
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("seller_email",serverAccount.getEmail()));
+            info.add(new BasicNameValuePair("seller_email",LoginActivity.getServerAccount().getEmail()));
             info.add(new BasicNameValuePair("item_id",String.valueOf(item_id)));
             info.add(new BasicNameValuePair("category_id",Integer.toString(category_id)));
             info.add(new BasicNameValuePair("group_id",Integer.toString(-1)));

@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
+import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.database.Messages;
 
 import org.apache.http.NameValuePair;
@@ -28,7 +29,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.spikingacacia.leta.ui.LoginActivity.base_url;
-import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 
 /**
@@ -102,7 +102,7 @@ public class MessagesFragment extends Fragment
         {
             //getting columns list
             List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("email",serverAccount.getEmail()));
+            info.add(new BasicNameValuePair("email", LoginActivity.getServerAccount().getEmail()));
 
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_b_notifications,"POST",info);
             Log.d("bNotis",""+jsonObject.toString());

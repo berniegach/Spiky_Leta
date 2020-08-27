@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
+import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.database.QrCodes;
 import com.spikingacacia.leta.ui.database.Waiters;
 import com.spikingacacia.leta.ui.main.MainActivity;
@@ -47,7 +48,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.spikingacacia.leta.ui.LoginActivity.base_url;
-import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 public class QrCodeActivity extends AppCompatActivity
 {
@@ -70,7 +70,6 @@ public class QrCodeActivity extends AppCompatActivity
         mainView = findViewById(R.id.main);
 
         e_tables= findViewById(R.id.tables);
-        Button b_scan = findViewById(R.id.scan);
         b_assign = findViewById(R.id.assign);
         Button b_print = findViewById(R.id.print);
 
@@ -205,11 +204,11 @@ public class QrCodeActivity extends AppCompatActivity
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_REQUEST_STORAGE);
         }
         showProgress(false);
-        Toast.makeText(this,"QR Code saved", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this,"QR Code saved", Toast.LENGTH_SHORT).show();
     }
     private void save_bitmap(Bitmap bitmap, String file_name)
     {
-        String root = Environment.getExternalStorageDirectory().toString();
+        final String root = Environment.getExternalStorageDirectory().toString();
         File myDir = new File(root + "/order");
         myDir.mkdirs();
         int n = 10000;
@@ -223,6 +222,14 @@ public class QrCodeActivity extends AppCompatActivity
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.flush();
             out.close();
+            runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    Toast.makeText(QrCodeActivity.this,"image added to\n"+root+"/order folder",Toast.LENGTH_SHORT).show();
+                }
+            });
         }
         catch (Exception e)
         {
@@ -248,7 +255,7 @@ public class QrCodeActivity extends AppCompatActivity
         {
             //getting columns list
             List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("seller_email",serverAccount.getEmail()));
+            info.add(new BasicNameValuePair("seller_email", LoginActivity.getServerAccount().getEmail()));
             // making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_qrs,"POST",info);
             try
@@ -328,7 +335,7 @@ public class QrCodeActivity extends AppCompatActivity
         {
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("seller_email",serverAccount.getEmail()));
+            info.add(new BasicNameValuePair("seller_email",LoginActivity.getServerAccount().getEmail()));
             info.add(new BasicNameValuePair("table_numbers", codes));
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_add,"POST",info);
             try
@@ -395,7 +402,7 @@ public class QrCodeActivity extends AppCompatActivity
         {
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("seller_email",serverAccount.getEmail()));
+            info.add(new BasicNameValuePair("seller_email",LoginActivity.getServerAccount().getEmail()));
             info.add(new BasicNameValuePair("table_numbers", codes));
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_add,"POST",info);
             try

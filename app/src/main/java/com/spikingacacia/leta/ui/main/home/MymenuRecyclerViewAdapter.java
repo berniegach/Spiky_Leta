@@ -26,6 +26,7 @@ import com.bumptech.glide.Glide;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.AppController;
 import com.spikingacacia.leta.ui.JSONParser;
+import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.database.DMenu;
 
 import org.apache.http.NameValuePair;
@@ -40,7 +41,6 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.spikingacacia.leta.ui.LoginActivity.base_url;
-import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 import static com.spikingacacia.leta.ui.main.home.menuFragment.*;
 
 
@@ -83,7 +83,7 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
         String sizePrice="";
         for(int c=0; c<sizes.length; c++)
         {
-            String location = serverAccount.getLocation();
+            String location = LoginActivity.getServerAccount().getLocation();
             String[] location_pieces = location.split(",");
             if(location_pieces.length==4)
                 sizePrice+=" "+sizes[c]+" @ "+getCurrencyCode(location_pieces[3])+" "+prices[c];
@@ -95,8 +95,11 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
         // image
         String url=image_url+String.valueOf(mValues.get(position).getId())+'_'+String.valueOf(mValues.get(position).getImageType());
         Glide.with(context).load(url).into(holder.image);
-        if(serverAccount.getPersona()==2)
+        if(LoginActivity.getServerAccount().getPersona()==2)
+        {
             holder.mEditButton.setVisibility(View.GONE);
+            holder.mLinkButton.setVisibility(View.INVISIBLE);
+        }
         holder.mEditButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -302,7 +305,7 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
         {
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("seller_email",serverAccount.getEmail()));
+            info.add(new BasicNameValuePair("seller_email", LoginActivity.getServerAccount().getEmail()));
             info.add(new BasicNameValuePair("item_id",String.valueOf(dMenu.getId())));
             info.add(new BasicNameValuePair("category_id",Integer.toString(dMenu.getCategoryId())));
             info.add(new BasicNameValuePair("group_id",Integer.toString(-1)));

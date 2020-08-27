@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
+import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.database.TastyBoard;
 
 import org.apache.http.NameValuePair;
@@ -31,7 +32,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.spikingacacia.leta.ui.LoginActivity.base_url;
-import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 /**
  * A fragment representing a list of Items.
@@ -187,7 +187,7 @@ public class TastyBoardFragment extends Fragment
         {
             //getting columns list
             List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("seller_email",serverAccount.getEmail()));
+            info.add(new BasicNameValuePair("seller_email", LoginActivity.getServerAccount().getEmail()));
             info.add(new BasicNameValuePair("last_index",String.valueOf(last_index)));
             // making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_items,"POST",info);

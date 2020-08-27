@@ -13,13 +13,19 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.spikingacacia.leta.R;
+import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.SettingsActivity;
 import com.spikingacacia.leta.ui.database.Categories;
 import com.spikingacacia.leta.ui.database.DMenu;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.provider.FontRequest;
+import androidx.emoji.bundled.BundledEmojiCompatConfig;
+import androidx.emoji.text.EmojiCompat;
+import androidx.emoji.text.FontRequestEmojiCompatConfig;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -40,12 +46,13 @@ import com.spikingacacia.leta.ui.waiters.WaitersActivity;
 import java.util.LinkedHashMap;
 
 import static com.spikingacacia.leta.ui.LoginActivity.mGoogleSignInClient;
-import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 public class MainActivity extends AppCompatActivity implements
         menuFragment.OnListFragmentInteractionListener,
         OrdersOverviewFragment.OnFragmentInteractionListener, DashboardFragment.OnListFragmentInteractionListener
 {
+    /** Change this to {@code false} when you want to use the downloadable Emoji font. */
+    private static final boolean USE_BUNDLED_EMOJI = true;
     private ProgressBar progressBar;
     private View mainFragment;
     private NavController navController;
@@ -77,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initEmojiCompat();
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -88,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements
         NavigationUI.setupWithNavController(navView, navController);
 
         Menu nav_messages = navView.getMenu();
-        if(serverAccount.getPersona()==2)
+        if(LoginActivity.getServerAccount().getPersona()==2)
         {
             nav_messages.findItem(R.id.navigation_messages).setVisible(false);
             nav_messages.findItem(R.id.navigation_dashboard).setVisible(false);
@@ -109,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements
         MenuItem menu_qr_codes = menu.findItem(R.id.action_qr_codes);
         MenuItem menu_wallet = menu.findItem(R.id.action_wallet);
         MenuItem menu_tasty_board = menu.findItem(R.id.action_tasty_board);
-        if(serverAccount.getPersona()==2)
+        if(LoginActivity.getServerAccount().getPersona()==2)
         {
             menu_waiters.setVisible(false);
             menu_qr_codes.setVisible(false);
@@ -217,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements
         Intent intent=new Intent(MainActivity.this, OrdersActivity.class);
         //prevent this activity from flickering as we call the next one
         intent.putExtra("which",which);
-        final int format= serverAccount.getOrderFormat();
+        final int format= LoginActivity.getServerAccount().getOrderFormat();
         String title="Order";
         switch(which)
         {
@@ -272,5 +280,37 @@ public class MainActivity extends AppCompatActivity implements
         intent.putExtra("item",dMenu);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
+    }
+    private void initEmojiCompat() {
+        final EmojiCompat.Config config;
+        if (USE_BUNDLED_EMOJI) {
+            // Use the bundled font for EmojiCompat
+            config = new BundledEmojiCompatConfig(getApplicationContext());
+        }
+        else
+        {
+            // Use a downloadable font for EmojiCompat
+            final FontRequest fontRequest = new FontRequest(
+                    "com.google.android.gms.fonts",
+                    "com.google.android.gms",
+                    "Noto Color Emoji Compat",
+                    R.array.com_google_android_gms_fonts_certs);
+            config = new FontRequestEmojiCompatConfig(getApplicationContext(), fontRequest);
+        }
+
+        config.setReplaceAll(true)
+                .registerInitCallback(new EmojiCompat.InitCallback() {
+                    @Override
+                    public void onInitialized() {
+                        Log.d(TAG, "EmojiCompat initialized");
+                    }
+
+                    @Override
+                    public void onFailed(@Nullable Throwable throwable) {
+                        Log.e(TAG, "EmojiCompat initialization failed", throwable);
+                    }
+                });
+
+        EmojiCompat.init(config);
     }
 }

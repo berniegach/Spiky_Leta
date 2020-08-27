@@ -58,7 +58,6 @@ import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
 import static com.spikingacacia.leta.ui.LoginActivity.base_url;
-import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 /**
  * A fragment representing a list of Items.
@@ -162,7 +161,7 @@ public class menuFragment extends Fragment
                 return false;
             }
         });
-        if(serverAccount.getPersona() ==2)
+        if(LoginActivity.getServerAccount().getPersona() ==2)
             add.setVisible(false);
 
         // Associate searchable configuration with the SearchView
@@ -262,7 +261,7 @@ public class menuFragment extends Fragment
         {
             //getting columns list
             List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("email",serverAccount.getEmail()));
+            info.add(new BasicNameValuePair("email",LoginActivity.getServerAccount().getEmail()));
             // making HTTP request
             String url_get_s_categories = base_url + "get_categories.php";
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_categories,"POST",info);
@@ -341,7 +340,7 @@ public class menuFragment extends Fragment
         {
             //getting columns list
             List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("email",serverAccount.getEmail()));
+            info.add(new BasicNameValuePair("email",LoginActivity.getServerAccount().getEmail()));
             // making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_items,"POST",info);
             Log.d("sItems",""+jsonObject.toString());

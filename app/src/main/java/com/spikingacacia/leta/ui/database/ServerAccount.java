@@ -25,12 +25,13 @@ public class ServerAccount
     private String waiter_names;
     private String waiterImageType;
     private String mCode;
+    private double commision;
 
     public ServerAccount(){}
 
     public ServerAccount(int persona, int id, String email, String password, String username, String country, int online, int deliver, String diningOptions, String location, int orderRadius, int orderFormat,
                          int numberOfTables, String imageType, String dateadded, String datechanged, String dateToday,
-                         int waiter_id, String waiter_email, String waiter_names, String waiterImageType, String mCode) {
+                         int waiter_id, String waiter_email, String waiter_names, String waiterImageType, String mCode, double commision) {
         this.persona=persona;
         this.id = id;
         this.email = email;
@@ -53,6 +54,7 @@ public class ServerAccount
         this.waiter_names=waiter_names;
         this.waiterImageType = waiterImageType;
         this.mCode = mCode;
+        this.commision = commision;
     }
     public int getPersona()
     {
@@ -242,6 +244,15 @@ public class ServerAccount
     public void setmCode(String mCode)
     {
         this.mCode = mCode;
+    }
+    public double getCommision()
+    {
+        return commision;
+    }
+
+    public void setCommision(double commision)
+    {
+        this.commision = commision;
     }
 
 }

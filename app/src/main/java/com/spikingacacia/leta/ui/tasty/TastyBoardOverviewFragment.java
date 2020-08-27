@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
+import androidx.emoji.widget.EmojiTextView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -39,6 +41,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.ocpsoft.prettytime.PrettyTime;
 
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,7 +51,6 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.spikingacacia.leta.ui.LoginActivity.base_url;
-import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 public class TastyBoardOverviewFragment extends Fragment
 {
@@ -104,8 +106,8 @@ public class TastyBoardOverviewFragment extends Fragment
         tabLayout.setupWithViewPager(viewPager);
 
         t_title.setText(tastyBoard.getTitle());
-        t_restaurant.setText(serverAccount.getUsername());
-        String s_distance = "location not found";
+        t_restaurant.setText(LoginActivity.getServerAccount().getUsername());
+        String s_distance = "Here";
         Double distance = -1.0;//tastyBoard.getDistance();
         t_location.setText(s_distance);
 
@@ -113,7 +115,7 @@ public class TastyBoardOverviewFragment extends Fragment
         // image
         String url=image_url+String.valueOf(tastyBoard.getId())+'_'+String.valueOf(tastyBoard.getImageType());
         Glide.with(getContext()).load(url).into(imageView);
-        String url_seller= LoginActivity.base_url+"src/sellers_pics/"+ serverAccount.getId()+'_'+serverAccount.getImageType();
+        String url_seller= LoginActivity.base_url+"src/sellers_pics/"+ LoginActivity.getServerAccount().getId()+'_'+LoginActivity.getServerAccount().getImageType();
         Glide.with(getContext()).load(url_seller).into(imageSeller);
 
         //sizes and prices
@@ -124,7 +126,7 @@ public class TastyBoardOverviewFragment extends Fragment
         int[] discounts = new int[sizes_and_prices.length];
         String s_discount="";
         String currency="";
-        String[] location_pieces = serverAccount.getLocation().split(":");
+        String[] location_pieces = LoginActivity.getServerAccount().getLocation().split(":");
         if(location_pieces.length==4)
             currency = getCurrencyCode(location_pieces[3])+" ";
         for(int c=0; c<sizes_and_prices.length; c++)
@@ -299,10 +301,21 @@ public class TastyBoardOverviewFragment extends Fragment
                 ImageView imageView = view.findViewById(R.id.image);
                 TextView t_names = view.findViewById(R.id.names);
                 TextView t_time = view.findViewById(R.id.time);
-                TextView t_comment = view.findViewById(R.id.comment);
+                EmojiTextView t_comment = view.findViewById(R.id.comment);
 
                 t_names.setText(comments.names);
-                t_comment.setText(comments.comment);
+                try
+                {
+                    byte[] data = Base64.decode(comments.comment, Base64.DEFAULT);
+                    String newStringWithEmojis = new String(data, "UTF-8");
+                    t_comment.setText(newStringWithEmojis);
+
+                } catch (UnsupportedEncodingException e)
+                {
+                    e.printStackTrace();
+                    t_comment.setText(comments.comment);
+                }
+
                 SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm");
                 PrettyTime p = new PrettyTime();
                 try

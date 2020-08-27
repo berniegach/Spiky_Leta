@@ -66,7 +66,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.spikingacacia.leta.ui.LoginActivity.base_url;
-import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 public class AddTastyBoardActivity extends AppCompatActivity
 {
@@ -177,10 +176,10 @@ public class AddTastyBoardActivity extends AppCompatActivity
                     Toast.makeText(getBaseContext(),"Please set expiry time", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                int menu_item_id = getMenuItemId( menu_items.get(spinner.getSelectedItemPosition()));
                 //Uploading code
                 try
                 {
+                    int menu_item_id = getMenuItemId( menu_items.get(spinner.getSelectedItemPosition()));
                     new AddTastyBoardTask(title,description,menu_item_id,date.getTime().toString(),".jpg",bitmap).execute((Void)null);
                 }
                 catch (Exception e)
@@ -564,7 +563,7 @@ public class AddTastyBoardActivity extends AppCompatActivity
         {
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("seller_email",serverAccount.getEmail()));
+            info.add(new BasicNameValuePair("seller_email",LoginActivity.getServerAccount().getEmail()));
             info.add(new BasicNameValuePair("title",title));
             info.add(new BasicNameValuePair("description",description));
             info.add(new BasicNameValuePair("linked_item_id",Integer.toString(linked_item_id)));

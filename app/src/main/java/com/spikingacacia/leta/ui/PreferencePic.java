@@ -44,7 +44,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
-import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
 
 
 /**
@@ -87,16 +86,15 @@ public class PreferencePic extends Preference
         String image_url;
         String url;
         ImageView b_edit = (ImageView) view.findViewById(R.id.edit);
-        Log.d("PEREFRENCE","is:"+serverAccount.getPersona());
-        if(serverAccount.getPersona()==1)
+        if(LoginActivity.getServerAccount().getPersona()==1)
         {
             image_url = LoginActivity.base_url+"src/sellers_pics/";
-            url=image_url+String.valueOf(serverAccount.getId())+'_'+String.valueOf(serverAccount.getImageType());
+            url=image_url+String.valueOf(LoginActivity.getServerAccount().getId())+'_'+String.valueOf(LoginActivity.getServerAccount().getImageType());
         }
         else
         {
             image_url = LoginActivity.base_url+"src/buyers_pics/";
-            url=image_url+String.valueOf(serverAccount.getWaiter_id())+'_'+String.valueOf(serverAccount.getWaiterImageType());
+            url=image_url+String.valueOf(LoginActivity.getServerAccount().getWaiter_id())+'_'+String.valueOf(LoginActivity.getServerAccount().getWaiterImageType());
             b_edit.setVisibility(View.GONE);
         }
         imageView= (ImageView) view.findViewById(R.id.image);
@@ -224,7 +222,7 @@ public class PreferencePic extends Preference
                         {
                             //weve uploaded the image therefore its okay to proceed with adding the new item in the server
                             int statusCode = response.statusCode;
-                            SettingsActivity.tempServerAccount.setImageType(".jpg");
+                            SettingsActivity.setTempServerAccountImageType(".jpg");
                             SettingsActivity.updateSettings();
                         }
                     },
@@ -252,7 +250,7 @@ public class PreferencePic extends Preference
                 {
                     Map<String , String >params = new HashMap<>();
                     params.put("name", "name"); //Adding text parameter to the request
-                    params.put("id",String.valueOf(serverAccount.getId()));
+                    params.put("id",String.valueOf(LoginActivity.getServerAccount().getId()));
                     return params;
                 }
             };

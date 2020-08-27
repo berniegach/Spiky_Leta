@@ -47,7 +47,7 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 import static com.spikingacacia.leta.ui.LoginActivity.base_url;
-import static com.spikingacacia.leta.ui.LoginActivity.serverAccount;
+import static com.spikingacacia.leta.ui.main.wallet.WalletHomeFragment.transactionsList;
 
 
 public class WalletGraphFragment extends Fragment implements
@@ -96,12 +96,6 @@ public class WalletGraphFragment extends Fragment implements
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_wallet_graph, container, false);
         chart = view.findViewById(R.id.chart1);
-
-        // Selection of the spinner
-        final Spinner spinner_years = (Spinner) view.findViewById(R.id.spinner_years);
-        final Spinner spinner_months = (Spinner) view.findViewById(R.id.spinner_months);
-        final Spinner spinner_days = (Spinner) view.findViewById(R.id.spinner_days);
-
 
         milliseconds_data = new LinkedHashMap<>();
 
@@ -200,10 +194,10 @@ public class WalletGraphFragment extends Fragment implements
                 data.addDataSet(set);
             }
             String date_added="";
-            for(int c=0; c<WalletActivity.transactionsList.size(); c++)
+            for(int c=0; c<transactionsList.size(); c++)
             {
-                date_added = WalletActivity.transactionsList.get(c).getDate_added();
-                Double balance = Double.valueOf(WalletActivity.transactionsList.get(c).getBalance());
+                date_added = transactionsList.get(c).getDate_added();
+                Double balance = Double.valueOf(transactionsList.get(c).getBalance());
                 data.addEntry(new Entry(get_milliseconds_from_server_string(date_added),balance.floatValue()),0);
                 data.notifyDataChanged();
 
