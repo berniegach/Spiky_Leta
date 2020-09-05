@@ -88,6 +88,7 @@ public class OrdersActivity extends AppCompatActivity
     @Override
     public void onAcceptDecline(int which, int status)
     {
+        Log.e(TAG," in accept declie");
         final int format = LoginActivity.getServerAccount().getOrderFormat();
         int new_status = 1;
         if (which == 1)
@@ -149,6 +150,7 @@ public class OrdersActivity extends AppCompatActivity
                 waiter_email= LoginActivity.getServerAccount().getWaiter_email();
             jsonParser = new JSONParser();
             Log.d(TAG,"WAITER EMAIL"+waiter_email);
+            Log.d(TAG,"STATUS "+status);
         }
         @Override
         protected void onPreExecute()
@@ -169,6 +171,7 @@ public class OrdersActivity extends AppCompatActivity
             info.add(new BasicNameValuePair("update_seller_total","0"));
             info.add(new BasicNameValuePair("m_message",""));
             info.add(new BasicNameValuePair("date_added",dateAdded));
+            Log.d(TAG,"info is: "+info.toString());
             // making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_update_order_status,"POST",info);
             try

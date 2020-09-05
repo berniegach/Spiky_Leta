@@ -66,7 +66,7 @@ public class MyOrdersRecyclerViewAdapter extends RecyclerView.Adapter<MyOrdersRe
         PrettyTime p = new PrettyTime();
         try
         {
-            holder.mDateView.setText(p.format(format.parse(mValues.get(position).getDateAdded())));
+            holder.mDateView.setText(p.format(format.parse(mValues.get(position).getDateAddedLocal())));
         } catch (ParseException e)
         {
             e.printStackTrace();

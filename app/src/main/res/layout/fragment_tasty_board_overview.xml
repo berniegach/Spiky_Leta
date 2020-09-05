@@ -4,6 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_less"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="60dp">
 
     <ImageView
         android:id="@+id/image"
@@ -71,6 +76,30 @@
         android:gravity="center"
         android:text="0"
         android:textStyle="bold"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <ImageButton
+        android:id="@+id/expand_less"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="@android:color/white"
+        android:elevation="6dp"
+        android:src="@drawable/ic_baseline_expand_less"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_less" />
+
+    <ImageButton
+        android:id="@+id/expand_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="@android:color/white"
+        android:elevation="6dp"
+        android:src="@drawable/ic_baseline_expand_more"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <androidx.viewpager.widget.ViewPager
@@ -78,7 +107,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_seller"
+        app:layout_constraintTop_toBottomOf="@+id/expand_more"
         android:layout_margin="20dp">
 
         <com.google.android.material.tabs.TabLayout

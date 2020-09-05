@@ -371,10 +371,11 @@ public class menuFragment extends Fragment
                         String sizes = jsonObjectNotis.getString("sizes");
                         String prices = jsonObjectNotis.getString("prices");
                         String image_type=jsonObjectNotis.getString("image_type");
+                        boolean available = jsonObjectNotis.getInt("available") == 1;
                         String date_added=jsonObjectNotis.getString("date_added");
                         String date_changed=jsonObjectNotis.getString("date_changed");
 
-                        DMenu dMenu =new DMenu(id,category_id,group_id,linked_items, item,description,sizes, prices,image_type,date_added,date_changed);
+                        DMenu dMenu =new DMenu(id,category_id,group_id,linked_items, item,description,sizes, prices,image_type,available,date_added,date_changed);
                         list.add(dMenu);
                         MainActivity.menuLinkedHashMap.put(id,dMenu);
 

@@ -26,12 +26,13 @@ public class ServerAccount
     private String waiterImageType;
     private String mCode;
     private double commision;
+    private String mpesaMobile;
 
     public ServerAccount(){}
 
     public ServerAccount(int persona, int id, String email, String password, String username, String country, int online, int deliver, String diningOptions, String location, int orderRadius, int orderFormat,
                          int numberOfTables, String imageType, String dateadded, String datechanged, String dateToday,
-                         int waiter_id, String waiter_email, String waiter_names, String waiterImageType, String mCode, double commision) {
+                         int waiter_id, String waiter_email, String waiter_names, String waiterImageType, String mCode, double commision, String mpesaMobile) {
         this.persona=persona;
         this.id = id;
         this.email = email;
@@ -55,6 +56,7 @@ public class ServerAccount
         this.waiterImageType = waiterImageType;
         this.mCode = mCode;
         this.commision = commision;
+        this.mpesaMobile = mpesaMobile;
     }
     public int getPersona()
     {
@@ -255,4 +257,13 @@ public class ServerAccount
         this.commision = commision;
     }
 
+    public String getMpesaMobile()
+    {
+        return mpesaMobile;
+    }
+
+    public void setMpesaMobile(String mpesaMobile)
+    {
+        this.mpesaMobile = mpesaMobile;
+    }
 }

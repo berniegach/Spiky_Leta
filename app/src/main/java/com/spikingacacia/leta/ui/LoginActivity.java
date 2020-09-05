@@ -56,8 +56,8 @@ public class LoginActivity extends AppCompatActivity
 {
     private static final int OVERLAY_PERMISSION_CODE=541;
     //REMEMBER TO CHANGE THIS WHEN CHANGING BETWEEN ONLINE AND LOCALHOST
-    //public static final String base_url="https://3.20.17.200/order/"; //online
-    public static final String base_url="http://10.0.2.2/leta_project/android/"; //localhost no connection for testing user accounts coz it doesnt require subscription checking
+    public static final String base_url="https://3.20.17.200/order/"; //online
+    //public static final String base_url="http://10.0.2.2/leta_project/android/"; //localhost no connection for testing user accounts coz it doesnt require subscription checking
 
     private String TAG="LoginActivity";
     public static boolean AppRunningInThisActivity=true;//check if the app is running the in this activity
@@ -582,6 +582,7 @@ public class LoginActivity extends AppCompatActivity
                     serverAccount.setImageType(accountObject.getString("image_type"));
                     serverAccount.setmCode(accountObject.getString("m_code"));
                     serverAccount.setCommision(accountObject.getDouble("commision"));
+                    serverAccount.setMpesaMobile(accountObject.getString("m_mobile"));
                     serverAccount.setDateadded(accountObject.getString("dateadded"));
                     serverAccount.setDatechanged(accountObject.getString("datechanged"));
                     serverAccount.setDateToday(accountObject.getString("today"));
@@ -686,6 +687,7 @@ public class LoginActivity extends AppCompatActivity
             info.add(new BasicNameValuePair("password",mPassword));
             //getting all account details by making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_account_seller_waiter,"POST",info);
+            Log.d(TAG,jsonObject.toString());
             try
             {
                 success=jsonObject.getInt(TAG_SUCCESS);
@@ -710,6 +712,7 @@ public class LoginActivity extends AppCompatActivity
                     serverAccount.setNumberOfTables(accountObject.getInt("number_of_tables"));
                     serverAccount.setmCode(accountObject.getString("m_code"));
                     serverAccount.setCommision(accountObject.getDouble("commision"));
+                    serverAccount.setMpesaMobile(accountObject.getString("m_mobile"));
                     serverAccount.setDateadded(accountObject.getString("dateadded"));
                     serverAccount.setDatechanged(accountObject.getString("datechanged"));
                     serverAccount.setDateToday(accountObject.getString("today"));

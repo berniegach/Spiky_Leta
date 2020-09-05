@@ -184,6 +184,7 @@ public class OrdersFragment extends Fragment
 
                         String date_added=jsonObjectNotis.getString("date_added");
                         String date_changed=jsonObjectNotis.getString("date_changed");
+                        String date_added_local=jsonObjectNotis.getString("date_added_local");
                         String item=jsonObjectNotis.getString("item");
                         String size = jsonObjectNotis.getString("size");
                         double selling_price=jsonObjectNotis.getDouble("price");
@@ -199,7 +200,7 @@ public class OrdersFragment extends Fragment
 
                         Orders orders =new Orders(id,user_id,user_email,item_id,order_number,order_status,item,size,selling_price, username,waiter_names,table_number, pre_order, collect_time, order_type,
                                 delivery_mobile, delivery_instructions, delivery_location,
-                                date_added,date_changed);
+                                date_added,date_changed, date_added_local);
                         ordersLinkedHashMap.put(id,orders);
                         ordersList.add(orders);
                         String[] date_pieces=date_added.split(" ");

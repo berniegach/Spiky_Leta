@@ -46,6 +46,17 @@ public class WalletActivity extends AppCompatActivity implements
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
+    @Override
+    public void onTransactionsClicked()
+    {
+        Fragment fragment= ReceiptsFragment.newInstance(1);
+        FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.base,fragment,"transactions");
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
     void showProgress(boolean show)
     {
         progressBar.setVisibility(show? View.VISIBLE : View.GONE);

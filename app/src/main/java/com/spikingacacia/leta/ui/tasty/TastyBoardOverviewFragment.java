@@ -20,6 +20,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.emoji.widget.EmojiTextView;
 import androidx.fragment.app.Fragment;
@@ -33,6 +34,7 @@ import com.spikingacacia.leta.ui.JSONParser;
 import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.database.TastyBoard;
+import com.spikingacacia.leta.ui.util.Utils;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -92,6 +94,7 @@ public class TastyBoardOverviewFragment extends Fragment
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_tasty_board_overview, container, false);
         context = getContext();
+        ConstraintLayout l_less = view.findViewById(R.id.layout_less);
         ImageView imageView = view.findViewById(R.id.image);
         TextView t_title = view.findViewById(R.id.title);
         TextView t_restaurant = (TextView) view.findViewById(R.id.restaurant);
@@ -104,6 +107,34 @@ public class TastyBoardOverviewFragment extends Fragment
         viewPager.setAdapter(demoCollectionPagerAdapter);
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
+
+        ImageButton b_expand_less = view.findViewById(R.id.expand_less);
+        ImageButton b_expand_more = view.findViewById(R.id.expand_more);
+        Utils.collapse(viewPager);
+        b_expand_more.setVisibility(View.GONE);
+
+        b_expand_less.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                v.setVisibility(View.GONE);
+                b_expand_more.setVisibility(View.VISIBLE);
+                Utils.collapse(l_less);
+                Utils.expand(viewPager);
+            }
+        });
+        b_expand_more.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                v.setVisibility(View.GONE);
+                b_expand_less.setVisibility(View.VISIBLE);
+                Utils.collapse(viewPager);
+                Utils.expand(l_less);
+            }
+        });
 
         t_title.setText(tastyBoard.getTitle());
         t_restaurant.setText(LoginActivity.getServerAccount().getUsername());

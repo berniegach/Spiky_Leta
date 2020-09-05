@@ -1,8 +1,10 @@
 package com.spikingacacia.leta.ui.orders;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
@@ -14,11 +16,14 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.Preferences;
 import com.spikingacacia.leta.ui.database.Orders;
+import com.spikingacacia.leta.ui.main.MainActivity;
+import com.spikingacacia.leta.ui.util.Utils;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -84,6 +89,7 @@ public class OrderOverviewFragment extends Fragment
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_order_overview, container, false);
 
+
         ProgressBar progressBar=view.findViewById(R.id.progress);
         LinearLayout l_base=view.findViewById(R.id.orders_base);
         TextView t_date=view.findViewById(R.id.date);
@@ -101,6 +107,35 @@ public class OrderOverviewFragment extends Fragment
         final ImageButton button_mobile = view.findViewById(R.id.mobile);
         CardView c_delivery_info = view.findViewById(R.id.c_delivery_info);
         TextView t_delivery_info = view.findViewById(R.id.t_delivery_info);
+        ScrollView l_less = view.findViewById(R.id.layout_less);
+        LinearLayout l_more = view.findViewById(R.id.layout_more);
+        ImageButton b_expand_less = view.findViewById(R.id.expand_less);
+        ImageButton b_expand_more = view.findViewById(R.id.expand_more);
+        Utils.collapse(l_more);
+        b_expand_more.setVisibility(View.GONE);
+
+        b_expand_less.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                v.setVisibility(View.GONE);
+                b_expand_more.setVisibility(View.VISIBLE);
+                Utils.collapse(l_less);
+                Utils.expand(l_more);
+            }
+        });
+        b_expand_more.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                v.setVisibility(View.GONE);
+                b_expand_less.setVisibility(View.VISIBLE);
+                Utils.collapse(l_more);
+                Utils.expand(l_less);
+            }
+        });
         //set the buttons listeners
         Button b_accept=view.findViewById(R.id.accept);
         Button b_decline=view.findViewById(R.id.decline);
@@ -109,8 +144,27 @@ public class OrderOverviewFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                if(mListener!=null)
-                    mListener.onAcceptDecline(1, mOrderStatus);
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Confirmation")
+                        .setMessage("This action cannot be undone.\nAre you sure you want to proceed?")
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                if(mListener!=null)
+                                    mListener.onAcceptDecline(1, mOrderStatus);
+                            }
+                        }).create().show();
+
             }
         });
         b_decline.setOnClickListener(new View.OnClickListener()
@@ -118,8 +172,27 @@ public class OrderOverviewFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                if(mListener!=null)
-                    mListener.onAcceptDecline(2, mOrderStatus);
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Confirmation")
+                        .setMessage("This action cannot be undone.\nAre you sure you want to proceed?")
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                if(mListener!=null)
+                                    mListener.onAcceptDecline(2, mOrderStatus);
+                            }
+                        }).create().show();
+
             }
         });
         button_location.setOnClickListener(new View.OnClickListener()
@@ -225,6 +298,7 @@ public class OrderOverviewFragment extends Fragment
             String size = orders.getSize();
             double price= orders.getPrice();
             String dateAdded= orders.getDateAdded();
+            String dateAddedLocal = orders.getDateAddedLocal();
             String[] date=dateAdded.split(" ");
             if(!(date[0]+":"+order_number+":"+orderStatus).contentEquals(mOrder))
                 continue;
@@ -255,7 +329,7 @@ public class OrderOverviewFragment extends Fragment
 
             count+=1;
             total_price+=price;
-            date_to_show=dateAdded;
+            date_to_show=dateAddedLocal;
         }
         ((TextView)view.findViewById(R.id.total)).setText("Total "+String.valueOf(total_price));
        // l_base.addView(t_total);

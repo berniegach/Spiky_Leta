@@ -7,8 +7,8 @@ android {
         applicationId "com.spikingacacia.leta"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 35
-        versionName "1.3.4"
+        versionCode 38
+        versionName "1.3.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
         //vectorDrawables.useSupportLibrary = true
@@ -18,6 +18,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     useLibrary 'org.apache.http.legacy'
 }

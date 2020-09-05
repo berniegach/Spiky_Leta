@@ -86,13 +86,11 @@ public class WithdrawFragment extends Fragment
     {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_withdraw, container, false);
-        preferences = new Preferences(getContext());
         final EditText e_amount = view.findViewById(R.id.amount);
         final EditText e_mobile = view.findViewById(R.id.number);
         b_withdraw = view.findViewById(R.id.b_withdraw);
 
-        if(preferences.getMobileNumber()!=null)
-            e_mobile.setText(preferences.getMobileNumber());
+        e_mobile.setText(LoginActivity.getServerAccount().getMpesaMobile());
         b_withdraw.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -105,7 +103,7 @@ public class WithdrawFragment extends Fragment
                     e_amount.setError("Please enter amount");
                     return;
                 }
-                if(Integer.parseInt(amount)<50)
+                if(Integer.parseInt(amount)<1)
                 {
                     e_amount.setError("Amount should be more than 49");
                     return;
@@ -117,12 +115,12 @@ public class WithdrawFragment extends Fragment
                 }
                 if(TextUtils.isEmpty(mobile))
                 {
-                    e_amount.setError("Please enter the mobile number");
+                    e_amount.setError("No mobile number added");
                     return;
                 }
                 if(!mobile.startsWith("254"))
                 {
-                    e_mobile.setError("mobile number should begin with 254");
+                    e_mobile.setError("invalid mobile number");
                     return;
                 }
                 Double d_amount = Double.valueOf(amount);
@@ -149,7 +147,7 @@ public class WithdrawFragment extends Fragment
                             @Override
                             public void onClick(DialogInterface dialog, int which)
                             {
-                                new B2CTask(amount,mobile).execute((Void)null);
+                                new B2CTask(amount).execute((Void)null);
                             }
                         }).create().show();
 
@@ -186,95 +184,23 @@ public class WithdrawFragment extends Fragment
     }
     private class B2CTask extends AsyncTask<Void, Void, Boolean>
     {
-        private String spikingAcaciaShortcodeB2C = "3015957";
-        private String password = "Order.B2c.User1";
+        private String url_update=base_url+"m_b2c.php";
+        private String TAG_SUCCESS="success";
+        private String TAG_MESSAGE="message";
+        private JSONParser jsonParser;
         private String amount;
-        private String mobile;
-        private String ConversationID;
-        private String OriginatorConversationID;
-        private String ResponseCode;
-        private String ResponseDescription;
 
+        public B2CTask(String amount)
+        {
+            this.amount = amount;
+            jsonParser = new JSONParser();
+        }
         @Override
         protected void onPreExecute()
         {
             super.onPreExecute();
             if(mListener!=null)
                 mListener.onWithdrawProcess(true);
-        }
-
-        public B2CTask(String amount, String mobile)
-        {
-            this.amount = amount;
-            this.mobile = mobile;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... voids)
-        {
-            String security_credential = "GFCgYfD9dLhDvQjWxqVJ1uufgU1yPXZv6f/SyBUyOITg1XuiJC/ZZoDe26Mxkq+Wy+8OjxUeaDAB9rTLtrxMNFeFEFF4mVjzyWhYlKMbP6BECZfdKdJ5ToJzR21Pxh5QptEXRznIgjAHMNZPV6k81Xpx+ZdZCR1DtOBs7YlDjiLDlx3kRNbIMlbTp1f/JNA4z/faPS+2Mc7Zhyk4YIAYTqVERZUK9wGGx9z19ipsmlzgujDjT1TUfEsHFRsbgkYmHb3bvFYSvDz8zesnUHDa4D8vEcSYtl0SUdjEdq21yIqFfHuAriIKlGyc0yM2i29kvp5tBAgJx2/87cODqDjoUw==";
-
-            try
-            {
-                JSONObject jsonObject =         MpesaB2C.B2CRequest("order",
-                        security_credential,
-                        "BusinessPayment",amount,spikingAcaciaShortcodeB2C,mobile,"transfer",
-                        "https://3.20.17.200/order/m_listener_b2c.php",
-                        "https://3.20.17.200/order/m_listener_b2c.php",
-                        "");
-                Log.d(TAG,"JSON+"+jsonObject.toString());
-
-
-                ConversationID = jsonObject.getString("ConversationID");
-                OriginatorConversationID = jsonObject.getString("OriginatorConversationID");
-                ResponseCode = jsonObject.getString("ResponseCode");
-                ResponseDescription = jsonObject.getString("ResponseDescription");
-                if(ResponseCode.contentEquals("0"))
-                    return true;
-
-                return false;
-
-            }
-            catch (JSONException | IOException e)
-            {
-                Log.e("JSON",""+e.getMessage());
-                return false;
-            }
-
-        }
-        @Override
-        protected void onPostExecute(final Boolean successful)
-        {
-            if (successful)
-            {
-                preferences.setMobileNumber(mobile);
-                new AddNewMpesaResponseTask(amount,mobile,ConversationID,OriginatorConversationID).execute((Void)null);
-
-            }
-            else
-            if(mListener!=null)
-                mListener.onWithdrawProcess(false);
-
-        }
-    }
-    private class AddNewMpesaResponseTask extends AsyncTask<Void, Void, Boolean>
-    {
-        private String url_update=base_url+"add_mpesa_request_b2c.php";
-        private String TAG_SUCCESS="success";
-        private String TAG_MESSAGE="message";
-        private JSONParser jsonParser;
-        private String amount;
-        private String mobile;
-        private String ConversationID;
-        private String OriginatorConversationID;
-
-        public AddNewMpesaResponseTask(String amount, String mobile, String conversationID, String originatorConversationID)
-        {
-            this.amount = amount;
-            this.mobile = mobile;
-            ConversationID = conversationID;
-            OriginatorConversationID = originatorConversationID;
-            jsonParser = new JSONParser();
         }
 
 
@@ -284,11 +210,8 @@ public class WithdrawFragment extends Fragment
         {
             //getting columns list
             List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
-            info.add(new BasicNameValuePair("seller_email", LoginActivity.getServerAccount().getEmail()));
-            info.add(new BasicNameValuePair("conversation_id", ConversationID));
-            info.add(new BasicNameValuePair("originator_conversation_id",OriginatorConversationID));
+            info.add(new BasicNameValuePair("email", LoginActivity.getServerAccount().getEmail()));
             info.add(new BasicNameValuePair("amount",amount));
-            info.add(new BasicNameValuePair("mobile",mobile));
 
 
             // making HTTP request
@@ -324,10 +247,11 @@ public class WithdrawFragment extends Fragment
                 if(mListener!=null)
                     mListener.withdrawFinished();
             }
-            else if(!successful)
+            else
             {
                 Snackbar.make(b_withdraw,"Request was not successful.\nPlease try again.",Snackbar.LENGTH_LONG).show();
             }
         }
     }
+
 }

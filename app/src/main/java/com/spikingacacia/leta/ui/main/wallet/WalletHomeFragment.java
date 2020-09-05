@@ -3,6 +3,7 @@ package com.spikingacacia.leta.ui.main.wallet;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -83,6 +84,7 @@ public class WalletHomeFragment extends Fragment
         {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+            commision = LoginActivity.getServerAccount().getCommision();
         }
     }
 
@@ -105,9 +107,15 @@ public class WalletHomeFragment extends Fragment
             public void onClick(View v)
             {
 
-                v.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.black)));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                {
+                    v.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.black)));
+                }
                 ((Button)v).setTextColor(getResources().getColor(android.R.color.white));
-                b_total.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.white)));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                {
+                    b_total.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.white)));
+                }
                 b_total.setTextColor(getResources().getColor(android.R.color.black));
                 t_commision.setTextColor(getResources().getColor(android.R.color.holo_red_light));
                 t_commision.setText("-"+commision+"% commision fee");
@@ -119,9 +127,15 @@ public class WalletHomeFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                v.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.black)));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                {
+                    v.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.black)));
+                }
                 ((Button)v).setTextColor(getResources().getColor(android.R.color.white));
-                b_available.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.white)));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                {
+                    b_available.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.white)));
+                }
                 b_available.setTextColor(getResources().getColor(android.R.color.black));
                 t_commision.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
                 t_commision.setText("+"+commision+"% commision fee");
@@ -153,6 +167,15 @@ public class WalletHomeFragment extends Fragment
             {
                 if(mListener!=null)
                     mListener.onWithdrawClicked(amount);
+            }
+        });
+        b_transaction.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if(mListener!=null)
+                    mListener.onTransactionsClicked();
             }
         });
         transactionsList = new LinkedList<>();
@@ -190,6 +213,7 @@ public class WalletHomeFragment extends Fragment
     public interface OnListFragmentInteractionListener
     {
         void onWithdrawClicked(Double total);
+        void onTransactionsClicked();
     }
     //to retrieve currency code
     private void formCurrencyCode()
@@ -200,9 +224,15 @@ public class WalletHomeFragment extends Fragment
     }
     private void updateGui()
     {
-        b_available.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.black)));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            b_available.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.black)));
+        }
         b_available.setTextColor(getResources().getColor(android.R.color.white));
-        b_total.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.white)));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            b_total.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.white)));
+        }
         b_total.setTextColor(getResources().getColor(android.R.color.black));
         t_commision.setTextColor(getResources().getColor(android.R.color.holo_red_light));
         t_commision.setText("-"+commision+"% commision fee");

@@ -22,10 +22,12 @@ public class Orders
     private String deliveryLocation;
     private String dateAdded;
     private String dateChanged;
+    private String dateAddedLocal;
+
 
     public Orders(int id,int userId, String userEmail, int itemId, int orderNumber, int orderStatus, String orderName, String size, double price, String username, String waiter_names, int tableNumber,
                   int preOrder, String collectTime, int order_type, String deliveryMobile, String deliveryInstructions, String deliveryLocation,
-                  String dateAdded, String dateChanged)
+                  String dateAdded, String dateChanged, String dateAddedLocal)
     {
         this.id = id;
         this.userId = userId;
@@ -47,6 +49,7 @@ public class Orders
         this.deliveryLocation = deliveryLocation;
         this.dateAdded = dateAdded;
         this.dateChanged = dateChanged;
+        this.dateAddedLocal = dateAddedLocal;
     }
 
     public int getId()
@@ -244,7 +247,15 @@ public class Orders
     {
         this.dateChanged = dateChanged;
     }
+    public String getDateAddedLocal()
+    {
+        return dateAddedLocal;
+    }
 
+    public void setDateAddedLocal(String dateAddedLocal)
+    {
+        this.dateAddedLocal = dateAddedLocal;
+    }
 
 
 }

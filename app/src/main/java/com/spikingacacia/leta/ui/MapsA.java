@@ -31,6 +31,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.spikingacacia.leta.R;
 
@@ -55,7 +56,7 @@ public class MapsA extends FragmentActivity implements
     private String TAG="MapsA";
     private Marker myMarker;
     private View mapView;
-    private FloatingActionButton fab;
+    private ExtendedFloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)

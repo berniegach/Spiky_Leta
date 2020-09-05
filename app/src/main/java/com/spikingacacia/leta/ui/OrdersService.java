@@ -203,6 +203,7 @@ public class OrdersService extends Service
                         //Log.d(TAG," status: "+order_status+" count: "+count);
                         String message;
                         boolean show = false;
+                        //Log.d(TAG,"status "+order_status+" count "+count);
                         //-2 = unpaid, -1 = paid, 0 = deleted, 1 = pending, 2 = ..... until 5 = finished
                         switch(order_status)
                         {
