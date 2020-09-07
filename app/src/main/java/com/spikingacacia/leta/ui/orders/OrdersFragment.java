@@ -197,9 +197,11 @@ public class OrdersFragment extends Fragment
                         String delivery_mobile = jsonObjectNotis.getString("delivery_mobile");
                         String delivery_instructions = jsonObjectNotis.getString("delivery_instructions");
                         String delivery_location = jsonObjectNotis.getString("delivery_location");
+                        String url_code_start_delivery = jsonObjectNotis.getString("url_code_start_delivery");
+                        String url_code_end_delivery = jsonObjectNotis.getString("url_code_end_delivery");
 
                         Orders orders =new Orders(id,user_id,user_email,item_id,order_number,order_status,item,size,selling_price, username,waiter_names,table_number, pre_order, collect_time, order_type,
-                                delivery_mobile, delivery_instructions, delivery_location,
+                                delivery_mobile, delivery_instructions, delivery_location, url_code_start_delivery, url_code_end_delivery,
                                 date_added,date_changed, date_added_local);
                         ordersLinkedHashMap.put(id,orders);
                         ordersList.add(orders);

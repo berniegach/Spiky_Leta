@@ -88,7 +88,6 @@ public class OrdersActivity extends AppCompatActivity
     @Override
     public void onAcceptDecline(int which, int status)
     {
-        Log.e(TAG," in accept declie");
         final int format = LoginActivity.getServerAccount().getOrderFormat();
         int new_status = 1;
         if (which == 1)

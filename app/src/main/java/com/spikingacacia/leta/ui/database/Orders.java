@@ -20,13 +20,15 @@ public class Orders
     private String deliveryMobile;
     private String deliveryInstructions;
     private String deliveryLocation;
+    private String urlCodeStartDelivery;
+    private String urlCodeEndDelivery;
     private String dateAdded;
     private String dateChanged;
     private String dateAddedLocal;
 
 
     public Orders(int id,int userId, String userEmail, int itemId, int orderNumber, int orderStatus, String orderName, String size, double price, String username, String waiter_names, int tableNumber,
-                  int preOrder, String collectTime, int order_type, String deliveryMobile, String deliveryInstructions, String deliveryLocation,
+                  int preOrder, String collectTime, int order_type, String deliveryMobile, String deliveryInstructions, String deliveryLocation, String urlCodeStartDelivery, String urlCodeEndDelivery,
                   String dateAdded, String dateChanged, String dateAddedLocal)
     {
         this.id = id;
@@ -47,6 +49,8 @@ public class Orders
         this.deliveryMobile = deliveryMobile;
         this.deliveryInstructions = deliveryInstructions;
         this.deliveryLocation = deliveryLocation;
+        this.urlCodeStartDelivery = urlCodeStartDelivery;
+        this.urlCodeEndDelivery = urlCodeEndDelivery;
         this.dateAdded = dateAdded;
         this.dateChanged = dateChanged;
         this.dateAddedLocal = dateAddedLocal;
@@ -226,6 +230,25 @@ public class Orders
     public void setDeliveryLocation(String deliveryLocation)
     {
         this.deliveryLocation = deliveryLocation;
+    }
+    public String getUrlCodeStartDelivery()
+    {
+        return urlCodeStartDelivery;
+    }
+
+    public void setUrlCodeStartDelivery(String urlCodeStartDelivery)
+    {
+        this.urlCodeStartDelivery = urlCodeStartDelivery;
+    }
+
+    public String getUrlCodeEndDelivery()
+    {
+        return urlCodeEndDelivery;
+    }
+
+    public void setUrlCodeEndDelivery(String urlCodeEndDelivery)
+    {
+        this.urlCodeEndDelivery = urlCodeEndDelivery;
     }
 
     public String getDateAdded()

@@ -1,15 +1,24 @@
 package com.spikingacacia.leta.ui.util;
 
+import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.LinearLayout;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.util.Currency;
 import java.util.Locale;
 
 public class Utils
 {
+    private static String TAG = "utils";
     public Utils()
     {}
     //to retrieve currency code
@@ -76,6 +85,21 @@ public class Utils
         };
         animation.setDuration((int)(initialHeight/v.getContext().getResources().getDisplayMetrics().density));
         v.startAnimation(animation);
+    }
+    public static Bitmap generateQRCode(String string)
+    {
+        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+        try
+        {
+            BitMatrix bitMatrix = multiFormatWriter.encode(string, BarcodeFormat.QR_CODE,500,500);
+            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+            Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
+            return bitmap;
+        } catch (WriterException e)
+        {
+            Log.e(TAG,""+e.getMessage());
+            return null;
+        }
     }
 
 }

@@ -235,6 +235,11 @@
                         android:padding="5dp"
                         android:textStyle="bold" />
                 </androidx.cardview.widget.CardView>
+                <ImageView
+                    android:id="@+id/qr_code"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center_horizontal"/>
 
 
             </LinearLayout>

@@ -2,6 +2,7 @@ package com.spikingacacia.leta.ui.orders;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -14,11 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.Preferences;
 import com.spikingacacia.leta.ui.database.Orders;
@@ -111,6 +114,7 @@ public class OrderOverviewFragment extends Fragment
         LinearLayout l_more = view.findViewById(R.id.layout_more);
         ImageButton b_expand_less = view.findViewById(R.id.expand_less);
         ImageButton b_expand_more = view.findViewById(R.id.expand_more);
+        ImageView image_qr_code = view.findViewById(R.id.qr_code);
         Utils.collapse(l_more);
         b_expand_more.setVisibility(View.GONE);
 
@@ -285,6 +289,8 @@ public class OrderOverviewFragment extends Fragment
         String mobile="";
         String instructions = "";
         String location = "";
+        String url_code_start_delivery ="";
+        String url_code_end_delivery = "";
         Iterator iterator= OrdersFragment.ordersLinkedHashMap.entrySet().iterator();
         while (iterator.hasNext())
         {
@@ -313,6 +319,11 @@ public class OrderOverviewFragment extends Fragment
             if(count==0)
             {
                 progressBar.setProgress(orderStatus);
+            }
+            if(mOrderStatus == 3 || mOrderStatus == 4)
+            {
+                url_code_start_delivery = orders.getUrlCodeStartDelivery();
+                url_code_end_delivery = orders.getUrlCodeEndDelivery();
             }
             //add the layouts
             //cardview
@@ -355,6 +366,23 @@ public class OrderOverviewFragment extends Fragment
                 button_location.setTag(location);
                 button_mobile.setTag(mobile);
                 t_delivery_info.setText(instructions);
+            }
+        }
+        if(mOrderStatus == 3)
+        {
+            if(url_code_start_delivery.length()>10)
+            {
+                image_qr_code.setVisibility(View.VISIBLE);
+                image_qr_code.setImageBitmap(Utils.generateQRCode(url_code_start_delivery));
+            }
+
+        }
+        else if(mOrderStatus == 4)
+        {
+            if(url_code_end_delivery.length()>10)
+            {
+                image_qr_code.setVisibility(View.VISIBLE);
+                image_qr_code.setImageBitmap(Utils.generateQRCode(url_code_end_delivery));
             }
         }
         return view;
