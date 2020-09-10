@@ -49,7 +49,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import static com.spikingacacia.leta.ui.LoginActivity.base_url;
-import static com.spikingacacia.leta.ui.OrdersService.preferences;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -91,8 +90,7 @@ public class OrdersOverviewFragment extends Fragment
     private TextView tDeliveryName;
     private TextView tPaymentName;
     private int countToShow=0;
-    //Preferences preferences;
-    private Thread ordersThread;
+    Preferences preferences;
 
     public OrdersOverviewFragment()
     {
@@ -127,7 +125,7 @@ public class OrdersOverviewFragment extends Fragment
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_orders_overview, container, false);
         //preference
-        //preferences=new Preferences(getContext());
+        preferences=new Preferences(getContext());
 
         //layouts
         lPending = ((LinearLayout)view.findViewById(R.id.pending));
@@ -163,44 +161,11 @@ public class OrdersOverviewFragment extends Fragment
             bOrderFormat.setVisibility(View.GONE);
             ((CardView)view.findViewById(R.id.cardview_finished)).setVisibility(View.GONE);
         }
+        new OrdersTask().execute((Void)null);
         return view;
     }
-    @Override
-    public void onResume()
-    {
-        //we set the following variables because of the following
-        //1. so that every time we enter a task fragment and then get back to the overview the variables are set to
-        //correct values otherwise they will just add to the before values
-        //2. so we can set the texviews after setting the values. if not done here the texviews will show 0 during the initial run
-        //3 so we can set the piechart with correct values during the initial run as above 2
-        super.onResume();
-        //set the
-        getOrders();
-    }
-    private void getOrders()
-    {
-        ordersThread=new Thread()
-        {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    while(true)
-                    {
-                        //new OrdersTask().execute((Void)null);
-                        setCounts();
-                        sleep(5000);
-                    }
-                }
-                catch (InterruptedException e)
-                {
-                    //Log.e(TAG,"order thread quit");
-                }
-            }
-        };
-        ordersThread.start();
-    }
+
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -272,15 +237,9 @@ public class OrdersOverviewFragment extends Fragment
     public void onDetach()
     {
         super.onDetach();
-        ordersThread.interrupt();
         mListener = null;
     }
-    @Override
-    public void onPause()
-    {
-        super.onPause();
-        ordersThread.interrupt();
-    }
+
 
     public interface OnFragmentInteractionListener
     {
@@ -535,6 +494,91 @@ public class OrdersOverviewFragment extends Fragment
             else
             {
                 Snackbar.make(lFinished,"Error updating format",Snackbar.LENGTH_SHORT).show();
+            }
+
+        }
+    }
+    private class OrdersTask extends AsyncTask<Void, Void, Boolean>
+    {
+        private String url_get_orders = base_url + "get_seller_orders_count.php";
+        private String TAG_SUCCESS="success";
+        private String TAG_MESSAGE="message";
+        private JSONParser jsonParser;
+        @Override
+        protected void onPreExecute()
+        {
+            jsonParser = new JSONParser();
+            super.onPreExecute();
+        }
+        @Override
+        protected Boolean doInBackground(Void... params)
+        {
+            //getting columns list
+            List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
+            info.add(new BasicNameValuePair("email",LoginActivity.getServerAccount().getEmail()));
+            // making HTTP request
+            JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_orders,"POST",info);
+            try
+            {
+                JSONArray itemsArrayList=null;
+                int success=jsonObject.getInt(TAG_SUCCESS);
+                if(success==1)
+                {
+                    pendingCount[1] = 0;
+                    itemsArrayList=jsonObject.getJSONArray("orders");
+                    for(int c=0; c<itemsArrayList.length(); c+=1)
+                    {
+                        JSONObject jsonObjectNotis=itemsArrayList.getJSONObject(c);
+                        int order_status=jsonObjectNotis.getInt("order_status");
+                        int count = jsonObjectNotis.getInt("count");
+                        //-2 = unpaid, -1 = paid, 0 = deleted, 1 = pending, 2 = ..... until 5 = finished
+                        switch(order_status)
+                        {
+                            //this is pending orders that have been paid
+                            case -1:
+                                pendingCount[1]+=count;
+                                break;
+                            //these are pending orders that have not been paid
+                            case 1:
+                                pendingCount[1]+=count;
+                            case 2:
+                                paymentCount[1]= count;
+                                break;
+                            case 3:
+                               inProgressCount[1]=count;
+                                break;
+                            case 4:
+                               deliveryCount[1] = count;
+                                break;
+                            case 5:
+                               finishedCount[1] = count;
+                                break;
+                        }
+
+                    }
+                    return true;
+                }
+                else
+                {
+                    String message=jsonObject.getString(TAG_MESSAGE);
+                    Log.e(TAG_MESSAGE,""+message);
+                    return false;
+                }
+            }
+            catch (JSONException e)
+            {
+                Log.e("JSON",""+e.getMessage());
+                return false;
+            }
+        }
+
+
+        @Override
+        protected void onPostExecute(final Boolean successful) {
+
+            if (successful)
+            {
+                updateGui();
             }
 
         }

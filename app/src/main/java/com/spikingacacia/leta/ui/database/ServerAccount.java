@@ -1,6 +1,8 @@
 package com.spikingacacia.leta.ui.database;
 
-public class ServerAccount
+import java.io.Serializable;
+
+public class ServerAccount implements Serializable
 {
     private int persona=0; // 0= seller, 1= waiter
     private int id;
@@ -27,12 +29,14 @@ public class ServerAccount
     private String mCode;
     private double commision;
     private String mpesaMobile;
+    private String mFirebaseTokenId;
 
     public ServerAccount(){}
 
     public ServerAccount(int persona, int id, String email, String password, String username, String country, int online, int deliver, String diningOptions, String location, int orderRadius, int orderFormat,
                          int numberOfTables, String imageType, String dateadded, String datechanged, String dateToday,
-                         int waiter_id, String waiter_email, String waiter_names, String waiterImageType, String mCode, double commision, String mpesaMobile) {
+                         int waiter_id, String waiter_email, String waiter_names, String waiterImageType, String mCode, double commision, String mpesaMobile, String firebaseTokenId)
+    {
         this.persona=persona;
         this.id = id;
         this.email = email;
@@ -57,6 +61,7 @@ public class ServerAccount
         this.mCode = mCode;
         this.commision = commision;
         this.mpesaMobile = mpesaMobile;
+        this.mFirebaseTokenId = firebaseTokenId;
     }
     public int getPersona()
     {
@@ -265,5 +270,14 @@ public class ServerAccount
     public void setMpesaMobile(String mpesaMobile)
     {
         this.mpesaMobile = mpesaMobile;
+    }
+    public String getmFirebaseTokenId()
+    {
+        return mFirebaseTokenId;
+    }
+
+    public void setmFirebaseTokenId(String mFirebaseTokenId)
+    {
+        this.mFirebaseTokenId = mFirebaseTokenId;
     }
 }

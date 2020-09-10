@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
 import com.spikingacacia.leta.ui.LoginActivity;
@@ -135,6 +136,24 @@ public class OrdersActivity extends AppCompatActivity
         Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", number, null));
         startActivity(intent);
     }
+   /* private void sendFirebaseMessage()
+    {
+        // This registration token comes from the client FCM SDKs.
+        String registrationToken = "YOUR_REGISTRATION_TOKEN";
+
+// See documentation on defining a message payload.
+        Message message = Message.builder()
+                .putData("score", "850")
+                .putData("time", "2:45")
+                .setToken(registrationToken)
+                .build();
+
+// Send a message to the device corresponding to the provided
+// registration token.
+        String response = FirebaseMessaging.getInstance().send(message);
+// Response is a message ID string.
+        System.out.println("Successfully sent message: " + response);
+    }*/
 
     private class BOrdersFormatUpdateTask extends AsyncTask<Void, Void, Boolean>
     {
@@ -196,7 +215,6 @@ public class OrdersActivity extends AppCompatActivity
         }
         @Override
         protected void onPostExecute(final Boolean successful) {
-            Log.d("SORDERUPDATE: ","finished....");
             if (successful)
             {
                 //update the order on the list
@@ -210,5 +228,6 @@ public class OrdersActivity extends AppCompatActivity
             }
         }
     }
+
 
 }

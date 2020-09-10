@@ -26,6 +26,8 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.database.DMenu;
 import com.spikingacacia.leta.ui.database.ServerAccount;
@@ -33,6 +35,7 @@ import com.spikingacacia.leta.ui.billing.BillingManager;
 import com.spikingacacia.leta.ui.billing.BillingProvider;
 import com.spikingacacia.leta.ui.main.MainActivity;
 import com.spikingacacia.leta.ui.skulist.AcquireFragment;
+import com.spikingacacia.leta.ui.util.MyFirebaseMessagingService;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -84,6 +87,7 @@ public class LoginActivity extends AppCompatActivity
     private RadioButton radioWaiter;
     private ProgressBar progressBar;
     private View mainView;
+    public final static String SAVE_INSTANCE_SERVER_ACCOUNT = "save_server_account";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -154,8 +158,8 @@ public class LoginActivity extends AppCompatActivity
             //proceed to sign in
             if(account!=null)
             {
-                Intent intent = new Intent(this, OrdersService.class);
-                startService(intent);
+                //Intent intent = new Intent(this, OrdersService.class);
+                //startService(intent);
                 proceedToLogin();
             }
             else
@@ -586,6 +590,7 @@ public class LoginActivity extends AppCompatActivity
                     serverAccount.setDateadded(accountObject.getString("dateadded"));
                     serverAccount.setDatechanged(accountObject.getString("datechanged"));
                     serverAccount.setDateToday(accountObject.getString("today"));
+                    serverAccount.setmFirebaseTokenId(accountObject.getString("firebase_token_id"));
                     return true;
                 }
                 else
@@ -610,7 +615,6 @@ public class LoginActivity extends AppCompatActivity
             if (successfull) {
                 Log.d(TAG,"successful login admin");
                 preferences.setPersona(1);
-
                 Intent intent=new Intent(LoginActivity.this, MainActivity.class);
                 //prevent this activity from flickering as we call the next one
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

@@ -113,6 +113,8 @@ public class menuFragment extends Fragment
         mymenuRecyclerViewAdapter = new MymenuRecyclerViewAdapter(mListener, getContext(), getChildFragmentManager());
         recyclerViewMenu.setAdapter(mymenuRecyclerViewAdapter);
         recyclerViewMenu.addItemDecoration(new SpacesItemDecoration(16));
+        new CategoriesTask().execute((Void)null);
+        new MenuTask().execute((Void)null);
         return view;
     }
     @Override
@@ -122,7 +124,8 @@ public class menuFragment extends Fragment
         if (context instanceof OnListFragmentInteractionListener)
         {
             mListener = (OnListFragmentInteractionListener) context;
-        } else
+        }
+        else
         {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
@@ -133,14 +136,8 @@ public class menuFragment extends Fragment
     public void onDetach()
     {
         super.onDetach();
-        mListener = null;
-    }
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-        new CategoriesTask().execute((Void)null);
-        new MenuTask().execute((Void)null);
+        ///TODO: find out why ondettach is being called after oncreaviewview after navigating back to the fragment
+       // mListener = null;
     }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

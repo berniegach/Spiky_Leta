@@ -12,6 +12,8 @@ import android.widget.ProgressBar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.SettingsActivity;
@@ -31,6 +33,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.spikingacacia.leta.ui.database.ServerAccount;
 import com.spikingacacia.leta.ui.main.dashboard.DashboardFragment;
 import com.spikingacacia.leta.ui.main.home.AddItemActivity;
 import com.spikingacacia.leta.ui.main.home.EditItemActivity;
@@ -40,6 +43,7 @@ import com.spikingacacia.leta.ui.main.wallet.WalletActivity;
 import com.spikingacacia.leta.ui.orders.OrdersActivity;
 import com.spikingacacia.leta.ui.qr_code.QrCodeActivity;
 import com.spikingacacia.leta.ui.tasty.TastyBoardActivity;
+import com.spikingacacia.leta.ui.util.MyFirebaseMessagingService;
 import com.spikingacacia.leta.ui.waiters.WaitersActivity;
 
 
@@ -107,6 +111,26 @@ public class MainActivity extends AppCompatActivity implements
 
         categoriesLinkedHashMap = new LinkedHashMap<>();
         menuLinkedHashMap = new LinkedHashMap<>();
+        checkFirebaseToken();
+    }
+    // This callback is called only when there is a saved instance that is previously saved by using
+// onSaveInstanceState(). We restore some state in onCreate(), while we can optionally restore
+// other state here, possibly usable after onStart() has completed.
+// The savedInstanceState Bundle is same as the one used in onCreate().
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState)
+    {
+        LoginActivity.setServerAccount((ServerAccount) savedInstanceState.getSerializable(LoginActivity.SAVE_INSTANCE_SERVER_ACCOUNT));
+        //Log.d(TAG,"main_a has been recreated therefoew we restore server account");
+    }
+    // invoked when the activity may be temporarily destroyed, save the instance state here
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        outState.putSerializable(LoginActivity.SAVE_INSTANCE_SERVER_ACCOUNT,LoginActivity.getServerAccount());
+        //Log.d(TAG,"main_a is been destroyed threfore we call onsaved instance");
+        // call superclass to save any view hierarchy
+        super.onSaveInstanceState(outState);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -214,6 +238,24 @@ public class MainActivity extends AppCompatActivity implements
         //prevent this activity from flickering as we call the next one
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
+    }
+    private void checkFirebaseToken()
+    {
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e(TAG, "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                        if(!LoginActivity.getServerAccount().getmFirebaseTokenId().contentEquals(token))
+                            new MyFirebaseMessagingService.UpdateTokenTask(token).execute((Void)null);
+                    }
+                });
     }
 
 

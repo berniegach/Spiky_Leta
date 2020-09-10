@@ -320,7 +320,7 @@ public class OrderOverviewFragment extends Fragment
             {
                 progressBar.setProgress(orderStatus);
             }
-            if(mOrderStatus == 3 || mOrderStatus == 4)
+            if(mOrderStatus == 3 )
             {
                 url_code_start_delivery = orders.getUrlCodeStartDelivery();
                 url_code_end_delivery = orders.getUrlCodeEndDelivery();
@@ -377,14 +377,7 @@ public class OrderOverviewFragment extends Fragment
             }
 
         }
-        else if(mOrderStatus == 4)
-        {
-            if(url_code_end_delivery.length()>10)
-            {
-                image_qr_code.setVisibility(View.VISIBLE);
-                image_qr_code.setImageBitmap(Utils.generateQRCode(url_code_end_delivery));
-            }
-        }
+
         return view;
     }
     @Override
