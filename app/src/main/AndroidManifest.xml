@@ -13,6 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".ui.main.home.EditGroupActivity"/>
+        <activity android:name=".ui.main.home.AddGroupActivity"/>
+        <activity android:name=".ui.main.home.AddCategoryActivity"/>
+        <activity android:name=".ui.main.home.EditCategoryActivity"/>
         <activity android:name=".ui.tasty.AddTastyBoardActivity"/>
         <activity android:name=".ui.tasty.TastyBoardActivity" />
         <activity android:name=".ui.main.wallet.WalletActivity" />

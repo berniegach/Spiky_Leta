@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.bumptech.glide.Glide;
+import com.google.android.material.chip.Chip;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.AppController;
 import com.spikingacacia.leta.ui.database.Categories;
@@ -28,7 +30,7 @@ public class MymenuCategoryRecyclerViewAdapter extends RecyclerView.Adapter<Myme
     private List<Categories> mValues;
     private final OnListFragmentInteractionListener mListener;
     private Context context;
-    private TextView t_last_checked = null;
+    private Chip t_last_checked = null;
 
 
     public MymenuCategoryRecyclerViewAdapter(OnListFragmentInteractionListener listener, Context context)
@@ -51,7 +53,46 @@ public class MymenuCategoryRecyclerViewAdapter extends RecyclerView.Adapter<Myme
     {
         holder.mItem = mValues.get(position);
         holder.mTitleView.setText(mValues.get(position).getTitle());
-        holder.mView.setOnClickListener(new View.OnClickListener() {
+        holder.mTitleView.setOnLongClickListener(new View.OnLongClickListener()
+        {
+            @Override
+            public boolean onLongClick(View v)
+            {
+                if(mListener!=null)
+                    mListener.onEditCategory(holder.mItem);
+                return false;
+            }
+        });
+        holder.mTitleView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                if(isChecked)
+                {
+                    if(t_last_checked != null)
+                        t_last_checked.setChecked(false);
+                    menuFragment.mymenuRecyclerViewAdapter.filterCategory(mValues.get(position).getId());
+                    t_last_checked = holder.mTitleView;
+                }
+                else
+                {
+
+                }
+
+            }
+        });
+        holder.mView.setOnLongClickListener(new View.OnLongClickListener()
+        {
+            @Override
+            public boolean onLongClick(View v)
+            {
+                if(mListener!=null)
+                    mListener.onEditCategory(holder.mItem);
+                return false;
+            }
+        });
+       /* holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(holder.mTitleView.getCurrentTextColor() == context.getResources().getColor(R.color.colorAccent))
@@ -73,7 +114,7 @@ public class MymenuCategoryRecyclerViewAdapter extends RecyclerView.Adapter<Myme
         });
         // thumbnail image
         String url=image_url+String.valueOf(mValues.get(position).getId())+'_'+String.valueOf(mValues.get(position).getImageType());
-        Glide.with(context).load(url).into(holder.thumbNail);
+        Glide.with(context).load(url).into(holder.thumbNail);*/
     }
 
     @Override
@@ -85,16 +126,16 @@ public class MymenuCategoryRecyclerViewAdapter extends RecyclerView.Adapter<Myme
     public class ViewHolder extends RecyclerView.ViewHolder
     {
         public final View mView;
-        public final ImageView thumbNail;
-        public final TextView mTitleView;
+        //public final ImageView thumbNail;
+        public final Chip mTitleView;
         public Categories mItem;
 
         public ViewHolder(View view)
         {
             super(view);
             mView = view;
-            thumbNail =  view.findViewById(R.id.image);
-            mTitleView = (TextView) view.findViewById(R.id.title);
+            //thumbNail =  view.findViewById(R.id.image);
+            mTitleView = view.findViewById(R.id.title);
         }
 
         @Override

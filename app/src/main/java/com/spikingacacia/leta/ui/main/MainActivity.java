@@ -33,9 +33,14 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.spikingacacia.leta.ui.database.Groups;
 import com.spikingacacia.leta.ui.database.ServerAccount;
 import com.spikingacacia.leta.ui.main.dashboard.DashboardFragment;
+import com.spikingacacia.leta.ui.main.home.AddCategoryActivity;
+import com.spikingacacia.leta.ui.main.home.AddGroupActivity;
 import com.spikingacacia.leta.ui.main.home.AddItemActivity;
+import com.spikingacacia.leta.ui.main.home.EditCategoryActivity;
+import com.spikingacacia.leta.ui.main.home.EditGroupActivity;
 import com.spikingacacia.leta.ui.main.home.EditItemActivity;
 import com.spikingacacia.leta.ui.main.home.menuFragment;
 import com.spikingacacia.leta.ui.main.orders.OrdersOverviewFragment;
@@ -61,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements
     private View mainFragment;
     private NavController navController;
     public static LinkedHashMap<Integer, Categories> categoriesLinkedHashMap;
+    public static LinkedHashMap<Integer, Groups> groupsLinkedHashMap;
     public static LinkedHashMap<Integer, DMenu> menuLinkedHashMap;
     private String TAG ="MainA";
     /*ActivityResultLauncher<Intent> mGetBarcode = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -110,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements
         mainFragment = findViewById(R.id.nav_host_fragment);
 
         categoriesLinkedHashMap = new LinkedHashMap<>();
+        groupsLinkedHashMap = new LinkedHashMap<>();
         menuLinkedHashMap = new LinkedHashMap<>();
         checkFirebaseToken();
     }
@@ -323,6 +330,45 @@ public class MainActivity extends AppCompatActivity implements
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
     }
+
+    @Override
+    public void onAddNewCategory()
+    {
+        Intent intent=new Intent(MainActivity.this, AddCategoryActivity.class);
+        //prevent this activity from flickering as we call the next one
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onEditCategory(Categories category)
+    {
+        Intent intent=new Intent(MainActivity.this, EditCategoryActivity.class);
+        //prevent this activity from flickering as we call the next one
+        intent.putExtra("category",category);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onAddNewGroup()
+    {
+        Intent intent=new Intent(MainActivity.this, AddGroupActivity.class);
+        //prevent this activity from flickering as we call the next one
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onEditGroup(Groups group)
+    {
+        Intent intent=new Intent(MainActivity.this, EditGroupActivity.class);
+        //prevent this activity from flickering as we call the next one
+        intent.putExtra("group",group);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(intent);
+    }
+
     private void initEmojiCompat() {
         final EmojiCompat.Config config;
         if (USE_BUNDLED_EMOJI) {

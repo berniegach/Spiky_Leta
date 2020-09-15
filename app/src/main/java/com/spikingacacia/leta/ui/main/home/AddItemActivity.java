@@ -2,6 +2,7 @@ package com.spikingacacia.leta.ui.main.home;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -30,10 +31,14 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
 import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.database.Categories;
+import com.spikingacacia.leta.ui.database.Groups;
 import com.spikingacacia.leta.ui.main.MainActivity;
 import com.spikingacacia.leta.ui.util.VolleyMultipartRequest;
 
@@ -71,7 +76,8 @@ public class AddItemActivity extends AppCompatActivity
         progressBar = findViewById(R.id.progress);
         mainView = findViewById(R.id.main);
         imageView = findViewById(R.id.image);
-        final Spinner spinner = findViewById(R.id.spinner);
+        final ChipGroup chipGroup = findViewById(R.id.chip_group_category);
+        final ChipGroup chipGroupGroup = findViewById(R.id.chip_group_group);
         final EditText editItem = findViewById(R.id.item);
         final EditText editDescription = findViewById(R.id.description);
         ImageButton add_sizes_Button = findViewById(R.id.add_sizes);
@@ -89,10 +95,49 @@ public class AddItemActivity extends AppCompatActivity
         });
 
         //categories
-        final List<String> categories= getCategories();
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getBaseContext(),   android.R.layout.simple_spinner_item, categories);
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
-        spinner.setAdapter(spinnerArrayAdapter);
+        Iterator iterator = MainActivity.categoriesLinkedHashMap.entrySet().iterator();
+        while(iterator.hasNext())
+        {
+            LinkedHashMap.Entry<Integer, Categories>set=(LinkedHashMap.Entry<Integer, Categories>) iterator.next();
+            int id=set.getKey();
+            Categories categories =set.getValue();
+            Chip chip = new Chip(AddItemActivity.this);
+            chip.setText(categories.getTitle());
+            chip.setTag(categories.getId());
+            chip.setClickable(true);
+            chip.setCheckable(true);
+            chipGroup.addView(chip);
+        }
+        chipGroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(ChipGroup group, int checkedId)
+            {
+                chipGroupGroup.removeAllViews();
+                Chip chip = chipGroup.findViewById( chipGroup.getCheckedChipId() );
+                if(chip != null)
+                {
+                    int category_id = (int)chip.getTag();
+                    Iterator iterator = MainActivity.groupsLinkedHashMap.entrySet().iterator();
+                    while(iterator.hasNext())
+                    {
+                        LinkedHashMap.Entry<Integer, Groups>set=(LinkedHashMap.Entry<Integer, Groups>) iterator.next();
+                        int id=set.getKey();
+                        Groups groups = set.getValue();
+                        if(groups.getCategoryId() != category_id)
+                            continue;
+                        Chip chip_group = new Chip(AddItemActivity.this);
+                        chip_group.setText(groups.getTitle());
+                        chip_group.setTag(groups.getId());
+                        chip_group.setClickable(true);
+                        chip_group.setCheckable(true);
+                        chipGroupGroup.addView(chip_group);
+                    }
+
+                }
+
+            }
+        });
 
         //add sizes
         add_sizes_Button.setOnClickListener(new View.OnClickListener()
@@ -116,6 +161,21 @@ public class AddItemActivity extends AppCompatActivity
                     Toast.makeText(getBaseContext(),"Please select the image", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                //category
+                Chip chip = chipGroup.findViewById( chipGroup.getCheckedChipId() );
+                if(chip == null)
+                {
+                    Toast.makeText(AddItemActivity.this,"Category needed",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                int category_id = (int)chip.getTag();
+                //group
+                int group_id = -1;
+                Chip chip_group = chipGroupGroup.findViewById( chipGroupGroup.getCheckedChipId() );
+                if(chip_group != null)
+                {
+                    group_id = (int)chip_group.getTag();
+                }
                 String item = editItem.getText().toString();
                 if(TextUtils.isEmpty(item))
                 {
@@ -134,16 +194,16 @@ public class AddItemActivity extends AppCompatActivity
                     return;
                 }
 
-                int category_id = getCategoryId( categories.get(spinner.getSelectedItemPosition()) );
                 //Uploading code
                 try
                 {
-                    new CreateItemTask(item,description,category_id,".jpg", bitmap).execute((Void)null);
+                    new CreateItemTask(item,description,category_id, group_id,".jpg", bitmap).execute((Void)null);
                 }
                 catch (Exception e)
                 {
                     Log.e("uploading",""+e.getMessage());
                 }
+
             }
         });
     }
@@ -360,20 +420,21 @@ public class AddItemActivity extends AppCompatActivity
         private String item;
         private String description;
         private Integer category_id;
+        private Integer group_id;
         private String image_type;
         private Bitmap bitmap;
         private  int insert_id;
         private int success;
-        CreateItemTask(final String item, final String description, final Integer category_id, String image_type, Bitmap bitmap)
+        CreateItemTask(final String item, final String description, final Integer category_id, int group_id, String image_type, Bitmap bitmap)
         {
             showProgress(true);
             this.item = item;
             this.description = description;
             this.category_id = category_id;
+            this.group_id = group_id;
             this.image_type = image_type;
             this.bitmap = bitmap;
             jsonParser = new JSONParser();
-            Log.d("CRATEITEM"," started...");
         }
         @Override
         protected Boolean doInBackground(Void... params)
@@ -384,6 +445,7 @@ public class AddItemActivity extends AppCompatActivity
             info.add(new BasicNameValuePair("item",item));
             info.add(new BasicNameValuePair("description",description));
             info.add(new BasicNameValuePair("category_id",Integer.toString(category_id)));
+            info.add(new BasicNameValuePair("group_id",Integer.toString(group_id)));
             info.add(new BasicNameValuePair("sizes",sizes));
             info.add(new BasicNameValuePair("prices",prices));
             info.add(new BasicNameValuePair("image_type",image_type));

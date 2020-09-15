@@ -35,12 +35,15 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.AppController;
 import com.spikingacacia.leta.ui.JSONParser;
 import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.database.Categories;
 import com.spikingacacia.leta.ui.database.DMenu;
+import com.spikingacacia.leta.ui.database.Groups;
 import com.spikingacacia.leta.ui.main.MainActivity;
 import com.spikingacacia.leta.ui.util.VolleyMultipartRequest;
 
@@ -85,7 +88,8 @@ public class EditItemActivity extends AppCompatActivity
         progressBar = findViewById(R.id.progress);
         mainView = findViewById(R.id.main);
         imageView = findViewById(R.id.image);
-        final Spinner spinner = findViewById(R.id.spinner);
+        final ChipGroup chipGroup = findViewById(R.id.chip_group_category);
+        final ChipGroup chipGroupGroup = findViewById(R.id.chip_group_group);
         final EditText editItem = findViewById(R.id.item);
         final EditText editDescription = findViewById(R.id.description);
         ImageButton add_sizes_Button = findViewById(R.id.add_sizes);
@@ -104,11 +108,70 @@ public class EditItemActivity extends AppCompatActivity
         });
 
         //categories
-        final List<String> categories= getCategories();
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getBaseContext(),   android.R.layout.simple_spinner_item, categories);
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
-        spinner.setAdapter(spinnerArrayAdapter);
-        spinner.setSelection(getCategoryIndexInSpinner(dMenu.getCategoryId()));
+        Iterator iterator = MainActivity.categoriesLinkedHashMap.entrySet().iterator();
+        while(iterator.hasNext())
+        {
+            LinkedHashMap.Entry<Integer, Categories>set=(LinkedHashMap.Entry<Integer, Categories>) iterator.next();
+            int id=set.getKey();
+            Categories categories =set.getValue();
+            Chip chip = new Chip(EditItemActivity.this);
+            chip.setText(categories.getTitle());
+            chip.setTag(categories.getId());
+            chip.setClickable(true);
+            chip.setCheckable(true);
+            chipGroup.addView(chip);
+            if(dMenu.getCategoryId() == categories.getId())
+                chip.setChecked(true);
+        }
+        //groups
+        Iterator iterator_group = MainActivity.groupsLinkedHashMap.entrySet().iterator();
+        while(iterator_group.hasNext())
+        {
+            LinkedHashMap.Entry<Integer, Groups>set=(LinkedHashMap.Entry<Integer, Groups>) iterator_group.next();
+            int id=set.getKey();
+            Groups groups = set.getValue();
+            Chip chip = new Chip(EditItemActivity.this);
+            chip.setText(groups.getTitle());
+            chip.setTag(groups.getId());
+            chip.setClickable(true);
+            chip.setCheckable(true);
+            chipGroupGroup.addView(chip);
+            if( dMenu.getCategoryId() == groups.getCategoryId() && dMenu.getGroupId() == groups.getId())
+            {
+                chip.setChecked(true);
+            }
+
+        }
+        chipGroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(ChipGroup group, int checkedId)
+            {
+                chipGroupGroup.removeAllViews();
+                Chip chip = chipGroup.findViewById( chipGroup.getCheckedChipId() );
+                if(chip != null)
+                {
+                    int category_id = (int)chip.getTag();
+                    Iterator iterator = MainActivity.groupsLinkedHashMap.entrySet().iterator();
+                    while(iterator.hasNext())
+                    {
+                        LinkedHashMap.Entry<Integer, Groups>set=(LinkedHashMap.Entry<Integer, Groups>) iterator.next();
+                        int id=set.getKey();
+                        Groups groups = set.getValue();
+                        if(groups.getCategoryId() != category_id)
+                            continue;
+                        Chip chip_group = new Chip(EditItemActivity.this);
+                        chip_group.setText(groups.getTitle());
+                        chip_group.setTag(groups.getId());
+                        chip_group.setClickable(true);
+                        chip_group.setCheckable(true);
+                        chipGroupGroup.addView(chip_group);
+                    }
+
+                }
+
+            }
+        });
 
         //image
         String image_url= base_url+"src/items_pics/";
@@ -143,6 +206,21 @@ public class EditItemActivity extends AppCompatActivity
                     Toast.makeText(getBaseContext(),"Please select the image", Toast.LENGTH_SHORT).show();
                     return;
                 }*/
+                //category
+                Chip chip = chipGroup.findViewById( chipGroup.getCheckedChipId() );
+                if(chip == null)
+                {
+                    Toast.makeText(EditItemActivity.this,"Category needed",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                int category_id = (int)chip.getTag();
+                //group
+                int group_id = -1;
+                Chip chip_group = chipGroupGroup.findViewById( chipGroupGroup.getCheckedChipId() );
+                if(chip_group != null)
+                {
+                    group_id = (int)chip_group.getTag();
+                }
                 String item = editItem.getText().toString();
                 if(TextUtils.isEmpty(item))
                 {
@@ -161,11 +239,10 @@ public class EditItemActivity extends AppCompatActivity
                     return;
                 }
 
-                int category_id = getCategoryId( categories.get(spinner.getSelectedItemPosition()) );
                 //Uploading code
                 try
                 {
-                    new UpdateItemTask(dMenu.getId(),item,description,category_id, dMenu.getLinkedItems(),".jpg").execute((Void)null);
+                    new UpdateItemTask(dMenu.getId(),item,description,category_id, group_id, dMenu.getLinkedItems(),".jpg").execute((Void)null);
                 }
                 catch (Exception e)
                 {
@@ -469,22 +546,23 @@ public class EditItemActivity extends AppCompatActivity
         private String item;
         private String description;
         private Integer category_id;
+        private Integer group_id;
         private String linked_items;
         //private String selling_price;
         private String image_type;
         private int success;
-        UpdateItemTask(int item_id, final String item, final String description, final Integer category_id, String linked_items, String image_type)
+        UpdateItemTask(int item_id, final String item, final String description, final Integer category_id, int group_id, String linked_items, String image_type)
         {
             showProgress(true);
             this.item_id = item_id;
             this.item = item;
             this.description = description;
             this.category_id = category_id;
+            this.group_id = group_id;
             this.linked_items = linked_items;
             //this.selling_price = selling_price;
             this.image_type = image_type;
             jsonParser = new JSONParser();
-            Log.d("CRATEITEM"," started...");
         }
         @Override
         protected Boolean doInBackground(Void... params)
@@ -494,7 +572,7 @@ public class EditItemActivity extends AppCompatActivity
             info.add(new BasicNameValuePair("seller_email",LoginActivity.getServerAccount().getEmail()));
             info.add(new BasicNameValuePair("item_id",String.valueOf(item_id)));
             info.add(new BasicNameValuePair("category_id",Integer.toString(category_id)));
-            info.add(new BasicNameValuePair("group_id",Integer.toString(-1)));
+            info.add(new BasicNameValuePair("group_id",Integer.toString(group_id)));
             info.add(new BasicNameValuePair("linked_items",linked_items));
             info.add(new BasicNameValuePair("item",item));
             info.add(new BasicNameValuePair("description",description));

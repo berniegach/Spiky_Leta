@@ -25,6 +25,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -34,11 +35,14 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
 import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.database.Categories;
 import com.spikingacacia.leta.ui.database.DMenu;
+import com.spikingacacia.leta.ui.database.Groups;
 import com.spikingacacia.leta.ui.main.MainActivity;
 import com.spikingacacia.leta.ui.util.VolleyMultipartRequest;
 import com.spikingacacia.leta.ui.waiters.WaitersActivity;
@@ -67,11 +71,15 @@ public class menuFragment extends Fragment
 
     private static final String ARG_COLUMN_COUNT = "column-count";
     private RecyclerView recyclerViewCategories;
+    private RecyclerView recyclerViewGroups;
     private RecyclerView recyclerViewMenu;
     public static  MymenuRecyclerViewAdapter mymenuRecyclerViewAdapter;
     private MymenuCategoryRecyclerViewAdapter mymenuCategoryRecyclerViewAdapter;
+    private MymenuGroupRecyclerViewAdapter mymenuGroupRecyclerViewAdapter;
     private static  OnListFragmentInteractionListener mListener;
     private String TAG = "menuF";
+    private ChipGroup chipGroupCategeories;
+    private ChipGroup chipGroupGroups;
 
     public menuFragment()
     {
@@ -97,9 +105,16 @@ public class menuFragment extends Fragment
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_menu_list, container, false);
-        RecyclerView recyclerViewCategories = view.findViewById(R.id.list_categories);
+        //RecyclerView recyclerViewCategories = view.findViewById(R.id.list_categories);
+        chipGroupCategeories = view.findViewById(R.id.chip_group_category);
+        //RecyclerView recyclerViewGroups = view.findViewById(R.id.list_groups);
+        chipGroupGroups = view.findViewById(R.id.chip_group_group);
         mymenuCategoryRecyclerViewAdapter = new MymenuCategoryRecyclerViewAdapter(mListener, getContext());
-        recyclerViewCategories.setAdapter(mymenuCategoryRecyclerViewAdapter);
+        mymenuGroupRecyclerViewAdapter = new MymenuGroupRecyclerViewAdapter(mListener, getContext());
+        //recyclerViewCategories.setAdapter(mymenuCategoryRecyclerViewAdapter);
+        //recyclerViewGroups.setAdapter(mymenuGroupRecyclerViewAdapter);
+        Button b_add_category = view.findViewById(R.id.add_category);
+        Button b_add_group = view.findViewById(R.id.add_groups);
 
         recyclerViewMenu = view.findViewById(R.id.list);
         Context context = view.getContext();
@@ -113,7 +128,41 @@ public class menuFragment extends Fragment
         mymenuRecyclerViewAdapter = new MymenuRecyclerViewAdapter(mListener, getContext(), getChildFragmentManager());
         recyclerViewMenu.setAdapter(mymenuRecyclerViewAdapter);
         recyclerViewMenu.addItemDecoration(new SpacesItemDecoration(16));
+        b_add_category.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if(mListener!=null)
+                    mListener.onAddNewCategory();
+            }
+        });
+        b_add_group.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if(mListener!=null)
+                    mListener.onAddNewGroup();
+            }
+        });
+        chipGroupCategeories.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(ChipGroup group, int checkedId)
+            {
+                Chip chip = chipGroupCategeories.findViewById( chipGroupCategeories.getCheckedChipId() );
+                if(chip != null)
+                {
+                    int category_id = (int)chip.getTag();
+                    mymenuRecyclerViewAdapter.filterCategory(category_id);
+                }
+                else
+                    mymenuRecyclerViewAdapter.filterCategory(0);
+            }
+        });
         new CategoriesTask().execute((Void)null);
+        new GroupsTask().execute((Void)null);
         new MenuTask().execute((Void)null);
         return view;
     }
@@ -189,6 +238,10 @@ public class menuFragment extends Fragment
     {
         void onAddNewItemClicked();
         void onEditItemClicked(DMenu dMenu);
+        void onAddNewCategory();
+        void onEditCategory(Categories category);
+        void onAddNewGroup();
+        void onEditGroup(Groups group);
 
     }
     private int getHorizontalItemCount()
@@ -236,6 +289,52 @@ public class menuFragment extends Fragment
             }
         }
     }
+    private void addCategoryChipLayouts(List<Categories>list)
+    {
+        for(int c=0; c<list.size(); c++)
+        {
+            Categories categories =list.get(c);
+            Chip chip = new Chip(getContext());
+            chip.setText(categories.getTitle());
+            chip.setTag(categories.getId());
+            chip.setClickable(true);
+            chip.setCheckable(true);
+            chipGroupCategeories.addView(chip);
+            chip.setOnLongClickListener(new View.OnLongClickListener()
+            {
+                @Override
+                public boolean onLongClick(View v)
+                {
+                    if(mListener!=null)
+                        mListener.onEditCategory(categories);
+                    return false;
+                }
+            });
+        }
+    }
+    private void addGroupChipLayouts(List<Groups>list)
+    {
+        for(int c=0; c<list.size(); c++)
+        {
+            Groups groups =list.get(c);
+            Chip chip = new Chip(getContext());
+            chip.setText(groups.getTitle());
+            chip.setTag(groups.getId());
+            chip.setClickable(true);
+            chip.setCheckable(true);
+            chipGroupGroups.addView(chip);
+            chip.setOnLongClickListener(new View.OnLongClickListener()
+            {
+                @Override
+                public boolean onLongClick(View v)
+                {
+                    if(mListener!=null)
+                        mListener.onEditGroup(groups);
+                    return false;
+                }
+            });
+        }
+    }
 
 
 
@@ -260,7 +359,7 @@ public class menuFragment extends Fragment
             List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
             info.add(new BasicNameValuePair("email",LoginActivity.getServerAccount().getEmail()));
             // making HTTP request
-            String url_get_s_categories = base_url + "get_categories.php";
+            String url_get_s_categories = base_url + "get_seller_categories.php";
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_categories,"POST",info);
             Log.d("sCategories",""+jsonObject.toString());
             try
@@ -304,7 +403,82 @@ public class menuFragment extends Fragment
 
             if (successful)
             {
-                mymenuCategoryRecyclerViewAdapter.listUpdated(list);
+                //mymenuCategoryRecyclerViewAdapter.listUpdated(list);
+                addCategoryChipLayouts(list);
+
+            }
+            else
+            {
+
+            }
+        }
+    }
+    private class GroupsTask extends AsyncTask<Void, Void, Boolean>
+    {
+        private String TAG_SUCCESS="success";
+        private String TAG_MESSAGE="message";
+        private  JSONParser jsonParser;
+        private List<Groups> list;
+        @Override
+        protected void onPreExecute()
+        {
+            jsonParser = new JSONParser();
+            list = new ArrayList<>();
+            super.onPreExecute();
+        }
+        @Override
+        protected Boolean doInBackground(Void... params)
+        {
+            //getting columns list
+            List<NameValuePair> info=new ArrayList<NameValuePair>(); //info for staff count
+            info.add(new BasicNameValuePair("email",LoginActivity.getServerAccount().getEmail()));
+            // making HTTP request
+            String url_get_s_categories = base_url + "get_seller_groups.php";
+            JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_categories,"POST",info);
+            try
+            {
+                JSONArray categoriesArrayList=null;
+                int success=jsonObject.getInt(TAG_SUCCESS);
+                if(success==1)
+                {
+                    categoriesArrayList=jsonObject.getJSONArray("groups");
+                    for(int count=0; count<categoriesArrayList.length(); count+=1)
+                    {
+                        JSONObject jsonObjectNotis=categoriesArrayList.getJSONObject(count);
+                        int id=jsonObjectNotis.getInt("id");
+                        int category_id=jsonObjectNotis.getInt("category_id");
+                        String title=jsonObjectNotis.getString("title");
+                        String description=jsonObjectNotis.getString("description");
+                        String image_type=jsonObjectNotis.getString("image_type");
+                        String date_added=jsonObjectNotis.getString("date_added");
+                        String date_changed=jsonObjectNotis.getString("date_changed");
+
+                        Groups groups =new Groups(id,category_id,title,description,image_type,date_added,date_changed);
+                        list.add(groups);
+                        MainActivity.groupsLinkedHashMap.put(id,groups);
+                    }
+                    return true;
+                }
+                else
+                {
+                    String message=jsonObject.getString(TAG_MESSAGE);
+                    Log.e(TAG_MESSAGE,""+message);
+                    return false;
+                }
+            }
+            catch (JSONException e)
+            {
+                Log.e("JSON",""+e.getMessage());
+                return false;
+            }
+        }
+        @Override
+        protected void onPostExecute(final Boolean successful) {
+
+            if (successful)
+            {
+                //mymenuGroupRecyclerViewAdapter.listUpdated(list);
+                addGroupChipLayouts(list);
             }
             else
             {

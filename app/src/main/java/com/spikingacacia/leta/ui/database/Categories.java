@@ -1,6 +1,8 @@
 package com.spikingacacia.leta.ui.database;
 
-public class Categories
+import java.io.Serializable;
+
+public class Categories  implements Serializable
 {
     private int id;
     private String title;
