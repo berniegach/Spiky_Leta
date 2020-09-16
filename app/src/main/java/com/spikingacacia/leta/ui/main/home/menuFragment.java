@@ -66,7 +66,9 @@ import static com.spikingacacia.leta.ui.LoginActivity.base_url;
 /**
  * A fragment representing a list of Items.
  */
-public class menuFragment extends Fragment
+public class menuFragment extends Fragment implements ItemEditOptionsDialogFragment.EventListener,
+        MymenuRecyclerViewAdapter.OptionsListener,
+        LinkedItemListDialogFragment.UpdateListener
 {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -80,6 +82,7 @@ public class menuFragment extends Fragment
     private String TAG = "menuF";
     private ChipGroup chipGroupCategeories;
     private ChipGroup chipGroupGroups;
+    private static List<DMenu>list;
 
     public menuFragment()
     {
@@ -125,7 +128,7 @@ public class menuFragment extends Fragment
         {
             recyclerViewMenu.setLayoutManager(new GridLayoutManager(context, getHorizontalItemCount()));
         }
-        mymenuRecyclerViewAdapter = new MymenuRecyclerViewAdapter(mListener, getContext(), getChildFragmentManager());
+        mymenuRecyclerViewAdapter = new MymenuRecyclerViewAdapter(mListener, getContext(), getChildFragmentManager(),  this);
         recyclerViewMenu.setAdapter(mymenuRecyclerViewAdapter);
         recyclerViewMenu.addItemDecoration(new SpacesItemDecoration(16));
         b_add_category.setOnClickListener(new View.OnClickListener()
@@ -231,6 +234,43 @@ public class menuFragment extends Fragment
             }
         });
 
+    }
+
+/*
+*    implementation of LinkedItemListDialogFragment
+ */
+    @Override
+    public void onLinkedItemUpdateDone(int menu_id, String linked_items)
+    {
+        for(int c=0; c<list.size(); c++)
+        {
+            DMenu dMenu = list.get(c);
+            if(dMenu.getId() == menu_id)
+                dMenu.setLinkedItems(linked_items);
+        }
+        mymenuRecyclerViewAdapter.listUpdated(list);
+
+    }
+    /*
+     *    implementation of ItemEditOptionsDialogFragment
+     */
+    @Override
+    public void onOptionsMenuSelected(DMenu dMenu, int menu_position, List<DMenu> dMenuList)
+    {
+        ItemEditOptionsDialogFragment.newInstance(dMenu, menu_position, this, dMenuList).show(getChildFragmentManager(), "dialog");
+    }
+
+    @Override
+    public void onLinkItem(DMenu dMenu, int menu_index, List<DMenu> dMenuList)
+    {
+        LinkedItemListDialogFragment.newInstance(dMenu,menu_index,dMenuList,this).show(getChildFragmentManager(), "dialog");
+    }
+
+    @Override
+    public void onEditItemClicked(DMenu dMenu)
+    {
+        if(mListener!=null)
+            mListener.onEditItemClicked(dMenu);
     }
 
 
@@ -497,7 +537,6 @@ public class menuFragment extends Fragment
         private String TAG_SUCCESS="success";
         private String TAG_MESSAGE="message";
         private JSONParser jsonParser;
-        private List<DMenu>list;
         @Override
         protected void onPreExecute()
         {

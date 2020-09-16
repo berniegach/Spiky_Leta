@@ -67,6 +67,7 @@ public class AddItemActivity extends AppCompatActivity
     private Bitmap bitmap;
     private String sizes;
     private String prices;
+    private boolean bitmapChanged = false;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -156,11 +157,11 @@ public class AddItemActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 //upload
-                if (imagePath == null)
+                /*if (imagePath == null)
                 {
                     Toast.makeText(getBaseContext(),"Please select the image", Toast.LENGTH_SHORT).show();
                     return;
-                }
+                }*/
                 //category
                 Chip chip = chipGroup.findViewById( chipGroup.getCheckedChipId() );
                 if(chip == null)
@@ -312,6 +313,7 @@ public class AddItemActivity extends AppCompatActivity
 
                 bitmap = MediaStore.Images.Media.getBitmap(getBaseContext().getContentResolver(), uri);
                 imageView.setImageBitmap(bitmap);
+                bitmapChanged = true;
             }
             catch (Exception e)
             {
@@ -478,7 +480,14 @@ public class AddItemActivity extends AppCompatActivity
             {
 
                 Log.d("adding new item", "done...");
-                uploadBitmap(bitmap, insert_id);
+                if(bitmapChanged)
+                    uploadBitmap(bitmap, insert_id);
+                else
+                {
+                    Toast.makeText(getBaseContext(),"Successful",Toast.LENGTH_SHORT).show();
+                    onBackPressed();
+                }
+
 
             }
             else if(success==-2)

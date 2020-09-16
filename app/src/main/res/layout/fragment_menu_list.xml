@@ -4,70 +4,49 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical">
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <Button
+        android:id="@+id/add_category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_baseline_add_w"
+        android:layout_marginEnd="5dp"
+        android:text="Category"
+        android:textAllCaps="false"
+        android:layout_marginStart="10dp"/>
+    <!-- category-->
+    <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <!-- category-->
-        <HorizontalScrollView
-            android:layout_width="0dp"
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_category"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@id/add_category"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chip_group_category"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:singleSelection="true"
-                app:singleLine="true">
+            app:singleSelection="true"
+            app:singleLine="true">
 
-            </com.google.android.material.chip.ChipGroup>
-        </HorizontalScrollView>
-
-        <Button
-            android:id="@+id/add_category"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_baseline_add_w"
-            android:layout_marginEnd="5dp"
-            android:text="Category"
-            android:textAllCaps="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    <androidx.constraintlayout.widget.ConstraintLayout
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
+    <Button
+        android:id="@+id/add_groups"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_baseline_add_w"
+        android:layout_marginEnd="5dp"
+        android:text="Sub Category"
+        android:textAllCaps="false"
+        android:layout_marginStart="10dp"/>
+    <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <!-- sub category-->
-        <HorizontalScrollView
-            android:layout_width="0dp"
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_group"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@id/add_groups"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chip_group_group"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:singleSelection="true"
-                app:singleLine="true">
+            app:singleSelection="true"
+            app:singleLine="true">
 
-            </com.google.android.material.chip.ChipGroup>
-        </HorizontalScrollView>
-
-        <Button
-            android:id="@+id/add_groups"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_baseline_add_w"
-            android:layout_marginEnd="5dp"
-            android:text="Sub Category"
-            android:textAllCaps="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
     <androidx.recyclerview.widget.RecyclerView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
