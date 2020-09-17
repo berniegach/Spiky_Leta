@@ -45,12 +45,15 @@
 
         <PreferenceCategory android:title="Dining Options">
             <CheckBoxPreference
+                android:enabled="false"
                 app:key="c_sit_in"
                 android:title="Sit in"/>
             <CheckBoxPreference
+                android:enabled="false"
                 app:key="c_take_away"
                 android:title="Take away"/>
             <CheckBoxPreference
+                android:enabled="false"
                 app:key="c_delivery"
                 android:title="Delivery"/>
         </PreferenceCategory>

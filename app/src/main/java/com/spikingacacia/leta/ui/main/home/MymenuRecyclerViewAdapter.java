@@ -1,9 +1,11 @@
 package com.spikingacacia.leta.ui.main.home;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +18,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
 import com.spikingacacia.leta.ui.LoginActivity;
@@ -113,7 +121,25 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
 
         // image
         String url=image_url+String.valueOf(mValues.get(position).getId())+'_'+String.valueOf(mValues.get(position).getImageType());
-        Glide.with(context).load(url).into(holder.image);
+        Glide.with(context)
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .listener(new RequestListener<Drawable>()
+                {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource)
+                    {
+                        //holder.image.getLayoutParams().width = 20;
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource)
+                    {
+                        return false;
+                    }
+                })
+                .into(holder.image);
         holder.mView.setOnLongClickListener(new View.OnLongClickListener()
         {
             @Override
@@ -124,37 +150,6 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
                 return false;
             }
         });
-        /*if(LoginActivity.getServerAccount().getPersona()==2)
-        {
-            holder.mEditButton.setVisibility(View.GONE);
-            holder.mLinkButton.setVisibility(View.INVISIBLE);
-        }
-        holder.mEditButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                menuFragment.editItem(holder.mItem);
-            }
-        });
-        holder.mLinkButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if(eventListener!=null)
-                    eventListener.onLinkItem(holder.mItem, position, mValues);
-                //updateLinkedFood(holder.mItem, position);
-            }
-        });
-        holder.mToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                new UpdateAvailabilityTask(holder.mItem, isChecked, position).execute((Void)null);
-            }
-        });*/
     }
 
     @Override
@@ -170,9 +165,6 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
         public final TextView mItemView;
         public final TextView mDescriptionView;
         public final Spinner mPriceView;
-        //public final ImageButton mEditButton;
-        //public final ImageButton mLinkButton;
-        //public final ToggleButton mToggleButton;
         public DMenu mItem;
 
         public ViewHolder(View view)
@@ -183,9 +175,6 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
             mItemView = (TextView) view.findViewById(R.id.item);
             mDescriptionView = view.findViewById(R.id.description);
             mPriceView =  view.findViewById(R.id.price);
-            //mEditButton = view.findViewById(R.id.edit);
-            //mLinkButton = view.findViewById(R.id.link);
-            //mToggleButton = view.findViewById(R.id.available);
         }
 
         @Override
@@ -234,6 +223,19 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
         }
         notifyDataSetChanged();
     }
+    public void filterCategory(List<Integer> category_ids)
+    {
+        mValues.clear();
+        for(int cat_id:category_ids)
+        {
+            for(DMenu item:itemsCopy)
+            {
+                if(item.getCategoryId() == cat_id)
+                    mValues.add(item);
+            }
+        }
+        notifyDataSetChanged();
+    }
     public void listUpdated(List<DMenu> newitems)
     {
         mValues.clear();
@@ -242,68 +244,5 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
         notifyDataSetChanged();
     }
 
-    private class UpdateAvailabilityTask extends AsyncTask<Void, Void, Boolean>
-    {
-        private String url_update_item = base_url+"update_seller_item_availability.php";
-        private String TAG_SUCCESS="success";
-        private String TAG_MESSAGE="message";
-        private JSONParser jsonParser;
-        private DMenu dMenu;
-        private int menu_index;
-        private String available;
-        private int success;
-        UpdateAvailabilityTask(DMenu dMenu, boolean checked, int menu_index)
-        {
-            this.dMenu = dMenu;
-            available = checked? "1":"0";
-            this.menu_index = menu_index;
-            jsonParser = new JSONParser();
-        }
-        @Override
-        protected Boolean doInBackground(Void... params)
-        {
-            //building parameters
-            List<NameValuePair> info=new ArrayList<NameValuePair>();
-            info.add(new BasicNameValuePair("seller_email", LoginActivity.getServerAccount().getEmail()));
-            info.add(new BasicNameValuePair("item_id",String.valueOf(dMenu.getId())));
-            info.add(new BasicNameValuePair("available",available));
-            JSONObject jsonObject= jsonParser.makeHttpRequest(url_update_item,"POST",info);
-            try
-            {
-                success=jsonObject.getInt(TAG_SUCCESS);
-                if(success==1)
-                {
-                    return true;
-                }
-                else
-                {
-                    String message=jsonObject.getString(TAG_MESSAGE);
-                    Log.e(TAG_MESSAGE,""+message);
-                    return false;
-                }
-            }
-            catch (JSONException e)
-            {
-                Log.e("JSON",""+e.getMessage());
-                return false;
-            }
-        }
-        @Override
-        protected void onPostExecute(final Boolean successful)
-        {
-            if(successful)
-            {
 
-                Toast.makeText(context,"Successful",Toast.LENGTH_SHORT).show();
-                mValues.get(menu_index).setAvailable(available.contentEquals("1"));
-
-            }
-            else
-            {
-                Log.e("adding item", "error");
-                Toast.makeText(context,"Error changing item's availability",Toast.LENGTH_SHORT).show();
-            }
-
-        }
-    }
 }

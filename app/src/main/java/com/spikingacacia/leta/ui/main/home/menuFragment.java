@@ -67,6 +67,7 @@ import static com.spikingacacia.leta.ui.LoginActivity.base_url;
  * A fragment representing a list of Items.
  */
 public class menuFragment extends Fragment implements ItemEditOptionsDialogFragment.EventListener,
+        ItemEditOptionsDialogFragment.UpdateListener,
         MymenuRecyclerViewAdapter.OptionsListener,
         LinkedItemListDialogFragment.UpdateListener
 {
@@ -257,7 +258,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
     @Override
     public void onOptionsMenuSelected(DMenu dMenu, int menu_position, List<DMenu> dMenuList)
     {
-        ItemEditOptionsDialogFragment.newInstance(dMenu, menu_position, this, dMenuList).show(getChildFragmentManager(), "dialog");
+        ItemEditOptionsDialogFragment.newInstance(dMenu, menu_position, this, dMenuList,this).show(getChildFragmentManager(), "dialog");
     }
 
     @Override
@@ -271,6 +272,19 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
     {
         if(mListener!=null)
             mListener.onEditItemClicked(dMenu);
+    }
+
+    @Override
+    public void onItemAvailailabilityChanged(int menu_id, boolean changed)
+    {
+        for(int c=0; c<list.size(); c++)
+        {
+            DMenu dMenu = list.get(c);
+            if(dMenu.getId() == menu_id)
+                dMenu.setAvailable(changed);
+        }
+        mymenuRecyclerViewAdapter.listUpdated(list);
+
     }
 
 

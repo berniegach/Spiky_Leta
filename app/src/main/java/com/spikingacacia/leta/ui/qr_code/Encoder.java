@@ -73,6 +73,59 @@ public class Encoder
             return null;
         }
     }
+    public static Bitmap encode2( Context context, String text, String table_number)
+    {
+        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+        try {
+            BitMatrix bitMatrixTable;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
+            {
+                Bitmap bitmapBack = getBitmap(context, R.drawable.ic_qr_code_back_2);
+                double W = bitmapBack.getWidth();
+                bitMatrixTable = multiFormatWriter.encode(text, BarcodeFormat.QR_CODE,(int) (0.5*W),(int) (0.5*W));
+            }
+            else
+            {
+                bitMatrixTable = multiFormatWriter.encode(text, BarcodeFormat.QR_CODE,965,965);
+            }
+
+            //create the bitmaps
+            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+            Bitmap bitmapTable = barcodeEncoder.createBitmap(bitMatrixTable);
+            //get an overlaid bitmap
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
+                bitmapTable = overlay(context, bitmapTable, table_number);
+            return bitmapTable;
+        }
+        catch (WriterException e)
+        {
+            Log.e(TAG,""+e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private static Bitmap overlay(Context context, Bitmap bitmapTable, String table_number)
+    {
+        Bitmap bitmapBack = getBitmap(context, R.drawable.ic_qr_code_back_2);
+
+        Bitmap bmOverlayBack = Bitmap.createBitmap(bitmapBack.getWidth(), bitmapBack.getHeight(), bitmapBack.getConfig());
+        long W = bitmapBack.getWidth();
+        long H = bitmapBack.getHeight();
+        long x1 = W/2;
+        long y1 = H/2-x1/2;
+        Canvas canvas = new Canvas(bmOverlayBack);
+
+        canvas.drawBitmap(bitmapBack, new Matrix(),null);
+        canvas.drawBitmap(bitmapTable,x1,y1,null);
+        // draw table number text
+        Paint paint = new Paint();
+        //canvas.drawPaint(paint);
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(70);
+        canvas.drawText(table_number, 30, 100, paint);
+        return bmOverlayBack;
+    }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private static Bitmap overlay(Context context, Bitmap bitmapLink,  Bitmap bitmapTable, String table_number)
     {

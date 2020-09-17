@@ -178,7 +178,7 @@ public class SettingsActivity extends AppCompatActivity
             //dining options
             String[] s_dining_options = LoginActivity.getServerAccount().getDiningOptions().split(":");
             if(s_dining_options.length==1 || s_dining_options.length==0)
-                s_dining_options = new String[]{"1","1","1"};
+                s_dining_options = new String[]{"1","1","0"};
             int[] dining_options = new int[]{Integer.parseInt(s_dining_options[0]), Integer.parseInt(s_dining_options[1]), Integer.parseInt(s_dining_options[2])};
             preference_c_sit_in.setChecked(dining_options[0] == 1);
             preference_c_take_away.setChecked(dining_options[1] == 1);
