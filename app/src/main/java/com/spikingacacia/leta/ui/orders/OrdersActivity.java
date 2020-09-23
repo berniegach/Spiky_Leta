@@ -87,7 +87,7 @@ public class OrdersActivity extends AppCompatActivity
      * implementation of OrderOverviewFragment.java
      * */
     @Override
-    public void onAcceptDecline(int which, int status)
+    public void onAcceptDecline(int which, int status, int payment_type)
     {
         final int format = LoginActivity.getServerAccount().getOrderFormat();
         int new_status = 1;
@@ -98,9 +98,13 @@ public class OrdersActivity extends AppCompatActivity
             {
                 //the order is already paid so skip payment and go straight to inprogress
                 new_status = 3;
-            } else
+            }
+            else if(status == 1 && payment_type == 1)
+                new_status = 3;
+            else
                 new_status = status += 1;
-        } else if (which == 2)
+        }
+        else if (which == 2)
         {
             //decline order
             new_status = 0;

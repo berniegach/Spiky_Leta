@@ -165,9 +165,6 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
                     mymenuRecyclerViewAdapter.filterCategory(0);
             }
         });
-        new CategoriesTask().execute((Void)null);
-        new GroupsTask().execute((Void)null);
-        new MenuTask().execute((Void)null);
         return view;
     }
     @Override
@@ -192,6 +189,22 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
         ///TODO: find out why ondettach is being called after oncreaviewview after navigating back to the fragment
        // mListener = null;
     }
+
+    /**
+     * Called when the fragment is visible to the user and actively running.
+     * This is generally
+     * tied to {@link Activity#onResume() Activity.onResume} of the containing
+     * Activity's lifecycle.
+     */
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        new CategoriesTask().execute((Void)null);
+        new GroupsTask().execute((Void)null);
+        new MenuTask().execute((Void)null);
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -298,6 +311,12 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
         void onEditGroup(Groups group);
 
     }
+    public interface OnMenuUpdateFinished
+    {
+        void onMenuAdded();
+        void onMenuUpdated();
+        void onMenuChanged();
+    }
     private int getHorizontalItemCount()
     {
         int screenSize = getContext().getResources().getConfiguration().screenLayout &
@@ -345,6 +364,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
     }
     private void addCategoryChipLayouts(List<Categories>list)
     {
+        chipGroupCategeories.removeAllViews();
         for(int c=0; c<list.size(); c++)
         {
             Categories categories =list.get(c);
@@ -368,6 +388,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
     }
     private void addGroupChipLayouts(List<Groups>list)
     {
+        chipGroupGroups.removeAllViews();
         for(int c=0; c<list.size(); c++)
         {
             Groups groups =list.get(c);
@@ -540,11 +561,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
             }
         }
     }
-    public static void editItem(DMenu dMenu)
-    {
-        if(mListener!=null)
-            mListener.onEditItemClicked(dMenu);
-    }
+
     public static class MenuTask extends AsyncTask<Void, Void, Boolean>
     {
         private String url_get_s_items = base_url + "get_seller_items.php";

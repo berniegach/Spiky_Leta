@@ -93,112 +93,24 @@ public class OrderOverviewFragment extends Fragment
         View view= inflater.inflate(R.layout.fragment_order_overview, container, false);
 
 
-        ProgressBar progressBar=view.findViewById(R.id.progress);
         LinearLayout l_base=view.findViewById(R.id.orders_base);
         TextView t_date=view.findViewById(R.id.date);
         TextView t_username=view.findViewById(R.id.username);
+        TextView t_order_number = view.findViewById(R.id.order_number);
         TextView t_table=view.findViewById(R.id.table);
         TextView t_waiter=view.findViewById(R.id.waiter);
-        CardView c_table = view.findViewById(R.id.c_table);
-        CardView c_pre_order = view.findViewById(R.id.pre_order);
-        CardView c_collect_time = view.findViewById(R.id.c_collect_time);
+        TextView t_status = view.findViewById(R.id.status);
         TextView t_collect_time = view.findViewById(R.id.collect_time);
         TextView t_order_type = view.findViewById(R.id.order_type);
-        CardView c_paid = view.findViewById(R.id.paid);
         ImageButton button_location = view.findViewById(R.id.location);
-        CardView c_mobile = view.findViewById(R.id.c_mobile);
         final ImageButton button_mobile = view.findViewById(R.id.mobile);
-        CardView c_delivery_info = view.findViewById(R.id.c_delivery_info);
         TextView t_delivery_info = view.findViewById(R.id.t_delivery_info);
-        ScrollView l_less = view.findViewById(R.id.layout_less);
-        LinearLayout l_more = view.findViewById(R.id.layout_more);
-        ImageButton b_expand_less = view.findViewById(R.id.expand_less);
-        ImageButton b_expand_more = view.findViewById(R.id.expand_more);
         ImageView image_qr_code = view.findViewById(R.id.qr_code);
-        Utils.collapse(l_more);
-        b_expand_more.setVisibility(View.GONE);
+        TextView t_payment_type = view.findViewById(R.id.payment_type);
 
-        b_expand_less.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                v.setVisibility(View.GONE);
-                b_expand_more.setVisibility(View.VISIBLE);
-                Utils.collapse(l_less);
-                Utils.expand(l_more);
-            }
-        });
-        b_expand_more.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                v.setVisibility(View.GONE);
-                b_expand_less.setVisibility(View.VISIBLE);
-                Utils.collapse(l_more);
-                Utils.expand(l_less);
-            }
-        });
         //set the buttons listeners
         Button b_accept=view.findViewById(R.id.accept);
         Button b_decline=view.findViewById(R.id.decline);
-        b_accept.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                new AlertDialog.Builder(getContext())
-                        .setTitle("Confirmation")
-                        .setMessage("This action cannot be undone.\nAre you sure you want to proceed?")
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                dialog.dismiss();
-                            }
-                        })
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                if(mListener!=null)
-                                    mListener.onAcceptDecline(1, mOrderStatus);
-                            }
-                        }).create().show();
-
-            }
-        });
-        b_decline.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                new AlertDialog.Builder(getContext())
-                        .setTitle("Confirmation")
-                        .setMessage("This action cannot be undone.\nAre you sure you want to proceed?")
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                dialog.dismiss();
-                            }
-                        })
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                if(mListener!=null)
-                                    mListener.onAcceptDecline(2, mOrderStatus);
-                            }
-                        }).create().show();
-
-            }
-        });
         button_location.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -217,19 +129,157 @@ public class OrderOverviewFragment extends Fragment
                     mListener.gotoPhone((String)button_mobile.getTag());
             }
         });
+
+        String username="";
+        int table=0;
+        int count=0;
+        double total_price=0.0;
+        String date_to_show="";
+        String waiter="";
+        String collect_time="";
+        int payment_type = -1;
+        int i_order_type=0;
+        String mobile="";
+        String instructions = "";
+        String location = "";
+        String url_code_start_delivery ="";
+        String url_code_end_delivery = "";
+        int order_number = 0;
+        for (LinkedHashMap.Entry<Integer, Orders> set : OrdersFragment.ordersLinkedHashMap.entrySet())
+        {
+            Orders orders = set.getValue();
+            int itemId = orders.getItemId();
+            order_number = orders.getOrderNumber();
+            int orderStatus = orders.getOrderStatus();
+            String orderName = orders.getOrderName();
+            orderName = orderName.replace("_", " ");
+            String size = orders.getSize();
+            double price = orders.getPrice();
+            String dateAdded = orders.getDateAdded();
+            String dateAddedLocal = orders.getDateAddedLocal();
+            String[] date = dateAdded.split(" ");
+            if (!(date[0] + ":" + order_number + ":" + orderStatus).contentEquals(mOrder))
+                continue;
+            username = orders.getUsername();
+            waiter = orders.getWaiter_names();
+            table = orders.getTableNumber();
+            collect_time = orders.getCollectTime();
+            payment_type = orders.getPaymentType();
+            i_order_type = orders.getOrderType();
+            mobile = orders.getDeliveryMobile();
+            instructions = orders.getDeliveryInstructions();
+            location = orders.getDeliveryLocation();
+
+            if (mOrderStatus == 3)
+            {
+                url_code_start_delivery = orders.getUrlCodeStartDelivery();
+                url_code_end_delivery = orders.getUrlCodeEndDelivery();
+            }
+            //add the layouts
+            //cardview
+            View layout = inflater.inflate(R.layout.order_cardview_layout, null);
+            TextView t_count = layout.findViewById(R.id.count);
+            TextView t_item = layout.findViewById(R.id.item);
+            TextView t_price = layout.findViewById(R.id.price);
+
+            t_count.setText(String.valueOf(count + 1));
+            t_item.setText(orderName);
+            t_price.setText(size + " @ " + String.valueOf(price));
+            l_base.addView(layout);
+
+
+            count += 1;
+            total_price += price;
+            date_to_show = dateAddedLocal;
+        }
+        ((TextView)view.findViewById(R.id.total)).setText("Total "+String.valueOf(total_price));
+       // l_base.addView(t_total);
+        //set date text
+        t_date.setText(date_to_show);
+        t_collect_time.setText(collect_time);
+        t_order_number.setText("Order "+String.valueOf(order_number));
+        t_username.setText(username);
+        if(table!=-1)
+            t_table.setText("Table "+table);
+        t_waiter.setText(" served by "+waiter);
+        String[] order_types = new String[]{"In house", "Take away", "Delivery"};
+        t_order_type.setText(order_types[i_order_type]);
+        if(mPreOrder == 1)
+        {
+            //check if delivery
+            if(i_order_type == 2)
+            {
+                button_location.setVisibility(View.VISIBLE);
+                button_location.setClickable(true);
+                button_location.setTag(location);
+                button_mobile.setTag(mobile);
+                t_delivery_info.setText(instructions);
+            }
+        }
+        if(mOrderStatus == 3)
+        {
+            if(url_code_start_delivery.length()>10)
+            {
+                image_qr_code.setVisibility(View.VISIBLE);
+                image_qr_code.setImageBitmap(Utils.generateQRCode(url_code_start_delivery));
+            }
+
+        }
+        if(mOrderStatus == 5)
+        {
+            button_location.setClickable(false);
+            button_mobile.setClickable(false);
+        }
+        //set order status
+        String status;
+        switch(mOrderStatus)
+        {
+            case -3:
+                status = "Unpaid";
+                break;
+            case -2:
+                status = "Processing payment";
+                break;
+            case -1:
+                status = "Paid & Pending";
+                break;
+            case 1:
+                status = "UnPaid & Pending";
+                break;
+            case 2:
+                status = "Pending payment";
+                break;
+            case 3:
+                status = "In progress";
+                break;
+            case 4:
+                status = "Delivery";
+                break;
+            case 5:
+                status = "Finished";
+                break;
+            default:
+                status = "";
+        }
+        t_status.setText(status);
+        //payment type
+        String[] payments = new String[]{"M-Pesa","Cash"};
+        if(payment_type == 0)
+            t_payment_type.setText("Paid by "+payments[0]);
+        else if(payment_type == 1)
+        {
+            if(mOrderStatus!=5)
+            {
+                t_payment_type.setText("TO BE PAID BY CASH");
+            }
+            else
+                t_payment_type.setText("Paid by "+payments[1]);
+        }
         //show the respective buttons and change their labels accordingly
         //for pending the buttons remain as they are
         //the order status are
         // -3 for new order, -2 = unpaid, -1 = paid, 0 = deleted, 1 = pending, 2 = ..... until 5 = finished
-        if(mPreOrder == 1)
-        {
-            c_pre_order.setVisibility(View.VISIBLE);
-            c_collect_time.setVisibility(View.VISIBLE);
-        }
-        if(mOrderStatus == -1)
-        {
-            c_paid.setVisibility(View.VISIBLE);
-        }
+
         if(mOrderFormat==1)
         {
             //pending--in progress--delivery--payment--finished
@@ -269,8 +319,16 @@ public class OrderOverviewFragment extends Fragment
             }
             else if(mStation==4)
             {
-                b_accept.setText("Delivered");
-                b_decline.setVisibility(View.INVISIBLE);
+                if(payment_type == 1)
+                {
+                    b_accept.setText("Cash Collected");
+                    b_decline.setVisibility(View.INVISIBLE);
+                }
+                else if(payment_type == 0)
+                {
+                    b_accept.setText("Delivered");
+                    b_decline.setVisibility(View.INVISIBLE);
+                }
             }
             else if(mStation==5)
             {
@@ -278,106 +336,63 @@ public class OrderOverviewFragment extends Fragment
                 b_decline.setVisibility(View.INVISIBLE);
             }
         }
-        String username="";
-        int table=0;
-        int count=0;
-        double total_price=0.0;
-        String date_to_show="";
-        String waiter="";
-        String collect_time="";
-        int i_order_type=0;
-        String mobile="";
-        String instructions = "";
-        String location = "";
-        String url_code_start_delivery ="";
-        String url_code_end_delivery = "";
-        Iterator iterator= OrdersFragment.ordersLinkedHashMap.entrySet().iterator();
-        while (iterator.hasNext())
+        int finalPayment_type = payment_type;
+        b_accept.setOnClickListener(new View.OnClickListener()
         {
-            LinkedHashMap.Entry<Integer, Orders>set=(LinkedHashMap.Entry<Integer, Orders>) iterator.next();
-            Orders orders =set.getValue();
-            int itemId= orders.getItemId();
-            int order_number= orders.getOrderNumber();
-            int orderStatus= orders.getOrderStatus();
-            String orderName= orders.getOrderName();
-            orderName=orderName.replace("_"," ");
-            String size = orders.getSize();
-            double price= orders.getPrice();
-            String dateAdded= orders.getDateAdded();
-            String dateAddedLocal = orders.getDateAddedLocal();
-            String[] date=dateAdded.split(" ");
-            if(!(date[0]+":"+order_number+":"+orderStatus).contentEquals(mOrder))
-                continue;
-            username= orders.getUsername();
-            waiter= orders.getWaiter_names();
-            table= orders.getTableNumber();
-            collect_time = orders.getCollectTime();
-            i_order_type = orders.getOrderType();
-            mobile = orders.getDeliveryMobile();
-            instructions = orders.getDeliveryInstructions();
-            location = orders.getDeliveryLocation();
-            if(count==0)
+            @Override
+            public void onClick(View v)
             {
-                progressBar.setProgress(orderStatus);
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Confirmation")
+                        .setMessage("This action cannot be undone.\nAre you sure you want to proceed?")
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                if(mListener!=null)
+                                    mListener.onAcceptDecline(1, mOrderStatus, finalPayment_type);
+                            }
+                        }).create().show();
+
             }
-            if(mOrderStatus == 3 )
-            {
-                url_code_start_delivery = orders.getUrlCodeStartDelivery();
-                url_code_end_delivery = orders.getUrlCodeEndDelivery();
-            }
-            //add the layouts
-            //cardview
-            View layout = inflater.inflate(R.layout.order_cardview_layout,null);
-            TextView t_count = layout.findViewById(R.id.count);
-            TextView t_item = layout.findViewById(R.id.item);
-            TextView t_price = layout.findViewById(R.id.price);
-
-            t_count.setText(String.valueOf(count+1));
-            t_item.setText(orderName);
-            t_price.setText(size+" @ "+String.valueOf(price));
-            l_base.addView(layout);
-
-
-            count+=1;
-            total_price+=price;
-            date_to_show=dateAddedLocal;
-        }
-        ((TextView)view.findViewById(R.id.total)).setText("Total "+String.valueOf(total_price));
-       // l_base.addView(t_total);
-        //set date text
-        t_date.setText(date_to_show);
-        t_collect_time.setText(collect_time);
-        t_username.setText(username);
-        if(table!=-1)
-            t_table.setText("Table "+table);
-        else
-            c_table.setVisibility(View.GONE);
-        t_waiter.setText(waiter);
-        String[] order_types = new String[]{"In house", "Take away", "Delivery"};
-        t_order_type.setText(order_types[i_order_type]);
-        if(mPreOrder == 1)
+        });
+        b_decline.setOnClickListener(new View.OnClickListener()
         {
-            //check if delivery
-            if(i_order_type == 2)
+            @Override
+            public void onClick(View v)
             {
-                button_location.setVisibility(View.VISIBLE);
-                c_mobile.setVisibility(View.VISIBLE);
-                c_delivery_info.setVisibility(View.VISIBLE);
-                button_location.setTag(location);
-                button_mobile.setTag(mobile);
-                t_delivery_info.setText(instructions);
-            }
-        }
-        if(mOrderStatus == 3)
-        {
-            if(url_code_start_delivery.length()>10)
-            {
-                image_qr_code.setVisibility(View.VISIBLE);
-                image_qr_code.setImageBitmap(Utils.generateQRCode(url_code_start_delivery));
-            }
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Confirmation")
+                        .setMessage("This action cannot be undone.\nAre you sure you want to proceed?")
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                if(mListener!=null)
+                                    mListener.onAcceptDecline(2, mOrderStatus, finalPayment_type);
+                            }
+                        }).create().show();
 
-        }
-
+            }
+        });
         return view;
     }
     @Override
@@ -402,7 +417,7 @@ public class OrderOverviewFragment extends Fragment
     }
     public interface OnFragmentInteractionListener
     {
-        void onAcceptDecline(int which, int status);
+        void onAcceptDecline(int which, int status, int payment_type);
         void gotoMaps(String location);
         void gotoPhone(String number);
     }

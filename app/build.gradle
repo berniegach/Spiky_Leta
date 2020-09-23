@@ -7,8 +7,8 @@ android {
         applicationId "com.spikingacacia.leta"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 45
-        versionName "1.4.4"
+        versionCode 46
+        versionName "1.4.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
         //vectorDrawables.useSupportLibrary = true

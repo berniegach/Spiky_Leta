@@ -16,6 +16,7 @@ public class Orders
     private int tableNumber;
     private int preOrder;
     private String collectTime;
+    private int paymentType;
     private int orderType;
     private String deliveryMobile;
     private String deliveryInstructions;
@@ -28,7 +29,7 @@ public class Orders
 
 
     public Orders(int id,int userId, String userEmail, int itemId, int orderNumber, int orderStatus, String orderName, String size, double price, String username, String waiter_names, int tableNumber,
-                  int preOrder, String collectTime, int order_type, String deliveryMobile, String deliveryInstructions, String deliveryLocation, String urlCodeStartDelivery, String urlCodeEndDelivery,
+                  int preOrder, String collectTime, int paymentType, int order_type, String deliveryMobile, String deliveryInstructions, String deliveryLocation, String urlCodeStartDelivery, String urlCodeEndDelivery,
                   String dateAdded, String dateChanged, String dateAddedLocal)
     {
         this.id = id;
@@ -45,6 +46,7 @@ public class Orders
         this.tableNumber=tableNumber;
         this.preOrder = preOrder;
         this.collectTime = collectTime;
+        this.paymentType = paymentType;
         this.orderType = order_type;
         this.deliveryMobile = deliveryMobile;
         this.deliveryInstructions = deliveryInstructions;
@@ -190,6 +192,15 @@ public class Orders
     public void setCollectTime(String collectTime)
     {
         this.collectTime = collectTime;
+    }
+    public int getPaymentType()
+    {
+        return paymentType;
+    }
+
+    public void setPaymentType(int paymentType)
+    {
+        this.paymentType = paymentType;
     }
 
     public int getOrderType()
