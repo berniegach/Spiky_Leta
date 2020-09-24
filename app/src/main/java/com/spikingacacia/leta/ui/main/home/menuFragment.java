@@ -1,5 +1,6 @@
 package com.spikingacacia.leta.ui.main.home;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -165,6 +166,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
                     mymenuRecyclerViewAdapter.filterCategory(0);
             }
         });
+        list = new ArrayList<>();
         return view;
     }
     @Override
@@ -193,7 +195,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
     /**
      * Called when the fragment is visible to the user and actively running.
      * This is generally
-     * tied to {@link Activity#onResume() Activity.onResume} of the containing
+     * tied to {@link Activity onResume() Activity.onResume} of the containing
      * Activity's lifecycle.
      */
     @Override
@@ -254,13 +256,16 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
 *    implementation of LinkedItemListDialogFragment
  */
     @Override
-    public void onLinkedItemUpdateDone(int menu_id, String linked_items)
+    public void onLinkedItemUpdateDone(int menu_id, String linked_items, String linked_items_prices)
     {
         for(int c=0; c<list.size(); c++)
         {
             DMenu dMenu = list.get(c);
             if(dMenu.getId() == menu_id)
+            {
                 dMenu.setLinkedItems(linked_items);
+                dMenu.setLinkedItemsPrice(linked_items_prices);
+            }
         }
         mymenuRecyclerViewAdapter.listUpdated(list);
 
@@ -311,12 +316,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
         void onEditGroup(Groups group);
 
     }
-    public interface OnMenuUpdateFinished
-    {
-        void onMenuAdded();
-        void onMenuUpdated();
-        void onMenuChanged();
-    }
+
     private int getHorizontalItemCount()
     {
         int screenSize = getContext().getResources().getConfiguration().screenLayout &
@@ -422,7 +422,6 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
         @Override
         protected void onPreExecute()
         {
-            Log.d("SCATEGORIES: ","starting....");
             jsonParser = new JSONParser();
             list = new ArrayList<>();
             super.onPreExecute();
@@ -436,13 +435,13 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
             // making HTTP request
             String url_get_s_categories = base_url + "get_seller_categories.php";
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_categories,"POST",info);
-            Log.d("sCategories",""+jsonObject.toString());
             try
             {
                 JSONArray categoriesArrayList=null;
                 int success=jsonObject.getInt(TAG_SUCCESS);
                 if(success==1)
                 {
+                    MainActivity.categoriesLinkedHashMap.clear();
                     categoriesArrayList=jsonObject.getJSONArray("categories");
                     for(int count=0; count<categoriesArrayList.length(); count+=1)
                     {
@@ -516,6 +515,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
                 int success=jsonObject.getInt(TAG_SUCCESS);
                 if(success==1)
                 {
+                    MainActivity.groupsLinkedHashMap.clear();
                     categoriesArrayList=jsonObject.getJSONArray("groups");
                     for(int count=0; count<categoriesArrayList.length(); count+=1)
                     {
@@ -571,9 +571,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
         @Override
         protected void onPreExecute()
         {
-            Log.d("SITEMS: ","starting....");
             jsonParser = new JSONParser();
-            list = new ArrayList<>();
             super.onPreExecute();
         }
         @Override
@@ -584,13 +582,15 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
             info.add(new BasicNameValuePair("email",LoginActivity.getServerAccount().getEmail()));
             // making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_get_s_items,"POST",info);
-            Log.d("sItems",""+jsonObject.toString());
             try
             {
                 JSONArray itemsArrayList=null;
                 int success=jsonObject.getInt(TAG_SUCCESS);
                 if(success==1)
                 {
+                    //first of all remove all items
+                    MainActivity.menuLinkedHashMap.clear();
+                    list.clear();
                     itemsArrayList=jsonObject.getJSONArray("items");
                     for(int count=0; count<itemsArrayList.length(); count+=1)
                     {
@@ -607,6 +607,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
                             group_id = -1;
                         }
                         String linked_items = jsonObjectNotis.getString("linked_items");
+                        String linked_items_price = jsonObjectNotis.getString("linked_items_price");
                         String item=jsonObjectNotis.getString("item");
                         String description=jsonObjectNotis.getString("description");
                         String sizes = jsonObjectNotis.getString("sizes");
@@ -616,7 +617,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
                         String date_added=jsonObjectNotis.getString("date_added");
                         String date_changed=jsonObjectNotis.getString("date_changed");
 
-                        DMenu dMenu =new DMenu(id,category_id,group_id,linked_items, item,description,sizes, prices,image_type,available,date_added,date_changed);
+                        DMenu dMenu =new DMenu(id,category_id,group_id,linked_items, linked_items_price, item,description,sizes, prices,image_type,available,date_added,date_changed);
                         list.add(dMenu);
                         MainActivity.menuLinkedHashMap.put(id,dMenu);
 

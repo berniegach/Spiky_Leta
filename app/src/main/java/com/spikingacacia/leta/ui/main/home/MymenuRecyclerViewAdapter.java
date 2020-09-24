@@ -239,6 +239,7 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
     public void listUpdated(List<DMenu> newitems)
     {
         mValues.clear();
+        itemsCopy.clear();
         mValues.addAll(newitems);
         itemsCopy.addAll(newitems);
         notifyDataSetChanged();

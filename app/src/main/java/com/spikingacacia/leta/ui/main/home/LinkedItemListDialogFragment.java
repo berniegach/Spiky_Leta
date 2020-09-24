@@ -65,10 +65,11 @@ public class LinkedItemListDialogFragment extends BottomSheetDialogFragment
     private String[] ids;
     private String[] items;
     private boolean[] items_checked;
+    private boolean[] items_checked_free;
     private UpdateListener updateListener;
     public interface UpdateListener extends Serializable
     {
-        void onLinkedItemUpdateDone(int menu_id, String linked_items);
+        void onLinkedItemUpdateDone(int menu_id, String linked_items, String linked_items_prices);
     }
     public static LinkedItemListDialogFragment newInstance(DMenu dMenu, int menu_index, List<DMenu> dMenuList, UpdateListener updateListener)
     {
@@ -100,7 +101,7 @@ public class LinkedItemListDialogFragment extends BottomSheetDialogFragment
         updateListener = (UpdateListener) getArguments().getSerializable(ARG_LISTENER);
         recyclerView = view.findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new LinkedItemAdapter(getArguments().getInt(ARG_MENU_INDEX)));
+        recyclerView.setAdapter(new LinkedItemAdapter());
         TextView t_title = view.findViewById(R.id.title);
         t_title.setText(dMenu.getItem());
         Button b_update = view.findViewById(R.id.b_update);
@@ -110,6 +111,7 @@ public class LinkedItemListDialogFragment extends BottomSheetDialogFragment
             public void onClick(View v)
             {
                 String links="";
+                String links_prices = "";
                 int count = 0;
                 for(int c=0; c<items_checked.length; c++)
                 {
@@ -118,11 +120,13 @@ public class LinkedItemListDialogFragment extends BottomSheetDialogFragment
                     if(count != 0)
                     {
                         links+=":";
+                        links_prices+=":";
                     }
                     links+=ids[c];
+                    links_prices+= items_checked_free[c]?"1":"0";
                     count+=1;
                 }
-                new UpdateItemTask(dMenu,links, menu_index).execute((Void)null);
+                new UpdateItemTask(dMenu,links, links_prices, menu_index).execute((Void)null);
             }
         });
     }
@@ -133,34 +137,43 @@ public class LinkedItemListDialogFragment extends BottomSheetDialogFragment
 
         final CheckBox checkBox;
         final TextView price;
+        final CheckBox checkBoxFree;
 
         ViewHolder(LayoutInflater inflater, ViewGroup parent)
         {
             super(inflater.inflate(R.layout.fragment_item_list_dialog_list_dialog_item, parent, false));
             checkBox = itemView.findViewById(R.id.checkbox);
             price = itemView.findViewById(R.id.price);
+            checkBoxFree = itemView.findViewById(R.id.check_free);
         }
     }
 
     private class LinkedItemAdapter extends RecyclerView.Adapter<ViewHolder>
     {
 
-        private final int mItemCount;
 
-        LinkedItemAdapter(int itemCount)
+        LinkedItemAdapter()
         {
-            mItemCount = itemCount;
             String linked_foods = dMenu.getLinkedItems();
+            String linked_foods_price = dMenu.getLinkedItemsPrice();
             String[] links = linked_foods.split(":");
+            String[] links_price = linked_foods_price.split(":");
             items = new String[dMenuList.size()];
 
             ids = new String[dMenuList.size()];
             items_checked = new boolean[dMenuList.size()];
+            items_checked_free = new boolean[dMenuList.size()];
 
             if(links.length==1 && links[0].contentEquals("null"))
                 links[0]="-1";
             else if(links.length==1 && links[0].contentEquals(""))
                 links[0]="-1";
+            if(links.length != links_price.length)
+            {
+                links_price = new String[links.length];
+                for(int c=0; c<links.length; c++)
+                    links_price[c] = "0";
+            }
             for(int c=0; c<items.length; c++)
             {
                 boolean item_updated = false;
@@ -175,6 +188,7 @@ public class LinkedItemListDialogFragment extends BottomSheetDialogFragment
                         if( id==dMenuList.get(c).getId())
                         {
                             items_checked[c]=true;
+                            items_checked_free[c] = links_price[d].contentEquals("1");
                         }
                     }
                 }
@@ -199,6 +213,18 @@ public class LinkedItemListDialogFragment extends BottomSheetDialogFragment
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
                 {
                     items_checked[position] = isChecked;
+                    holder.checkBoxFree.setEnabled(isChecked);
+                }
+            });
+           holder.checkBoxFree.setEnabled(items_checked[position]);
+           holder.checkBoxFree.setChecked(items_checked_free[position]);
+
+            holder.checkBoxFree.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+            {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+                {
+                    items_checked_free[position] = isChecked;
                 }
             });
             //set prices
@@ -224,8 +250,9 @@ public class LinkedItemListDialogFragment extends BottomSheetDialogFragment
                         sizePrice+=" "+sizes[c]+" @ "+prices[c];
                 }
             }
-
             holder.price.setText(sizePrice);
+            if(Integer.parseInt(ids[position]) == dMenu.getId())
+                holder.checkBox.setEnabled(false);
         }
 
         @Override
@@ -243,13 +270,14 @@ public class LinkedItemListDialogFragment extends BottomSheetDialogFragment
         private JSONParser jsonParser;
         private DMenu dMenu;
         private String linked_items;
+        private String linked_items_prices;
         private int menu_index;
         private int success;
-        UpdateItemTask(DMenu dMenu, String linked_items, int menu_index)
+        UpdateItemTask(DMenu dMenu, String linked_items, String linked_items_prices, int menu_index)
         {
-            //Toast.makeText(context,"Please wait...",Toast.LENGTH_SHORT).show();
             this.dMenu = dMenu;
             this.linked_items = linked_items;
+            this.linked_items_prices = linked_items_prices;
             this.menu_index = menu_index;
             jsonParser = new JSONParser();
         }
@@ -263,6 +291,7 @@ public class LinkedItemListDialogFragment extends BottomSheetDialogFragment
             info.add(new BasicNameValuePair("category_id",Integer.toString(dMenu.getCategoryId())));
             info.add(new BasicNameValuePair("group_id",Integer.toString(-1)));
             info.add(new BasicNameValuePair("linked_items",linked_items));
+            info.add(new BasicNameValuePair("linked_items_price",linked_items_prices));
             info.add(new BasicNameValuePair("item",dMenu.getItem()));
             info.add(new BasicNameValuePair("description",dMenu.getDescription()));
             info.add(new BasicNameValuePair("sizes",dMenu.getSizes()));
@@ -298,7 +327,7 @@ public class LinkedItemListDialogFragment extends BottomSheetDialogFragment
                 Log.d("adding new item", "done...");
                 if(updateListener!=null)
                 {
-                    updateListener.onLinkedItemUpdateDone(dMenu.getId(),linked_items);
+                    updateListener.onLinkedItemUpdateDone(dMenu.getId(),linked_items, linked_items_prices);
                     dismiss();
                 }
                 //listener.onItemUpdated();

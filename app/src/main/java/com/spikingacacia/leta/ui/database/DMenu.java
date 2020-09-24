@@ -8,6 +8,7 @@ public class DMenu implements Serializable
     private int categoryId;
     private int groupId;
     private String linkedItems;
+    private String linkedItemsPrice;
     private String item;
     private String description;
     private String sizes;
@@ -17,12 +18,13 @@ public class DMenu implements Serializable
     private String dateAdded;
     private String datechanged;
 
-    public DMenu(int id, int categoryId, int groupId, String linkedItems, String item, String description, String sizes, String prices, String imageType, boolean available, String dateAdded, String datechanged)
+    public DMenu(int id, int categoryId, int groupId, String linkedItems, String linkedItemsPrice, String item, String description, String sizes, String prices, String imageType, boolean available, String dateAdded, String datechanged)
     {
         this.id = id;
         this.categoryId = categoryId;
         this.groupId = groupId;
         this.linkedItems = linkedItems;
+        this.linkedItemsPrice = linkedItemsPrice;
         this.item = item;
         this.description = description;
         this.sizes = sizes;
@@ -71,6 +73,16 @@ public class DMenu implements Serializable
     public void setLinkedItems(String linkedItems)
     {
         this.linkedItems = linkedItems;
+    }
+
+    public String getLinkedItemsPrice()
+    {
+        return linkedItemsPrice;
+    }
+
+    public void setLinkedItemsPrice(String linkedItemsPrice)
+    {
+        this.linkedItemsPrice = linkedItemsPrice;
     }
 
     public String getItem()

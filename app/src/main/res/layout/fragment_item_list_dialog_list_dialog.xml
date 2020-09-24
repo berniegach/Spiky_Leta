@@ -21,8 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:text="The checked items will appear on the customer's
-side as accompaniments"
-        android:textAppearance="?attr/textAppearanceBody2" />
+side as accompaniments and for free ones their prices is included in the main price" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
