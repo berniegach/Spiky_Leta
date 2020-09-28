@@ -146,7 +146,7 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
             public boolean onLongClick(View v)
             {
                 if(optionsListener!=null)
-                    optionsListener.onOptionsMenuSelected(holder.mItem, position, mValues);
+                    optionsListener.onOptionsMenuSelected(holder.mItem, position, itemsCopy);
                 return false;
             }
         });
