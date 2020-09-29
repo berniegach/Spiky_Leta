@@ -138,6 +138,7 @@ public class LinkedItemListDialogFragment extends BottomSheetDialogFragment
         final CheckBox checkBox;
         final TextView price;
         final CheckBox checkBoxFree;
+        String menuItemId = "-1";
 
         ViewHolder(LayoutInflater inflater, ViewGroup parent)
         {
@@ -205,6 +206,7 @@ public class LinkedItemListDialogFragment extends BottomSheetDialogFragment
         @Override
         public void onBindViewHolder(ViewHolder holder, int position)
         {
+            holder.menuItemId = ids[position];
             holder.checkBox.setText(items[position]);
             holder.checkBox.setChecked(items_checked[position]);
             holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
@@ -212,8 +214,12 @@ public class LinkedItemListDialogFragment extends BottomSheetDialogFragment
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
                 {
-                    items_checked[position] = isChecked;
-                    holder.checkBoxFree.setEnabled(isChecked);
+                    if(ids[position].contentEquals(holder.menuItemId))
+                    {
+
+                        items_checked[position] = isChecked;
+                        holder.checkBoxFree.setEnabled(isChecked);
+                    }
                 }
             });
            holder.checkBoxFree.setEnabled(items_checked[position]);
@@ -224,7 +230,10 @@ public class LinkedItemListDialogFragment extends BottomSheetDialogFragment
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
                 {
-                    items_checked_free[position] = isChecked;
+                    if(ids[position].contentEquals(holder.menuItemId))
+                    {
+                        items_checked_free[position] = isChecked;
+                    }
                 }
             });
             //set prices
@@ -253,6 +262,8 @@ public class LinkedItemListDialogFragment extends BottomSheetDialogFragment
             holder.price.setText(sizePrice);
             if(Integer.parseInt(ids[position]) == dMenu.getId())
                 holder.checkBox.setEnabled(false);
+            else
+                holder.checkBox.setEnabled(true);
         }
 
         @Override
