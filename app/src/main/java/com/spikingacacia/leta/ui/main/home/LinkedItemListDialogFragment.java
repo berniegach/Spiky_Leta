@@ -275,7 +275,7 @@ public class LinkedItemListDialogFragment extends BottomSheetDialogFragment
     }
     private class UpdateItemTask extends AsyncTask<Void, Void, Boolean>
     {
-        private String url_update_item = base_url+"update_seller_item.php";
+        private String url_update_item = base_url+"update_seller_item_1.php";
         private String TAG_SUCCESS="success";
         private String TAG_MESSAGE="message";
         private JSONParser jsonParser;

@@ -345,7 +345,7 @@ public class AddItemActivity extends AppCompatActivity
         }
         return res;
     }
-    private void uploadBitmap(final Bitmap bitmap, final int insert_id)
+    private void uploadBitmap(final Bitmap bitmap2, final int insert_id)
     {
         String url_upload_profile_pic= LoginActivity.base_url+"upload_inventory_pic.php";
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url_upload_profile_pic,

@@ -73,18 +73,14 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
         LinkedItemListDialogFragment.UpdateListener
 {
 
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    private RecyclerView recyclerViewCategories;
-    private RecyclerView recyclerViewGroups;
     private RecyclerView recyclerViewMenu;
     public static  MymenuRecyclerViewAdapter mymenuRecyclerViewAdapter;
-    private MymenuCategoryRecyclerViewAdapter mymenuCategoryRecyclerViewAdapter;
-    private MymenuGroupRecyclerViewAdapter mymenuGroupRecyclerViewAdapter;
     private static  OnListFragmentInteractionListener mListener;
     private String TAG = "menuF";
     private ChipGroup chipGroupCategeories;
     private ChipGroup chipGroupGroups;
     private static List<DMenu>list;
+    private int chipCategoryChecked;
 
     public menuFragment()
     {
@@ -110,14 +106,8 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_menu_list, container, false);
-        //RecyclerView recyclerViewCategories = view.findViewById(R.id.list_categories);
         chipGroupCategeories = view.findViewById(R.id.chip_group_category);
-        //RecyclerView recyclerViewGroups = view.findViewById(R.id.list_groups);
         chipGroupGroups = view.findViewById(R.id.chip_group_group);
-        mymenuCategoryRecyclerViewAdapter = new MymenuCategoryRecyclerViewAdapter(mListener, getContext());
-        mymenuGroupRecyclerViewAdapter = new MymenuGroupRecyclerViewAdapter(mListener, getContext());
-        //recyclerViewCategories.setAdapter(mymenuCategoryRecyclerViewAdapter);
-        //recyclerViewGroups.setAdapter(mymenuGroupRecyclerViewAdapter);
         Button b_add_category = view.findViewById(R.id.add_category);
         Button b_add_group = view.findViewById(R.id.add_groups);
 
@@ -164,6 +154,44 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
                 }
                 else
                     mymenuRecyclerViewAdapter.filterCategory(0);
+            }
+        });
+        chipGroupCategeories.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(ChipGroup group, int checkedId)
+            {
+                Chip chip = chipGroupCategeories.findViewById( chipGroupCategeories.getCheckedChipId() );
+                if(chip != null)
+                {
+                    int category_id = (int)chip.getTag();
+                    mymenuRecyclerViewAdapter.filterCategory(category_id);
+                    chipCategoryChecked = category_id;
+                    hideAllChipsInGroup();
+                    showGroupChipsInCategory(category_id);
+                }
+                else
+                {
+                    mymenuRecyclerViewAdapter.filterCategory(0);
+                    hideAllChipsInGroup();
+                }
+            }
+        });
+        chipGroupGroups.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(ChipGroup group, int checkedId)
+            {
+                Chip chip = chipGroupGroups.findViewById( chipGroupGroups.getCheckedChipId() );
+                if(chip != null)
+                {
+                    String tag = (String) chip.getTag();
+                    int category_id = Integer.parseInt(tag.split(":")[0]);
+                    int group_id = Integer.parseInt(tag.split(":")[1]);
+                    mymenuRecyclerViewAdapter.filterCategory(category_id, group_id);
+                }
+                else
+                    mymenuRecyclerViewAdapter.filterCategory(chipCategoryChecked);
             }
         });
         list = new ArrayList<>();
@@ -394,7 +422,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
             Groups groups =list.get(c);
             Chip chip = new Chip(getContext());
             chip.setText(groups.getTitle());
-            chip.setTag(groups.getId());
+            chip.setTag(groups.getCategoryId()+":"+groups.getId());
             chip.setClickable(true);
             chip.setCheckable(true);
             chipGroupGroups.addView(chip);
@@ -411,7 +439,26 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
         }
     }
 
+    private void hideAllChipsInGroup()
+    {
+        for(int c=0; c<chipGroupGroups.getChildCount(); c++)
+        {
+            Chip chip_group = (Chip) chipGroupGroups.getChildAt(c);
+            chip_group.setVisibility(View.GONE);
 
+        }
+    }
+    private void showGroupChipsInCategory(int category_id)
+    {
+        for(int c=0; c<chipGroupGroups.getChildCount(); c++)
+        {
+            Chip chip_group = (Chip) chipGroupGroups.getChildAt(c);
+            String tag = (String) chip_group.getTag();
+            int categoryid = Integer.parseInt(tag.split(":")[0]);
+            if(category_id == categoryid)
+                chip_group.setVisibility(View.VISIBLE);
+        }
+    }
 
     private class CategoriesTask extends AsyncTask<Void, Void, Boolean>
     {

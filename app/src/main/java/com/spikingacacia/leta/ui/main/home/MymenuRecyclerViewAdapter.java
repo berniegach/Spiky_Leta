@@ -223,6 +223,21 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
         }
         notifyDataSetChanged();
     }
+    public void filterCategory(int category_id, int group_id)
+    {
+        mValues.clear();
+        if(category_id == 0)
+            mValues.addAll(itemsCopy);
+        else
+        {
+            for(DMenu item:itemsCopy)
+            {
+                if(item.getCategoryId() == category_id && item.getGroupId() == group_id)
+                    mValues.add(item);
+            }
+        }
+        notifyDataSetChanged();
+    }
     public void filterCategory(List<Integer> category_ids)
     {
         mValues.clear();

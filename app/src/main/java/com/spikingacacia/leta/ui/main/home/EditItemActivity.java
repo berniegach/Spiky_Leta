@@ -242,7 +242,7 @@ public class EditItemActivity extends AppCompatActivity
                 //Uploading code
                 try
                 {
-                    new UpdateItemTask(dMenu.getId(),item,description,category_id, group_id, dMenu.getLinkedItems(),".jpg").execute((Void)null);
+                    new UpdateItemTask(dMenu.getId(),item,description,category_id, group_id, dMenu.getLinkedItems(),dMenu.getLinkedItemsPrice(),".jpg").execute((Void)null);
                 }
                 catch (Exception e)
                 {
@@ -469,7 +469,7 @@ public class EditItemActivity extends AppCompatActivity
         }
         return res;
     }
-    private void uploadBitmap(final Bitmap bitmap, final int insert_id)
+    private void uploadBitmap(final Bitmap bitmap2, final int insert_id)
     {
         String url_upload_profile_pic= LoginActivity.base_url+"upload_inventory_pic.php";
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url_upload_profile_pic,
@@ -538,7 +538,7 @@ public class EditItemActivity extends AppCompatActivity
     }
     private class UpdateItemTask extends AsyncTask<Void, Void, Boolean>
     {
-        private String url_update_item = base_url+"update_seller_item.php";
+        private String url_update_item = base_url+"update_seller_item_1.php";
         private String TAG_SUCCESS="success";
         private String TAG_MESSAGE="message";
         private JSONParser jsonParser;
@@ -548,10 +548,10 @@ public class EditItemActivity extends AppCompatActivity
         private Integer category_id;
         private Integer group_id;
         private String linked_items;
-        //private String selling_price;
+        private String linked_items_prices;
         private String image_type;
         private int success;
-        UpdateItemTask(int item_id, final String item, final String description, final Integer category_id, int group_id, String linked_items, String image_type)
+        UpdateItemTask(int item_id, final String item, final String description, final Integer category_id, int group_id, String linked_items, String linked_items_prices, String image_type)
         {
             showProgress(true);
             this.item_id = item_id;
@@ -560,6 +560,7 @@ public class EditItemActivity extends AppCompatActivity
             this.category_id = category_id;
             this.group_id = group_id;
             this.linked_items = linked_items;
+            this.linked_items_prices = linked_items_prices;
             //this.selling_price = selling_price;
             this.image_type = image_type;
             jsonParser = new JSONParser();
@@ -574,6 +575,7 @@ public class EditItemActivity extends AppCompatActivity
             info.add(new BasicNameValuePair("category_id",Integer.toString(category_id)));
             info.add(new BasicNameValuePair("group_id",Integer.toString(group_id)));
             info.add(new BasicNameValuePair("linked_items",linked_items));
+            info.add(new BasicNameValuePair("linked_items_price",linked_items_prices));
             info.add(new BasicNameValuePair("item",item));
             info.add(new BasicNameValuePair("description",description));
             info.add(new BasicNameValuePair("sizes",sizes));
