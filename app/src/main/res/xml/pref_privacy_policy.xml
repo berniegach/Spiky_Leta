@@ -1,3 +1,9 @@
+<!--
+  ~ Created by Benard Gachanja on 10/10/20 7:06 PM
+  ~ Copyright (c) 2020 . All rights reserved.
+  ~ Last modified 7/21/20 3:52 PM
+  -->
+
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <com.spikingacacia.leta.ui.PrivacyPolicy/>
 </PreferenceScreen>

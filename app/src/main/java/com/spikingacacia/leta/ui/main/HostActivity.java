@@ -1,3 +1,9 @@
+/*
+ * Created by Benard Gachanja on 10/10/20 7:06 PM
+ * Copyright (c) 2020 . All rights reserved.
+ * Last modified 7/3/20 12:10 PM
+ */
+
 package com.spikingacacia.leta.ui.main;
 
 import android.os.Bundle;

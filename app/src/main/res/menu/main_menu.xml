@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Created by Benard Gachanja on 10/10/20 7:06 PM
+  ~ Copyright (c) 2020 . All rights reserved.
+  ~ Last modified 8/18/20 12:15 PM
+  -->
+
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <item
         android:id="@+id/action_waiter"
         app:showAsAction="never"
@@ -14,6 +19,10 @@
         android:id="@+id/action_wallet"
         android:title="Wallet"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_arrange"
+        app:showAsAction="never"
+        android:title="Arrange Menu"/>
     <item
         android:id="@+id/action_tasty_board"
         android:title="Tasty Board"

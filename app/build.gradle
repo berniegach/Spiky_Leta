@@ -1,3 +1,9 @@
+/*
+ * Created by Benard Gachanja on 10/10/20 7:06 PM
+ * Copyright (c) 2020 . All rights reserved.
+ * Last modified 10/6/20 8:54 AM
+ */
+
 apply plugin: 'com.android.application'
 
 android {
@@ -7,8 +13,8 @@ android {
         applicationId "com.spikingacacia.leta"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 50
-        versionName "1.4.9"
+        versionCode 52
+        versionName "1.5.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
         //vectorDrawables.useSupportLibrary = true

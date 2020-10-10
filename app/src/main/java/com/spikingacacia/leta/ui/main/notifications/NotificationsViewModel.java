@@ -1,3 +1,9 @@
+/*
+ * Created by Benard Gachanja on 10/10/20 7:06 PM
+ * Copyright (c) 2020 . All rights reserved.
+ * Last modified 6/15/20 10:34 AM
+ */
+
 package com.spikingacacia.leta.ui.main.notifications;
 
 import androidx.lifecycle.LiveData;

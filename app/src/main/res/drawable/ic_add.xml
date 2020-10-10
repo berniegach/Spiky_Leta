@@ -1,3 +1,9 @@
+<!--
+  ~ Created by Benard Gachanja on 10/10/20 7:06 PM
+  ~ Copyright (c) 2020 . All rights reserved.
+  ~ Last modified 7/17/20 8:10 AM
+  -->
+
 <vector android:height="30dp" android:tint="@color/colorPrimary"
     android:viewportHeight="24.0" android:viewportWidth="24.0"
     android:width="30dp" xmlns:android="http://schemas.android.com/apk/res/android">

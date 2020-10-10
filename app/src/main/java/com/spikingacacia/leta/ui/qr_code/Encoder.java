@@ -1,3 +1,9 @@
+/*
+ * Created by Benard Gachanja on 10/10/20 7:06 PM
+ * Copyright (c) 2020 . All rights reserved.
+ * Last modified 9/17/20 2:00 PM
+ */
+
 package com.spikingacacia.leta.ui.qr_code;
 
 import android.Manifest;

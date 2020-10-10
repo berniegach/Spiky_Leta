@@ -1,3 +1,9 @@
+/*
+ * Created by Benard Gachanja on 10/10/20 7:06 PM
+ * Copyright (c) 2020 . All rights reserved.
+ * Last modified 10/6/20 7:51 AM
+ */
+
 package com.spikingacacia.leta.ui.main.home;
 
 import android.app.Dialog;

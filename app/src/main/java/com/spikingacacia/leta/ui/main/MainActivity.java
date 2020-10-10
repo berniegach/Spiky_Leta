@@ -1,3 +1,9 @@
+/*
+ * Created by Benard Gachanja on 10/10/20 7:06 PM
+ * Copyright (c) 2020 . All rights reserved.
+ * Last modified 9/15/20 3:31 PM
+ */
+
 package com.spikingacacia.leta.ui.main;
 
 import android.content.DialogInterface;
@@ -39,6 +45,7 @@ import com.spikingacacia.leta.ui.main.dashboard.DashboardFragment;
 import com.spikingacacia.leta.ui.main.home.AddCategoryActivity;
 import com.spikingacacia.leta.ui.main.home.AddGroupActivity;
 import com.spikingacacia.leta.ui.main.home.AddItemActivity;
+import com.spikingacacia.leta.ui.main.home.ArrangeMenuActivity;
 import com.spikingacacia.leta.ui.main.home.EditCategoryActivity;
 import com.spikingacacia.leta.ui.main.home.EditGroupActivity;
 import com.spikingacacia.leta.ui.main.home.EditItemActivity;
@@ -181,6 +188,11 @@ public class MainActivity extends AppCompatActivity implements
         {
             Intent intent=new Intent(MainActivity.this, WalletActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(intent);
+        }
+        else if(id == R.id.action_arrange)
+        {
+            Intent intent=new Intent(MainActivity.this, ArrangeMenuActivity.class);
             startActivity(intent);
         }
         else if( id == R.id.action_tasty_board)

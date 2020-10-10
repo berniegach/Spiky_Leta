@@ -1,3 +1,9 @@
+/*
+ * Created by Benard Gachanja on 10/10/20 7:06 PM
+ * Copyright (c) 2020 . All rights reserved.
+ * Last modified 6/26/20 7:52 PM
+ */
+
 package com.spikingacacia.leta.ui.main.messages;
 
 import android.view.LayoutInflater;

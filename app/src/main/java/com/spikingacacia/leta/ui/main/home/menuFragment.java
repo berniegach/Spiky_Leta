@@ -1,3 +1,9 @@
+/*
+ * Created by Benard Gachanja on 10/10/20 7:06 PM
+ * Copyright (c) 2020 . All rights reserved.
+ * Last modified 10/10/20 6:59 PM
+ */
+
 package com.spikingacacia.leta.ui.main.home;
 
 import android.app.Activity;
@@ -153,7 +159,9 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
                     mymenuRecyclerViewAdapter.filterCategory(category_id);
                 }
                 else
+                {
                     mymenuRecyclerViewAdapter.filterCategory(0);
+                }
             }
         });
         chipGroupCategeories.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener()
@@ -167,13 +175,13 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
                     int category_id = (int)chip.getTag();
                     mymenuRecyclerViewAdapter.filterCategory(category_id);
                     chipCategoryChecked = category_id;
-                    hideAllChipsInGroup();
+                    hideAllChipsInGroup(true);
                     showGroupChipsInCategory(category_id);
                 }
                 else
                 {
                     mymenuRecyclerViewAdapter.filterCategory(0);
-                    hideAllChipsInGroup();
+                    hideAllChipsInGroup(false);
                 }
             }
         });
@@ -439,12 +447,12 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
         }
     }
 
-    private void hideAllChipsInGroup()
+    private void hideAllChipsInGroup(boolean hide)
     {
         for(int c=0; c<chipGroupGroups.getChildCount(); c++)
         {
             Chip chip_group = (Chip) chipGroupGroups.getChildAt(c);
-            chip_group.setVisibility(View.GONE);
+            chip_group.setVisibility(hide? View.GONE : View.VISIBLE);
 
         }
     }
@@ -494,13 +502,14 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
                     {
                         JSONObject jsonObjectNotis=categoriesArrayList.getJSONObject(count);
                         int id=jsonObjectNotis.getInt("id");
+                        int id_index=jsonObjectNotis.getInt("id_index");
                         String title=jsonObjectNotis.getString("title");
                         String description=jsonObjectNotis.getString("description");
                         String image_type=jsonObjectNotis.getString("image_type");
                         String date_added=jsonObjectNotis.getString("date_added");
                         String date_changed=jsonObjectNotis.getString("date_changed");
 
-                        Categories categories =new Categories(id,title,description,image_type,date_added,date_changed);
+                        Categories categories =new Categories(id, id_index, title,description,image_type,date_added,date_changed);
                         list.add(categories);
                         MainActivity.categoriesLinkedHashMap.put(id,categories);
                     }
@@ -568,6 +577,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
                     {
                         JSONObject jsonObjectNotis=categoriesArrayList.getJSONObject(count);
                         int id=jsonObjectNotis.getInt("id");
+                        int id_index=jsonObjectNotis.getInt("id_index");
                         int category_id=jsonObjectNotis.getInt("category_id");
                         String title=jsonObjectNotis.getString("title");
                         String description=jsonObjectNotis.getString("description");
@@ -575,7 +585,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
                         String date_added=jsonObjectNotis.getString("date_added");
                         String date_changed=jsonObjectNotis.getString("date_changed");
 
-                        Groups groups =new Groups(id,category_id,title,description,image_type,date_added,date_changed);
+                        Groups groups =new Groups(id,id_index,category_id,title,description,image_type,date_added,date_changed);
                         list.add(groups);
                         MainActivity.groupsLinkedHashMap.put(id,groups);
                     }

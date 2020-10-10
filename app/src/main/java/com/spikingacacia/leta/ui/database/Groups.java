@@ -1,3 +1,9 @@
+/*
+ * Created by Benard Gachanja on 10/10/20 7:06 PM
+ * Copyright (c) 2020 . All rights reserved.
+ * Last modified 9/15/20 2:30 PM
+ */
+
 package com.spikingacacia.leta.ui.database;
 
 import java.io.Serializable;
@@ -5,6 +11,7 @@ import java.io.Serializable;
 public class Groups implements Serializable
 {
     private int id;
+    private int idIndex;
     private int categoryId;
     private String title;
     private String description;
@@ -13,9 +20,10 @@ public class Groups implements Serializable
     private String dateChanged;
 
 
-    public Groups(int id, int categoryId, String title, String description, String imageType, String dateAdded, String dateChanged)
+    public Groups(int id, int idIndex, int categoryId, String title, String description, String imageType, String dateAdded, String dateChanged)
     {
         this.id = id;
+        this.idIndex = idIndex;
         this.categoryId = categoryId;
         this.title = title;
         this.description = description;
@@ -32,6 +40,15 @@ public class Groups implements Serializable
     public void setId(int id)
     {
         this.id = id;
+    }
+    public int getIdIndex()
+    {
+        return idIndex;
+    }
+
+    public void setIdIndex(int idIndex)
+    {
+        this.idIndex = idIndex;
     }
     public int getCategoryId()
     {

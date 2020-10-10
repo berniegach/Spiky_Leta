@@ -13,11 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.main.home.EditGroupActivity"/>
-        <activity android:name=".ui.main.home.AddGroupActivity"/>
-        <activity android:name=".ui.main.home.AddCategoryActivity"/>
-        <activity android:name=".ui.main.home.EditCategoryActivity"/>
-        <activity android:name=".ui.tasty.AddTastyBoardActivity"/>
+        <activity android:name=".ui.main.home.ArrangeMenuActivity"/>
+        <activity android:name=".ui.main.home.EditGroupActivity" />
+        <activity android:name=".ui.main.home.AddGroupActivity" />
+        <activity android:name=".ui.main.home.AddCategoryActivity" />
+        <activity android:name=".ui.main.home.EditCategoryActivity" />
+        <activity android:name=".ui.tasty.AddTastyBoardActivity" />
         <activity android:name=".ui.tasty.TastyBoardActivity" />
         <activity android:name=".ui.main.wallet.WalletActivity" />
         <activity android:name=".ui.main.home.AddItemActivity" />
@@ -56,41 +57,40 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <service android:name=".ui.OrdersService" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/launcher" />
         <!--
         This is required if the app targets api level 28(android 9.0) or above and uses the google maps sdk
         for android 16.0.0 or below (or if the app uses the apache http legacy library)
         -->
-        <uses-library
-            android:name="org.apache.http.legacy"
-            android:required="false" />
-        <!-- [START fcm_default_icon] -->
-        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
-             See README(https://goo.gl/l4GJaQ) for more. -->
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/launcher" />
-        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
-             notification message. See README(https://goo.gl/6BKBk7) for more. -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/colorAccent" />
-        <!-- [END fcm_default_icon] -->
-        <!-- [START fcm_default_channel] -->
+            android:resource="@color/colorAccent" /> <!-- [START fcm_default_icon] -->
+        <!--
+ Set custom default icon. This is used when no icon is set for incoming notification messages.
+             See README(https://goo.gl/l4GJaQ) for more.
+        -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
-        <!-- [END fcm_default_channel] -->
-
-        <!-- [START firebase_service] -->
+        <!--
+ Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more.
+        -->
+        <service android:name=".ui.OrdersService" /> <!-- [END fcm_default_icon] -->
+        <!-- [START fcm_default_channel] -->
         <service
             android:name=".ui.util.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </service>
-        <!-- [END firebase_service] -->
+        </service> <!-- [END fcm_default_channel] -->
+        <!-- [START firebase_service] -->
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
     </application>
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />

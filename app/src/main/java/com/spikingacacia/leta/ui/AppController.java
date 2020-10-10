@@ -1,4 +1,10 @@
 /*
+ * Created by Benard Gachanja on 10/10/20 7:06 PM
+ * Copyright (c) 2020 . All rights reserved.
+ * Last modified 8/20/20 4:47 PM
+ */
+
+/*
 This class is a singleton class which initializes core objects of volley library
  */
 package com.spikingacacia.leta.ui;

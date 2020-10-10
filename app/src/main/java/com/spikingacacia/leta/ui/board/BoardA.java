@@ -1,3 +1,9 @@
+/*
+ * Created by Benard Gachanja on 10/10/20 7:06 PM
+ * Copyright (c) 2020 . All rights reserved.
+ * Last modified 6/27/20 9:09 AM
+ */
+
 package com.spikingacacia.leta.ui.board;
 
 import androidx.appcompat.app.AppCompatActivity;

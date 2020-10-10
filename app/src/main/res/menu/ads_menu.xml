@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Created by Benard Gachanja on 10/10/20 7:06 PM
+  ~ Copyright (c) 2020 . All rights reserved.
+  ~ Last modified 3/10/20 4:35 PM
+  -->
+
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item

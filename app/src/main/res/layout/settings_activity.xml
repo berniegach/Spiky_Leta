@@ -1,3 +1,9 @@
+<!--
+  ~ Created by Benard Gachanja on 10/10/20 7:06 PM
+  ~ Copyright (c) 2020 . All rights reserved.
+  ~ Last modified 10/10/20 6:59 PM
+  -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/main"
     android:layout_width="match_parent"

@@ -1,3 +1,9 @@
+/*
+ * Created by Benard Gachanja on 10/10/20 7:06 PM
+ * Copyright (c) 2020 . All rights reserved.
+ * Last modified 9/7/20 8:16 PM
+ */
+
 package com.spikingacacia.leta.ui.util;
 
 import android.graphics.Bitmap;
