@@ -1,7 +1,7 @@
 <!--
-  ~ Created by Benard Gachanja on 10/10/20 7:06 PM
-  ~ Copyright (c) 2020 . All rights reserved.
-  ~ Last modified 9/22/20 5:10 PM
+  ~ Created by Benard Gachanja on 10/13/20 5:23 PM
+  ~ Copyright (c) 2020 . Spiking Acacia.  All rights reserved.
+  ~ Last modified 10/11/20 9:48 PM
   -->
 
 <resources>
@@ -70,6 +70,7 @@
         <item name="android:layout_width">@dimen/button_width</item>
         <item name="android:layout_height">@dimen/button_height</item>
     </style>
+
 
 
 </resources>

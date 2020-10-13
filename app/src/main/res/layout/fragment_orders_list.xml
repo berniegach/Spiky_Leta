@@ -1,17 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Created by Benard Gachanja on 10/10/20 7:06 PM
-  ~ Copyright (c) 2020 . All rights reserved.
-  ~ Last modified 10/10/20 6:59 PM
+  ~ Created by Benard Gachanja on 10/13/20 5:23 PM
+  ~ Copyright (c) 2020 . Spiking Acacia.  All rights reserved.
+  ~ Last modified 10/10/20 7:06 PM
   -->
-
-<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/list"
-    android:name="com.spikingacacia.leta.ui.seller.orders.SOOrderF"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layoutManager="LinearLayoutManager"
-    tools:context=".ui.orders.OrdersFragment"
-    tools:listitem="@layout/fragment_orders" />
+    android:layout_height="match_parent">
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="LinearLayoutManager"
+            tools:context=".ui.orders.OrdersFragment"
+            tools:listitem="@layout/fragment_orders" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</LinearLayout>
+

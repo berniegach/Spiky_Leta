@@ -1,7 +1,7 @@
 /*
- * Created by Benard Gachanja on 10/10/20 7:06 PM
- * Copyright (c) 2020 . All rights reserved.
- * Last modified 9/15/20 3:31 PM
+ * Created by Benard Gachanja on 10/13/20 5:23 PM
+ * Copyright (c) 2020 . Spiking Acacia.  All rights reserved.
+ * Last modified 10/11/20 9:50 PM
  */
 
 package com.spikingacacia.leta.ui.main;
@@ -30,6 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.provider.FontRequest;
 import androidx.emoji.bundled.BundledEmojiCompatConfig;
 import androidx.emoji.text.EmojiCompat;
@@ -101,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         initEmojiCompat();
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each

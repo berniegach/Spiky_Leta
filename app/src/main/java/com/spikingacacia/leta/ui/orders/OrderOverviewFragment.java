@@ -1,7 +1,7 @@
 /*
- * Created by Benard Gachanja on 10/10/20 7:06 PM
- * Copyright (c) 2020 . All rights reserved.
- * Last modified 9/23/20 3:52 PM
+ * Created by Benard Gachanja on 10/13/20 5:23 PM
+ * Copyright (c) 2020 . Spiking Acacia.  All rights reserved.
+ * Last modified 10/10/20 7:06 PM
  */
 
 package com.spikingacacia.leta.ui.orders;
@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -206,7 +207,12 @@ public class OrderOverviewFragment extends Fragment
         t_order_number.setText("Order "+String.valueOf(order_number));
         t_username.setText(username);
         if(table!=-1)
-            t_table.setText("Table "+table);
+        {
+            if(mPreOrder == 1 && mOrderStatus>2)
+                t_table.setText(" P-O Table "+table);
+            else
+                t_table.setText("Table "+table);
+        }
         t_waiter.setText(" served by "+waiter);
         String[] order_types = new String[]{"In house", "Take away", "Delivery"};
         t_order_type.setText(order_types[i_order_type]);

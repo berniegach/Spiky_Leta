@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Created by Benard Gachanja on 10/10/20 7:06 PM
-  ~ Copyright (c) 2020 . All rights reserved.
-  ~ Last modified 10/10/20 6:59 PM
+  ~ Created by Benard Gachanja on 10/13/20 5:23 PM
+  ~ Copyright (c) 2020 . Spiking Acacia.  All rights reserved.
+  ~ Last modified 10/10/20 7:06 PM
   -->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -10,7 +10,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.orders.OrderOverviewFragment">
+    tools:context=".ui.orders.OrderOverviewFragment"
+    android:background="@android:color/white">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">

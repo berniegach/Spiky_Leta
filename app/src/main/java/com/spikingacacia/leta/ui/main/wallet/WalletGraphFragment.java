@@ -1,7 +1,7 @@
 /*
- * Created by Benard Gachanja on 10/10/20 7:06 PM
- * Copyright (c) 2020 . All rights reserved.
- * Last modified 8/27/20 4:58 PM
+ * Created by Benard Gachanja on 10/13/20 5:23 PM
+ * Copyright (c) 2020 . Spiking Acacia.  All rights reserved.
+ * Last modified 10/10/20 7:06 PM
  */
 
 package com.spikingacacia.leta.ui.main.wallet;

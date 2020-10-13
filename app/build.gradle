@@ -1,7 +1,7 @@
 /*
- * Created by Benard Gachanja on 10/10/20 7:06 PM
- * Copyright (c) 2020 . All rights reserved.
- * Last modified 10/6/20 8:54 AM
+ * Created by Benard Gachanja on 10/13/20 5:23 PM
+ * Copyright (c) 2020 . Spiking Acacia.  All rights reserved.
+ * Last modified 10/11/20 1:18 AM
  */
 
 apply plugin: 'com.android.application'
@@ -13,8 +13,8 @@ android {
         applicationId "com.spikingacacia.leta"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 52
-        versionName "1.5.1"
+        versionCode 53
+        versionName "1.5.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
         //vectorDrawables.useSupportLibrary = true
