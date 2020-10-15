@@ -25,6 +25,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
 import androidx.preference.MultiSelectListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -88,6 +89,8 @@ public class SettingsActivity extends AppCompatActivity
             final CheckBoxPreference preference_c_sit_in = findPreference("c_sit_in");
             final CheckBoxPreference preference_c_take_away = findPreference("c_take_away");
             final CheckBoxPreference preference_c_delivery = findPreference("c_delivery");
+            final ListPreference seller_type_preference = findPreference("seller_type");
+
             //check if we have the waiter logged on
             if(LoginActivity.getServerAccount().getPersona()==2)
             {
@@ -243,6 +246,22 @@ public class SettingsActivity extends AppCompatActivity
                    return false;
                }
            });
+           //establishment type
+            String[] seller_types = new String[]{"Restaurant","Hotel","Virtual"};
+            seller_type_preference.setValue(LoginActivity.getServerAccount().getSellerType());
+            seller_type_preference.setSummary(seller_types[Integer.parseInt(LoginActivity.getServerAccount().getSellerType())]);
+            seller_type_preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+            {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue)
+                {
+                    tempServerAccount.setSellerType((String)newValue);
+                    seller_type_preference.setValue((String)newValue);
+                    seller_type_preference.setSummary(seller_types[Integer.parseInt((String)newValue)]);
+                    updateSettings();
+                    return false;
+                }
+            });
             ///LOCATION
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //location
@@ -404,7 +423,7 @@ public class SettingsActivity extends AppCompatActivity
     }
     public static class UpdateAccount extends AsyncTask<Void, Void, Boolean>
     {
-        private String url_update_account= LoginActivity.base_url+"update_seller_account.php";
+        private String url_update_account= LoginActivity.base_url+"update_seller_account_1.php";
         private JSONParser jsonParser;
         private String TAG_SUCCESS="success";
         private String TAG_MESSAGE="message";
@@ -421,6 +440,7 @@ public class SettingsActivity extends AppCompatActivity
             info.add(new BasicNameValuePair("id",Integer.toString(tempServerAccount.getId())));
             info.add(new BasicNameValuePair("password", tempServerAccount.getPassword()));
             info.add(new BasicNameValuePair("username", tempServerAccount.getUsername()));
+            info.add(new BasicNameValuePair("seller_type", tempServerAccount.getSellerType()));
             info.add(new BasicNameValuePair("online", Integer.toString(tempServerAccount.getOnlineVisibility())));
             info.add(new BasicNameValuePair("deliver", Integer.toString(tempServerAccount.getDeliver())));
             info.add(new BasicNameValuePair("dining_options", tempServerAccount.getDiningOptions()));

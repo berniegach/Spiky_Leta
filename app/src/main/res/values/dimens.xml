@@ -32,4 +32,5 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="list_item_spacing">16dp</dimen>
     <dimen name="list_item_spacing_half">8dp</dimen>
+    <dimen name="shr_product_grid_reveal_height">200dp</dimen>
 </resources>

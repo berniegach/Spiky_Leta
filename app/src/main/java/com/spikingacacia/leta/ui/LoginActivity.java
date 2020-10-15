@@ -537,7 +537,7 @@ public class LoginActivity extends AppCompatActivity
     }
     public  class LoginTask extends AsyncTask<Void, Void, Boolean>
     {
-        private String url_get_account_seller =base_url+"get_seller_account.php";
+        private String url_get_account_seller =base_url+"get_seller_account_1.php";
         private String TAG_SUCCESS="success";
         private String TAG_MESSAGE="message";
         private final String mEmail;
@@ -581,6 +581,7 @@ public class LoginActivity extends AppCompatActivity
                     serverAccount.setEmail(accountObject.getString("email"));
                     serverAccount.setPassword(accountObject.getString("password"));
                     serverAccount.setUsername(accountObject.getString("username"));
+                    serverAccount.setSellerType(accountObject.getString("seller_type"));
                     serverAccount.setOnlineVisibility(accountObject.getInt("online"));
                     serverAccount.setDeliver(accountObject.getInt("deliver"));
                     serverAccount.setDiningOptions(accountObject.getString("dining_options"));
@@ -667,7 +668,7 @@ public class LoginActivity extends AppCompatActivity
     }
     public  class LoginWaiterTask extends AsyncTask<Void, Void, Boolean>
     {
-        private String url_get_account_seller_waiter =base_url+"get_seller_account_waiter.php";
+        private String url_get_account_seller_waiter =base_url+"get_seller_account_waiter_1.php";
         private String TAG_SUCCESS="success";
         private String TAG_MESSAGE="message";
         private final String mEmail;
@@ -712,6 +713,7 @@ public class LoginActivity extends AppCompatActivity
                     serverAccount.setEmail(accountObject.getString("email"));
                     serverAccount.setPassword(accountObject.getString("password"));
                     serverAccount.setUsername(accountObject.getString("username"));
+                    serverAccount.setSellerType(accountObject.getString("seller_type"));
                     serverAccount.setOnlineVisibility(accountObject.getInt("online"));
                     serverAccount.setDeliver(accountObject.getInt("deliver"));
                     serverAccount.setDiningOptions(accountObject.getString("dining_options"));

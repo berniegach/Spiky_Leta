@@ -8,20 +8,23 @@ package com.spikingacacia.leta.ui.main;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.LoginActivity;
+import com.spikingacacia.leta.ui.NavigationIconClickListener;
 import com.spikingacacia.leta.ui.SettingsActivity;
 import com.spikingacacia.leta.ui.database.Categories;
 import com.spikingacacia.leta.ui.database.DMenu;
@@ -102,6 +105,8 @@ public class MainActivity extends AppCompatActivity implements
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
 
         initEmojiCompat();
         BottomNavigationView navView = findViewById(R.id.nav_view);
@@ -123,11 +128,115 @@ public class MainActivity extends AppCompatActivity implements
 
         progressBar = findViewById(R.id.progress);
         mainFragment = findViewById(R.id.nav_host_fragment);
+        mainFragment.setBackgroundColor(Color.WHITE);
+        myToolbar.setNavigationIcon(R.drawable.ic_baseline_menu_w);
+        myToolbar.setNavigationOnClickListener(new NavigationIconClickListener(this, mainFragment, new AccelerateDecelerateInterpolator(),
+                getBaseContext().getResources().getDrawable(R.drawable.ic_baseline_menu_w), getBaseContext().getResources().getDrawable( R.drawable.ic_baseline_menu_open_w)));
+        setMenuOnclickListeners();
+
+        // Set cut corner background for API 23+
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mainFragment.setBackgroundResource(R.drawable.shr_product_grid_background_shape);
+        }*/
 
         categoriesLinkedHashMap = new LinkedHashMap<>();
         groupsLinkedHashMap = new LinkedHashMap<>();
         menuLinkedHashMap = new LinkedHashMap<>();
         checkFirebaseToken();
+    }
+    private void setMenuOnclickListeners()
+    {
+        MaterialButton b_waiter = findViewById(R.id.action_waiter);
+        MaterialButton b_qr_codes = findViewById(R.id.action_qr_codes);
+        MaterialButton b_wallet = findViewById(R.id.action_wallet);
+        MaterialButton b_arrange_menu = findViewById(R.id.action_arrange);
+        MaterialButton b_tasty_board = findViewById(R.id.action_tasty_board);
+        MaterialButton b_sign_out = findViewById(R.id.action_sign_out);
+        MaterialButton b_settings = findViewById(R.id.action_settings);
+        b_waiter.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent=new Intent(MainActivity.this, WaitersActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
+            }
+        });
+        b_qr_codes.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent=new Intent(MainActivity.this, QrCodeActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
+            }
+        });
+        b_wallet.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent=new Intent(MainActivity.this, WalletActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
+            }
+        });
+        b_arrange_menu.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent=new Intent(MainActivity.this, ArrangeMenuActivity.class);
+                startActivity(intent);
+            }
+        });
+        b_tasty_board.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent=new Intent(MainActivity.this, TastyBoardActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
+            }
+        });
+        b_sign_out.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                mGoogleSignInClient.signOut().addOnCompleteListener(MainActivity.this, new OnCompleteListener<Void>()
+                {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task)
+                    {
+                        Log.d(TAG,"gmail signed out");
+                        finishAffinity();
+                    }
+                });
+            }
+        });
+       b_settings.setOnClickListener(new View.OnClickListener()
+       {
+           @Override
+           public void onClick(View v)
+           {
+               Intent intent=new Intent(MainActivity.this, SettingsActivity.class);
+               //prevent this activity from flickering as we call the next one
+               intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+               startActivity(intent);
+           }
+       });
+        if(LoginActivity.getServerAccount().getPersona()==2)
+        {
+            b_waiter.setVisibility(View.GONE);
+            b_qr_codes.setVisibility(View.GONE);
+            b_wallet.setVisibility(View.GONE);
+            b_arrange_menu.setVisibility(View.GONE);
+        }
+
     }
     // This callback is called only when there is a saved instance that is previously saved by using
 // onSaveInstanceState(). We restore some state in onCreate(), while we can optionally restore
@@ -148,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements
         // call superclass to save any view hierarchy
         super.onSaveInstanceState(outState);
     }
-    @Override
+   /* @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -165,9 +274,10 @@ public class MainActivity extends AppCompatActivity implements
             menu_tasty_board.setVisible(false);
         }
         return true;
-    }
+    }*/
 
-    @Override
+
+    /*@Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
         // Handle action bar item clicks here. The action bar will
@@ -224,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
     @Override
     public void onBackPressed()
     {
@@ -252,13 +362,6 @@ public class MainActivity extends AppCompatActivity implements
     {
         progressBar.setVisibility(show? View.VISIBLE : View.GONE);
         mainFragment.setVisibility( show? View.INVISIBLE :View.VISIBLE);
-    }
-    void proceedToSettings()
-    {
-        Intent intent=new Intent(MainActivity.this, SettingsActivity.class);
-        //prevent this activity from flickering as we call the next one
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        startActivity(intent);
     }
     private void checkFirebaseToken()
     {

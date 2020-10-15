@@ -70,7 +70,13 @@
         <item name="android:layout_width">@dimen/button_width</item>
         <item name="android:layout_height">@dimen/button_height</item>
     </style>
-
+    <style name="Widget.Main.Backdrop" parent="">
+        <item name="android:background">?attr/colorAccent</item>
+    </style>
+    <style name="Widget.Main.Button.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">#ffffff</item>
+        <item name="rippleColor">#666666</item>
+    </style>
 
 
 </resources>

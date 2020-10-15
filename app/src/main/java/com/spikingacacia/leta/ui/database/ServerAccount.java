@@ -15,6 +15,7 @@ public class ServerAccount implements Serializable
     private String email;
     private String password;
     private String username;
+    private String sellerType;
     private int onlineVisibility;
     private int deliver;
     private String diningOptions;
@@ -39,7 +40,7 @@ public class ServerAccount implements Serializable
 
     public ServerAccount(){}
 
-    public ServerAccount(int persona, int id, String email, String password, String username, String country, int online, int deliver, String diningOptions, String location, int orderRadius, int orderFormat,
+    public ServerAccount(int persona, int id, String email, String password, String username, String sellerType, String country, int online, int deliver, String diningOptions, String location, int orderRadius, int orderFormat,
                          int numberOfTables, String imageType, String dateadded, String datechanged, String dateToday,
                          int waiter_id, String waiter_email, String waiter_names, String waiterImageType, String mCode, double commision, String mpesaMobile, String firebaseTokenId)
     {
@@ -48,6 +49,7 @@ public class ServerAccount implements Serializable
         this.email = email;
         this.password = password;
         this.username = username;
+        this.sellerType = sellerType;
         this.onlineVisibility=online;
         this.deliver=deliver;
         this.diningOptions = diningOptions;
@@ -108,6 +110,16 @@ public class ServerAccount implements Serializable
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getSellerType()
+    {
+        return sellerType;
+    }
+
+    public void setSellerType(String sellerType)
+    {
+        this.sellerType = sellerType;
     }
 
     public int getDeliver() {

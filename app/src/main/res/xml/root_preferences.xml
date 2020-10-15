@@ -34,6 +34,7 @@
             app:updatesContinuously="true"
             app:adjustable="true"
             app:summary="@string/pref_order_range" />
+
         <EditTextPreference
             app:isPreferenceVisible="false"
             app:key="mpesa_code"
@@ -43,6 +44,12 @@
         <!--<Preference
             app:key="number_of_tables"
             app:title="Number of tables" />-->
+        <ListPreference
+            app:key="seller_type"
+            android:title="Establishment Type"
+            android:defaultValue="0"
+            android:entries="@array/seller_type_entries"
+            android:entryValues="@array/seller_type_values"/>
         <Preference
             app:isPreferenceVisible="false"
             app:key="subscription"
@@ -63,6 +70,7 @@
                 app:key="c_delivery"
                 android:title="Delivery"/>
         </PreferenceCategory>
+
     </PreferenceCategory>
 
 

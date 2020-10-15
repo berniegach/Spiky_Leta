@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Created by Benard Gachanja on 10/13/20 5:23 PM
+  ~ Copyright (c) 2020 . Spiking Acacia.  All rights reserved.
+  ~ Last modified 10/10/20 7:06 PM
+  -->
+
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/action_waiter"
+        style="@style/Widget.Main.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Runners" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/action_qr_codes"
+        style="@style/Widget.Main.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="QR Codes" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/action_wallet"
+        style="@style/Widget.Main.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wallet" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/action_arrange"
+        style="@style/Widget.Main.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Arrange Menu" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/action_tasty_board"
+        style="@style/Widget.Main.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tasty Board" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/action_sign_out"
+        style="@style/Widget.Main.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign Out" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/action_settings"
+        style="@style/Widget.Main.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Settings" />
+
+
+</merge>

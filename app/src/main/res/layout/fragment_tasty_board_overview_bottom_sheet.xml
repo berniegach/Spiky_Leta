@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Created by Benard Gachanja on 10/13/20 5:26 PM
+  ~ Copyright (c) 2020 . Spiking Acacia. All rights reserved.
+  ~ Last modified 10/5/20 11:21 PM
+  -->
+
+<LinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:id="@+id/base">
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="Title"
+        android:layout_gravity="center"
+        android:textAppearance="?attr/textAppearanceHeadline6" />
+    <TextView
+        android:id="@+id/restaurant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="Restaurant"
+        android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/location"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginStart="10dp"
+        android:gravity="center"
+        android:text="location"/>
+    <TextView
+        android:id="@+id/discount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_coupon_b"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        android:layout_marginStart="10dp"
+        android:layout_gravity="center"
+        android:text="0"
+        android:fontFamily="@font/eczar_regular"
+        android:textSize="18sp"/>
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"/>
+<androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/list"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:clipToPadding="false"
+    android:layout_weight="1"
+    tools:listitem="@layout/fragment_tasty_board_overview_bottom_sheet_item" />
+
+</LinearLayout>

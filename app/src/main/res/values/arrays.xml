@@ -15,6 +15,18 @@
         <item>reply</item>
         <item>reply_all</item>
     </string-array>
+    <!-- establishment type -->
+    <string-array name="seller_type_entries">
+        <item>Restaurant</item>
+        <item>Hotel</item>
+        <item>Virtual</item>
+    </string-array>
+
+    <string-array name="seller_type_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
     <string-array name="years">
         <item>All</item>
         <item>2020</item>
