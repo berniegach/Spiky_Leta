@@ -306,7 +306,7 @@ public class LinkedItemListDialogFragment extends BottomSheetDialogFragment
             info.add(new BasicNameValuePair("seller_email", LoginActivity.getServerAccount().getEmail()));
             info.add(new BasicNameValuePair("item_id",String.valueOf(dMenu.getId())));
             info.add(new BasicNameValuePair("category_id",Integer.toString(dMenu.getCategoryId())));
-            info.add(new BasicNameValuePair("group_id",Integer.toString(-1)));
+            info.add(new BasicNameValuePair("group_id",Integer.toString(dMenu.getGroupId())));
             info.add(new BasicNameValuePair("linked_items",linked_items));
             info.add(new BasicNameValuePair("linked_items_price",linked_items_prices));
             info.add(new BasicNameValuePair("item",dMenu.getItem()));

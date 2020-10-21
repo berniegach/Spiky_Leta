@@ -64,8 +64,10 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 import static com.spikingacacia.leta.ui.LoginActivity.base_url;
@@ -404,7 +406,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
         for(int c=0; c<list.size(); c++)
         {
             Categories categories =list.get(c);
-            Chip chip = new Chip(getContext());
+            Chip chip = new Chip(requireContext());
             chip.setText(categories.getTitle());
             chip.setTag(categories.getId());
             chip.setClickable(true);
@@ -428,7 +430,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
         for(int c=0; c<list.size(); c++)
         {
             Groups groups =list.get(c);
-            Chip chip = new Chip(getContext());
+            Chip chip = new Chip(requireContext());
             chip.setText(groups.getTitle());
             chip.setTag(groups.getCategoryId()+":"+groups.getId());
             chip.setClickable(true);
@@ -474,11 +476,13 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
         private String TAG_MESSAGE="message";
         private  JSONParser jsonParser;
         private List<Categories> list;
+        private LinkedHashMap<Integer, Categories> categoriesLinkedHashMap;
         @Override
         protected void onPreExecute()
         {
             jsonParser = new JSONParser();
             list = new ArrayList<>();
+            categoriesLinkedHashMap = new LinkedHashMap<>();
             super.onPreExecute();
         }
         @Override
@@ -496,7 +500,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
                 int success=jsonObject.getInt(TAG_SUCCESS);
                 if(success==1)
                 {
-                    MainActivity.categoriesLinkedHashMap.clear();
+                    //MainActivity.categoriesLinkedHashMap.clear();
                     categoriesArrayList=jsonObject.getJSONArray("categories");
                     for(int count=0; count<categoriesArrayList.length(); count+=1)
                     {
@@ -511,7 +515,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
 
                         Categories categories =new Categories(id, id_index, title,description,image_type,date_added,date_changed);
                         list.add(categories);
-                        MainActivity.categoriesLinkedHashMap.put(id,categories);
+                        categoriesLinkedHashMap.put(id,categories);
                     }
                     return true;
                 }
@@ -534,6 +538,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
             if (successful)
             {
                 //mymenuCategoryRecyclerViewAdapter.listUpdated(list);
+                MainActivity.categoriesLinkedHashMap = categoriesLinkedHashMap;
                 addCategoryChipLayouts(list);
 
             }
@@ -549,11 +554,13 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
         private String TAG_MESSAGE="message";
         private  JSONParser jsonParser;
         private List<Groups> list;
+        private LinkedHashMap<Integer, Groups> groupsLinkedHashMap;
         @Override
         protected void onPreExecute()
         {
             jsonParser = new JSONParser();
             list = new ArrayList<>();
+            groupsLinkedHashMap = new LinkedHashMap<>();
             super.onPreExecute();
         }
         @Override
@@ -571,7 +578,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
                 int success=jsonObject.getInt(TAG_SUCCESS);
                 if(success==1)
                 {
-                    MainActivity.groupsLinkedHashMap.clear();
+                    //MainActivity.groupsLinkedHashMap.clear();
                     categoriesArrayList=jsonObject.getJSONArray("groups");
                     for(int count=0; count<categoriesArrayList.length(); count+=1)
                     {
@@ -587,7 +594,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
 
                         Groups groups =new Groups(id,id_index,category_id,title,description,image_type,date_added,date_changed);
                         list.add(groups);
-                        MainActivity.groupsLinkedHashMap.put(id,groups);
+                        groupsLinkedHashMap.put(id,groups);
                     }
                     return true;
                 }
@@ -610,6 +617,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
             if (successful)
             {
                 //mymenuGroupRecyclerViewAdapter.listUpdated(list);
+                MainActivity.groupsLinkedHashMap = groupsLinkedHashMap;
                 addGroupChipLayouts(list);
             }
             else
@@ -625,10 +633,12 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
         private String TAG_SUCCESS="success";
         private String TAG_MESSAGE="message";
         private JSONParser jsonParser;
+        private LinkedHashMap<Integer, DMenu> menuLinkedHashMap;
         @Override
         protected void onPreExecute()
         {
             jsonParser = new JSONParser();
+            menuLinkedHashMap = new LinkedHashMap<>();
             super.onPreExecute();
         }
         @Override
@@ -646,7 +656,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
                 if(success==1)
                 {
                     //first of all remove all items
-                    MainActivity.menuLinkedHashMap.clear();
+                    //MainActivity.menuLinkedHashMap.clear();
                     list.clear();
                     itemsArrayList=jsonObject.getJSONArray("items");
                     for(int count=0; count<itemsArrayList.length(); count+=1)
@@ -676,7 +686,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
 
                         DMenu dMenu =new DMenu(id,category_id,group_id,linked_items, linked_items_price, item,description,sizes, prices,image_type,available,date_added,date_changed);
                         list.add(dMenu);
-                        MainActivity.menuLinkedHashMap.put(id,dMenu);
+                        menuLinkedHashMap.put(id,dMenu);
 
                     }
                     return true;
@@ -700,6 +710,7 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
 
             if (successful)
             {
+                MainActivity.menuLinkedHashMap = menuLinkedHashMap;
                 mymenuRecyclerViewAdapter.listUpdated(list);
             }
             else
