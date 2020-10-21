@@ -102,7 +102,7 @@ public class MyWaiterRecyclerViewAdapter extends RecyclerView.Adapter<MyWaiterRe
                             public void onClick(DialogInterface dialog, int which)
                             {
                                 new AlertDialog.Builder(mContext)
-                                        .setMessage("Are you sure you want to remove the waiter?")
+                                        .setMessage("Are you sure you want to remove the runner?")
                                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
                                         {
                                             @Override

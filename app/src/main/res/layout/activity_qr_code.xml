@@ -34,18 +34,24 @@
             app:layout_constraintHorizontal_bias="0.502"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/tables"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:hint="Number of tables"
-            android:gravity="center"
-            android:background="@drawable/edittext_border"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/qr_code" />
+            app:layout_constraintTop_toBottomOf="@+id/qr_code"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:hint="Number of tables">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tables"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
 
         <TextView
             android:id="@+id/textView4"
@@ -57,7 +63,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tables" />
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 
 
         <LinearLayout

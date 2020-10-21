@@ -24,7 +24,7 @@ public class WaitersActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waiters);
         //toolbar
-        setTitle("Waiters");
+        setTitle("Runners");
 
         Fragment fragment= WaiterFragment.newInstance(2);
         FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();

@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -59,7 +60,7 @@ import static com.spikingacacia.leta.ui.LoginActivity.base_url;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class WaiterFragment extends Fragment
+public class WaiterFragment extends Fragment implements WaiterDialogBottomSheet.AddWaiterInterface
 {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -69,6 +70,7 @@ public class WaiterFragment extends Fragment
     private String TAG = "WaiterFragment";
     private MyWaiterRecyclerViewAdapter myWaiterRecyclerViewAdapter;
     public static List<Waiters> waitersList;
+    private ProgressBar progressBar;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -105,23 +107,21 @@ public class WaiterFragment extends Fragment
     {
         View view = inflater.inflate(R.layout.fragment_waiter_list, container, false);
 
-        // Set the adapter
-        if (view instanceof RecyclerView)
+        progressBar = view.findViewById(R.id.progress);
+        recyclerView = view.findViewById(R.id.list);
+        Context context = view.getContext();
+        mColumnCount = getHorizontalItemCount();
+        if (mColumnCount <= 1)
         {
-            Context context = view.getContext();
-            recyclerView = (RecyclerView) view;
-            mColumnCount = getHorizontalItemCount();
-            if (mColumnCount <= 1)
-            {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else
-            {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            myWaiterRecyclerViewAdapter = new MyWaiterRecyclerViewAdapter(mListener, context);
-            recyclerView.setAdapter(myWaiterRecyclerViewAdapter);
-            recyclerView.addItemDecoration(new SpacesItemDecoration(16));
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        } else
+        {
+            recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
+        myWaiterRecyclerViewAdapter = new MyWaiterRecyclerViewAdapter(mListener, context);
+        recyclerView.setAdapter(myWaiterRecyclerViewAdapter);
+        recyclerView.addItemDecoration(new SpacesItemDecoration(16));
+
         waitersList = new LinkedList<>();
         return view;
     }
@@ -132,37 +132,15 @@ public class WaiterFragment extends Fragment
         super.onResume();
         new WaitersTask().execute((Void)null);
     }
-    /* @Override
-    public void onAttach(Context context)
+/*
+*  implementation of WaiterDialogBottomSheet.java
+ */
+    @Override
+    public void onWaiterAdd(String email)
     {
-        super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener)
-        {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else
-        {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }
+        new CreateWaiterTask(email).execute((Void)null);
     }
 
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
-        mListener = null;
-    }*/
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnListFragmentInteractionListener
     {
         void onListFragmentInteraction(Waiters item);
@@ -178,7 +156,8 @@ public class WaiterFragment extends Fragment
             @Override
             public boolean onMenuItemClick(MenuItem menuItem)
             {
-                showDialog();
+                WaiterDialogBottomSheet.newInstance(WaiterFragment.this).show(getChildFragmentManager(), "dialog");
+                //showDialog();
                 return true;
             }
         });
@@ -280,6 +259,11 @@ public class WaiterFragment extends Fragment
             }
         }
     }
+    void showProgress(boolean show)
+    {
+        progressBar.setVisibility(show? View.VISIBLE : View.GONE);
+        recyclerView.setVisibility( show? View.INVISIBLE :View.VISIBLE);
+    }
     public class CreateWaiterTask extends AsyncTask<Void, Void, Boolean>
     {
         String url_add_waiter = base_url + "add_waiter.php";
@@ -292,6 +276,7 @@ public class WaiterFragment extends Fragment
         @Override
         protected void onPreExecute()
         {
+            showProgress(true);
             super.onPreExecute();
             //check whether the waiter is already available
         }
@@ -338,6 +323,7 @@ public class WaiterFragment extends Fragment
         @Override
         protected void onPostExecute(final Boolean successful)
         {
+            showProgress(false);
             if(successful)
             {
 
@@ -348,10 +334,12 @@ public class WaiterFragment extends Fragment
             else
             {
                 Log.e("adding waiter", "error");
-                if(success == -1)
+                if(success == -4)
+                    Toast.makeText(getContext(),"The runner is already registered.",Toast.LENGTH_SHORT).show();
+                else if(success == -1)
                     Toast.makeText(getContext(),"Wrong email. Make sure the user is registered as an order customer first.",Toast.LENGTH_SHORT).show();
                 else
-                    Toast.makeText(getContext(),"Error adding the waiter",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),"Error adding the runner",Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -366,7 +354,7 @@ public class WaiterFragment extends Fragment
         @Override
         protected void onPreExecute()
         {
-            Log.d("BORDERS: ","starting....");
+            showProgress(true);
             jsonParser = new JSONParser();
             list = new LinkedList<>();
             super.onPreExecute();
@@ -416,8 +404,7 @@ public class WaiterFragment extends Fragment
         @Override
         protected void onPostExecute(final Boolean successful)
         {
-
-
+            showProgress(false);
             if (successful)
             {
                 myWaiterRecyclerViewAdapter.listUpdated(list);
