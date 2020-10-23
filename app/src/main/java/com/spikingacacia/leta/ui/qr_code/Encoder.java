@@ -86,7 +86,7 @@ public class Encoder
             BitMatrix bitMatrixTable;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
             {
-                Bitmap bitmapBack = getBitmap(context, R.drawable.ic_qr_code_back_2);
+                Bitmap bitmapBack = getBitmap(context, R.drawable.ic_leta_qr_code_back);
                 double W = bitmapBack.getWidth();
                 bitMatrixTable = multiFormatWriter.encode(text, BarcodeFormat.QR_CODE,(int) (0.5*W),(int) (0.5*W));
             }
@@ -113,7 +113,7 @@ public class Encoder
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private static Bitmap overlay(Context context, Bitmap bitmapTable, String table_number)
     {
-        Bitmap bitmapBack = getBitmap(context, R.drawable.ic_qr_code_back_2);
+        Bitmap bitmapBack = getBitmap(context, R.drawable.ic_leta_qr_code_back);
 
         Bitmap bmOverlayBack = Bitmap.createBitmap(bitmapBack.getWidth(), bitmapBack.getHeight(), bitmapBack.getConfig());
         long W = bitmapBack.getWidth();

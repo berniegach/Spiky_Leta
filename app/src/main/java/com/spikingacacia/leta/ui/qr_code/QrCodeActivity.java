@@ -196,7 +196,7 @@ public class QrCodeActivity extends AppCompatActivity
                         int id = set.getKey();
                         QrCodes qrCodes = set.getValue();
                         String table_number = "#"+qrCodes.getTableNumber();
-                        String filename = "Image_Order_QR_table_" + String.valueOf(id) + ".jpg";
+                        String filename = "Image_LETA_QR_table_" + String.valueOf(id) + ".jpg";
                         final Bitmap bitmap_qr = Encoder.encode2(getBaseContext(), qrCodes.getUrlCode(), table_number);
                         save_bitmap(bitmap_qr, filename);
                     }
@@ -215,7 +215,7 @@ public class QrCodeActivity extends AppCompatActivity
     private void save_bitmap(Bitmap bitmap, String file_name)
     {
         final String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/order");
+        File myDir = new File(root + "/leta");
         myDir.mkdirs();
         int n = 10000;
         File file = new File(myDir, file_name);

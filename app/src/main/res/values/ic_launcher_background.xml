@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ Created by Benard Gachanja on 10/13/20 5:23 PM
-  ~ Copyright (c) 2020 . Spiking Acacia.  All rights reserved.
-  ~ Last modified 10/10/20 7:06 PM
-  -->
-
 <resources>
     <color name="ic_launcher_background">#3DDC84</color>
 </resources>
