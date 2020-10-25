@@ -7,14 +7,20 @@
 package com.spikingacacia.leta.ui.main.home;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -40,6 +46,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
 import com.spikingacacia.leta.ui.LoginActivity;
@@ -54,7 +61,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -65,6 +77,9 @@ import static com.spikingacacia.leta.ui.LoginActivity.base_url;
 
 public class AddItemActivity extends AppCompatActivity
 {
+    static final int REQUEST_IMAGE_CAPTURE = 3;
+    // permission request codes need to be < 256
+    private static final int RC_HANDLE_CAMERA_PERM = 2;
     private ProgressBar progressBar;
     private View mainView;
     private ImageView imageView;
@@ -74,6 +89,9 @@ public class AddItemActivity extends AppCompatActivity
     private String sizes;
     private String prices;
     private boolean bitmapChanged = false;
+    private String TAG = "add_item_a";
+    private  Uri imageUri;
+    private String mCameraFileName;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -90,14 +108,30 @@ public class AddItemActivity extends AppCompatActivity
         ImageButton add_sizes_Button = findViewById(R.id.add_sizes);
         layoutAddSizes = findViewById(R.id.layout_sizes);
         Button button_add = findViewById(R.id.button_add);
+        ImageButton b_gallery = findViewById(R.id.gallery);
+        ImageButton b_camera = findViewById(R.id.camera);
 
         //image
-        imageView.setOnClickListener(new View.OnClickListener()
+        b_camera.setEnabled(checkCameraHardware(this));
+        b_gallery.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
                 getTheImage();
+            }
+        });
+        b_camera.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                // Check for the camera permission before accessing the camera.  If the
+                // permission is not granted yet, request permission.
+                if( (ActivityCompat.checkSelfPermission(AddItemActivity.this, Manifest.permission.CAMERA)) == PackageManager.PERMISSION_GRANTED)
+                    cameraIntent();
+                else
+                    requestCameraPermission();
             }
         });
 
@@ -214,24 +248,44 @@ public class AddItemActivity extends AppCompatActivity
             }
         });
     }
+    /**
+     * Handles the requesting of the camera permission.  This includes
+     * showing a "Snackbar" message of why the permission is needed then
+     * sending the request.
+     */
+    private void requestCameraPermission() {
+        Log.w(TAG, "Camera permission is not granted. Requesting permission");
+
+        final String[] permissions = new String[]{Manifest.permission.CAMERA};
+
+        if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.CAMERA)) {
+            ActivityCompat.requestPermissions(this, permissions, RC_HANDLE_CAMERA_PERM);
+            return;
+        }
+
+        final Activity thisActivity = this;
+
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ActivityCompat.requestPermissions(thisActivity, permissions,
+                        RC_HANDLE_CAMERA_PERM);
+            }
+        };
+
+        findViewById(R.id.camera).setOnClickListener(listener);
+        Snackbar.make(imageView, "Access to camera is needed for taking photos",
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction("GRANT", listener)
+                .show();
+    }
     void showProgress(boolean show)
     {
         progressBar.setVisibility(show? View.VISIBLE : View.GONE);
         mainView.setVisibility( show? View.INVISIBLE :View.VISIBLE);
     }
-    private List<String> getCategories()
-    {
-        List<String> list = new ArrayList<>();
-        Iterator iterator = MainActivity.categoriesLinkedHashMap.entrySet().iterator();
-        while(iterator.hasNext())
-        {
-            LinkedHashMap.Entry<Integer, Categories>set=(LinkedHashMap.Entry<Integer, Categories>) iterator.next();
-            int id=set.getKey();
-            Categories categories =set.getValue();
-            list.add(categories.getTitle());
-        }
-        return  list;
-    }
+
     private void addNewSizeLayout()
     {
         final View view = getLayoutInflater().inflate(R.layout.item_dialog_sizes_prices, null);
@@ -247,20 +301,7 @@ public class AddItemActivity extends AppCompatActivity
         layoutAddSizes.addView(view);
         view.requestFocus();
     }
-    private int getCategoryId(String item)
-    {
-        Iterator iterator = MainActivity.categoriesLinkedHashMap.entrySet().iterator();
-        while(iterator.hasNext())
-        {
-            LinkedHashMap.Entry<Integer, Categories>set=(LinkedHashMap.Entry<Integer, Categories>) iterator.next();
-            int id=set.getKey();
-            Categories categories =set.getValue();
-            String title = categories.getTitle();
-            if(item.contentEquals(title))
-                return id;
-        }
-        return -1;
-    }
+
     private void getTheImage()
     {
         Toast.makeText(getBaseContext(),"Please wait",Toast.LENGTH_SHORT).show();
@@ -270,6 +311,35 @@ public class AddItemActivity extends AppCompatActivity
         intent.putExtra(Intent.EXTRA_MIME_TYPES,new String[]{"image/jpeg"});
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent,"Select profile Image in jpg format"),1);
+    }
+    /** Check if this device has a camera */
+    private boolean checkCameraHardware(Context context) {
+        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
+            // this device has a camera
+            return true;
+        } else {
+            // no camera on this device
+            return false;
+        }
+    }
+
+    private void cameraIntent() {
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        Intent intent = new Intent();
+        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        Date date = new Date();
+        DateFormat df = new SimpleDateFormat("-mm-ss");
+
+        String newPicFile = df.format(date) + ".jpg";
+        String outPath = "/sdcard/" + newPicFile;
+        File outFile = new File(outPath);
+
+        mCameraFileName = outFile.toString();
+        Uri outuri = Uri.fromFile(outFile);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, outuri);
+        startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
     }
     private boolean formSizesPrices()
     {
@@ -324,6 +394,32 @@ public class AddItemActivity extends AppCompatActivity
             catch (Exception e)
             {
                 Log.e("bitmap", "" + e.getMessage());
+            }
+        }
+        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK)
+        {
+            if (data != null)
+            {
+                imageUri = data.getData();
+                imageView.setImageURI(imageUri);
+                Log.d(TAG,"IMAGE IMAGE 1");
+            }
+            if (imageUri == null && mCameraFileName != null) {
+                imageUri = Uri.fromFile(new File(mCameraFileName));
+                try
+                {
+                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                    imageView.setImageBitmap(bitmap);
+                    bitmapChanged = true;
+
+                } catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            File file = new File(mCameraFileName);
+            if (!file.exists()) {
+                file.mkdir();
             }
         }
     }
