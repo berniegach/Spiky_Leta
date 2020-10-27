@@ -37,12 +37,14 @@ public class ServerAccount implements Serializable
     private double commision;
     private String mpesaMobile;
     private String mFirebaseTokenId;
+    private String openingTime;
+    private String closingTime;
 
     public ServerAccount(){}
 
     public ServerAccount(int persona, int id, String email, String password, String username, String sellerType, String country, int online, int deliver, String diningOptions, String location, int orderRadius, int orderFormat,
                          int numberOfTables, String imageType, String dateadded, String datechanged, String dateToday,
-                         int waiter_id, String waiter_email, String waiter_names, String waiterImageType, String mCode, double commision, String mpesaMobile, String firebaseTokenId)
+                         int waiter_id, String waiter_email, String waiter_names, String waiterImageType, String mCode, double commision, String mpesaMobile, String firebaseTokenId, String openingTime, String closingTime)
     {
         this.persona=persona;
         this.id = id;
@@ -70,6 +72,8 @@ public class ServerAccount implements Serializable
         this.commision = commision;
         this.mpesaMobile = mpesaMobile;
         this.mFirebaseTokenId = firebaseTokenId;
+        this.openingTime = openingTime;
+        this.closingTime = closingTime;
     }
     public int getPersona()
     {
@@ -297,5 +301,24 @@ public class ServerAccount implements Serializable
     public void setmFirebaseTokenId(String mFirebaseTokenId)
     {
         this.mFirebaseTokenId = mFirebaseTokenId;
+    }
+    public String getOpeningTime()
+    {
+        return openingTime;
+    }
+
+    public void setOpeningTime(String openingTime)
+    {
+        this.openingTime = openingTime;
+    }
+
+    public String getClosingTime()
+    {
+        return closingTime;
+    }
+
+    public void setClosingTime(String closingTime)
+    {
+        this.closingTime = closingTime;
     }
 }

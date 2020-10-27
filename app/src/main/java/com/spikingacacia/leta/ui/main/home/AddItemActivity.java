@@ -20,6 +20,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
@@ -330,11 +331,13 @@ public class AddItemActivity extends AppCompatActivity
         intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
 
         Date date = new Date();
-        DateFormat df = new SimpleDateFormat("-mm-ss");
+        DateFormat df = new SimpleDateFormat("dd-MM-yy");
 
-        String newPicFile = df.format(date) + ".jpg";
-        String outPath = "/sdcard/" + newPicFile;
-        File outFile = new File(outPath);
+        String file_name = "Leta-"+df.format(date) + ".jpg";
+        final String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + "/Leta/Pics/");
+        myDir.mkdirs();
+        File outFile = new File(myDir, file_name);
 
         mCameraFileName = outFile.toString();
         Uri outuri = Uri.fromFile(outFile);

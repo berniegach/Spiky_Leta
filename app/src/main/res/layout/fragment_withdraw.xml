@@ -106,7 +106,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="8"
         android:hint=""
-        app:helperText="M-Pesa mobile number"
+        app:helperText="M-Pesa mobile number.\n
+Contact us at spikyleta@gmail.com to set the safaricom mobile number that receives the payments."
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
 
         <com.google.android.material.textfield.TextInputEditText

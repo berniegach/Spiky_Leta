@@ -13,8 +13,10 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -94,9 +96,9 @@ public class QrCodeActivity extends AppCompatActivity
                     return;
                 int tables = Integer.parseInt(s.toString());
                 if(tables!=qrCodesLinkedHashMap.size())
-                    b_assign.setVisibility(View.VISIBLE);
+                    b_assign.setEnabled(true);
                 else
-                    b_assign.setVisibility(View.GONE);
+                    b_assign.setEnabled(false);
                 tableCount = tables;
             }
 
@@ -210,12 +212,11 @@ public class QrCodeActivity extends AppCompatActivity
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_REQUEST_STORAGE);
         }
         showProgress(false);
-        //Toast.makeText(this,"QR Code saved", Toast.LENGTH_SHORT).show();
     }
     private void save_bitmap(Bitmap bitmap, String file_name)
     {
         final String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/leta");
+        File myDir = new File(root + "/Leta/QR/");
         myDir.mkdirs();
         int n = 10000;
         File file = new File(myDir, file_name);
@@ -233,7 +234,7 @@ public class QrCodeActivity extends AppCompatActivity
                 @Override
                 public void run()
                 {
-                    Toast.makeText(QrCodeActivity.this,"image added to\n"+root+"/order folder",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(QrCodeActivity.this,"image added to\n"+root+"/leta folder",Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -252,6 +253,7 @@ public class QrCodeActivity extends AppCompatActivity
         @Override
         protected void onPreExecute()
         {
+            showProgress(true);
             jsonParser = new JSONParser();
             qrCodesLinkedHashMap.clear();
             super.onPreExecute();
@@ -302,8 +304,7 @@ public class QrCodeActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(final Boolean successful)
         {
-
-
+            showProgress(false);
             if (successful)
             {
                 e_tables.setText(String.valueOf(qrCodesLinkedHashMap.size()));

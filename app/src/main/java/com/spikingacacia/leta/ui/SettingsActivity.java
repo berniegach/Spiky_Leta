@@ -8,6 +8,7 @@ package com.spikingacacia.leta.ui;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,6 +43,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -90,6 +93,10 @@ public class SettingsActivity extends AppCompatActivity
             final CheckBoxPreference preference_c_take_away = findPreference("c_take_away");
             final CheckBoxPreference preference_c_delivery = findPreference("c_delivery");
             final ListPreference seller_type_preference = findPreference("seller_type");
+            //operating time
+            final Preference p_opening_time = findPreference("opening_time");
+            final Preference p_closing_time = findPreference("closing_time");
+            final CheckBoxPreference p_24_hours = findPreference("24_hours");
 
             //check if we have the waiter logged on
             if(LoginActivity.getServerAccount().getPersona()==2)
@@ -135,49 +142,82 @@ public class SettingsActivity extends AppCompatActivity
                     return false;
                 }
             });
-            //number of tables change
-
-            /*preference_tables.setSummary(String.valueOf(LoginActivity.getServerAccount().getNumberOfTables()));
-            preference_tables.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+            //operating time
+            String opening_time = LoginActivity.getServerAccount().getOpeningTime();
+            opening_time = opening_time.contentEquals("NULL") || opening_time.contentEquals("null") || opening_time.contentEquals("")?
+                    "Opening time not set" : opening_time;
+            String closing_time = LoginActivity.getServerAccount().getClosingTime();
+            closing_time = closing_time.contentEquals("NULL") || closing_time.contentEquals("null") || closing_time.contentEquals("")?
+                    "Closing time not set" : closing_time;
+            p_opening_time.setSummary(opening_time);
+            p_closing_time.setSummary(closing_time);
+            p_24_hours.setChecked( (opening_time.contentEquals("Opening time not set")|| closing_time.contentEquals("Closing time not set")) );
+            p_24_hours.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+            {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue)
+                {
+                    ((CheckBoxPreference)preference).setChecked( !((CheckBoxPreference)preference).isChecked());
+                    if(p_24_hours.isChecked())
+                    {
+                        tempServerAccount.setOpeningTime("NULL");
+                        tempServerAccount.setClosingTime("NULL");
+                        p_opening_time.setSummary("Opening time not set");
+                        p_closing_time.setSummary("Closing time not set");
+                        updateSettings();
+                    }
+                    return false;
+                }
+            });
+            p_opening_time.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
             {
                 @Override
                 public boolean onPreferenceClick(Preference preference)
                 {
-                    final AlertDialog dialog;
-                    AlertDialog.Builder builderPass=new AlertDialog.Builder(context);
-                    builderPass.setTitle("Table Number");
-                    final NumberPicker numberPicker=new NumberPicker(context);
-                    numberPicker.setMinValue(1);
-                    numberPicker.setMaxValue(500);
-                    numberPicker.setValue(LoginActivity.getServerAccount().getNumberOfTables());
-                    builderPass.setView(numberPicker);
-                    builderPass.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
-                            dialog.dismiss();
-                        }
-                    });
-                    builderPass.setPositiveButton("Proceed", new DialogInterface.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
-                            int tableNumber=numberPicker.getValue();
-                            if(tableNumber!= LoginActivity.getServerAccount().getNumberOfTables())
-                            {
-                                preference_tables.setSummary(String.valueOf(tableNumber));
-                                tempServerAccount.setNumberOfTables(tableNumber);
-                                settingsChanged=true;
-                            }
-                        }
-                    });
-                    dialog=builderPass.create();
-                    dialog.show();
+                    // Get Current Time
+                    final Calendar c = Calendar.getInstance();
+                    int mHour = c.get(Calendar.HOUR_OF_DAY);
+                    int mMinute = c.get(Calendar.MINUTE);
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(context,
+                            new TimePickerDialog.OnTimeSetListener() {
+
+                                @Override
+                                public void onTimeSet(TimePicker view, int hourOfDay, int minute)
+                                {
+                                    preference.setSummary(hourOfDay + ":" + minute);
+                                    tempServerAccount.setOpeningTime(hourOfDay + ":" + minute);
+                                    updateSettings();
+                                }
+                            }, mHour, mMinute, false);
+                    timePickerDialog.show();
                     return false;
                 }
-            });*/
+            });
+            p_closing_time.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+            {
+                @Override
+                public boolean onPreferenceClick(Preference preference)
+                {
+                    // Get Current Time
+                    final Calendar c = Calendar.getInstance();
+                    int mHour = c.get(Calendar.HOUR_OF_DAY);
+                    int mMinute = c.get(Calendar.MINUTE);
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(context,
+                            new TimePickerDialog.OnTimeSetListener() {
+
+                                @Override
+                                public void onTimeSet(TimePicker view, int hourOfDay, int minute)
+                                {
+                                    preference.setSummary(hourOfDay + ":" + minute);
+                                    tempServerAccount.setClosingTime(hourOfDay + ":" + minute);
+                                    updateSettings();
+                                }
+                            }, mHour, mMinute, false);
+                    timePickerDialog.show();
+                    return false;
+                }
+            });
+
 
 
 
@@ -423,7 +463,7 @@ public class SettingsActivity extends AppCompatActivity
     }
     public static class UpdateAccount extends AsyncTask<Void, Void, Boolean>
     {
-        private String url_update_account= LoginActivity.base_url+"update_seller_account_1.php";
+        private String url_update_account= LoginActivity.base_url+"update_seller_account_2.php";
         private JSONParser jsonParser;
         private String TAG_SUCCESS="success";
         private String TAG_MESSAGE="message";
@@ -450,6 +490,8 @@ public class SettingsActivity extends AppCompatActivity
             info.add(new BasicNameValuePair("number_of_tables", Integer.toString(tempServerAccount.getNumberOfTables())));
             info.add(new BasicNameValuePair("image_type", tempServerAccount.getImageType()));
             info.add(new BasicNameValuePair("m_code", tempServerAccount.getmCode()));
+            info.add(new BasicNameValuePair("opening_time", tempServerAccount.getOpeningTime()));
+            info.add(new BasicNameValuePair("closing_time", tempServerAccount.getClosingTime()));
             //getting all account details by making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_update_account,"POST",info);
             try

@@ -55,6 +55,23 @@
             app:key="subscription"
             app:title="Subscription "
             app:enabled="false" />
+    <PreferenceCategory android:title="Operating time">
+        <Preference
+            android:dependency="24_hours"
+            app:key="opening_time"
+            android:summary="0:00"
+            android:title="Opening Time"/>
+        <Preference
+            android:dependency="24_hours"
+            app:key="closing_time"
+            android:title="Closing Time"
+            android:summary="0:00"/>
+        <CheckBoxPreference
+            android:disableDependentsState="true"
+            app:key="24_hours"
+            android:title="24 Hours"
+            android:summary="We don't close"/>
+    </PreferenceCategory>
 
         <PreferenceCategory android:title="Dining Options">
             <CheckBoxPreference
@@ -66,9 +83,9 @@
                 app:key="c_take_away"
                 android:title="Take away"/>
             <CheckBoxPreference
-                android:enabled="false"
                 app:key="c_delivery"
-                android:title="Delivery"/>
+                android:title="Delivery"
+                android:summaryOn="Yes, I'm able to handle my own delivery"/>
         </PreferenceCategory>
 
     </PreferenceCategory>

@@ -41,7 +41,6 @@ import com.spikingacacia.leta.ui.billing.BillingManager;
 import com.spikingacacia.leta.ui.billing.BillingProvider;
 import com.spikingacacia.leta.ui.main.MainActivity;
 import com.spikingacacia.leta.ui.skulist.AcquireFragment;
-import com.spikingacacia.leta.ui.util.MyFirebaseMessagingService;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -537,7 +536,7 @@ public class LoginActivity extends AppCompatActivity
     }
     public  class LoginTask extends AsyncTask<Void, Void, Boolean>
     {
-        private String url_get_account_seller =base_url+"get_seller_account_1.php";
+        private String url_get_account_seller =base_url+"get_seller_account_2.php";
         private String TAG_SUCCESS="success";
         private String TAG_MESSAGE="message";
         private final String mEmail;
@@ -598,6 +597,8 @@ public class LoginActivity extends AppCompatActivity
                     serverAccount.setDatechanged(accountObject.getString("datechanged"));
                     serverAccount.setDateToday(accountObject.getString("today"));
                     serverAccount.setmFirebaseTokenId(accountObject.getString("firebase_token_id"));
+                    serverAccount.setOpeningTime(accountObject.getString("opening_time"));
+                    serverAccount.setClosingTime(accountObject.getString("closing_time"));
                     return true;
                 }
                 else
@@ -668,7 +669,7 @@ public class LoginActivity extends AppCompatActivity
     }
     public  class LoginWaiterTask extends AsyncTask<Void, Void, Boolean>
     {
-        private String url_get_account_seller_waiter =base_url+"get_seller_account_waiter_1.php";
+        private String url_get_account_seller_waiter =base_url+"get_seller_account_waiter_2.php";
         private String TAG_SUCCESS="success";
         private String TAG_MESSAGE="message";
         private final String mEmail;
@@ -725,6 +726,8 @@ public class LoginActivity extends AppCompatActivity
                     serverAccount.setmCode(accountObject.getString("m_code"));
                     serverAccount.setCommision(accountObject.getDouble("commision"));
                     serverAccount.setMpesaMobile(accountObject.getString("m_mobile"));
+                    serverAccount.setOpeningTime(accountObject.getString("opening_time"));
+                    serverAccount.setClosingTime(accountObject.getString("closing_time"));
                     serverAccount.setDateadded(accountObject.getString("dateadded"));
                     serverAccount.setDatechanged(accountObject.getString("datechanged"));
                     serverAccount.setDateToday(accountObject.getString("today"));

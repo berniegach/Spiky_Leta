@@ -36,7 +36,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
 import com.spikingacacia.leta.ui.LoginActivity;
-import com.spikingacacia.leta.ui.OrdersService;
 import com.spikingacacia.leta.ui.Preferences;
 import com.spikingacacia.leta.ui.database.Orders;
 
