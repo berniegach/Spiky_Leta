@@ -156,6 +156,7 @@ public class MymenuRecyclerViewAdapter extends RecyclerView.Adapter<MymenuRecycl
                 return false;
             }
         });
+
     }
 
     @Override

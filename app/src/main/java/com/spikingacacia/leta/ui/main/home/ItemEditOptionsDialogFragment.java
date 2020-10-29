@@ -130,6 +130,12 @@ public class ItemEditOptionsDialogFragment extends BottomSheetDialogFragment
                 new UpdateAvailabilityTask(dMenu,isChecked,menu_index).execute((Void)null);
             }
         });
+        //check if we have the waiter logged on
+        if(LoginActivity.getServerAccount().getPersona()==2)
+        {
+            l_edit.setEnabled(false);
+            l_link.setEnabled(false);
+        }
         return view;
     }
     private class UpdateAvailabilityTask extends AsyncTask<Void, Void, Boolean>

@@ -108,6 +108,10 @@ public class SettingsActivity extends AppCompatActivity
                 preference_c_sit_in.setEnabled(false);
                 preference_c_take_away.setEnabled(false);
                 preference_c_delivery.setEnabled(false);
+                seller_type_preference.setEnabled(false);
+                p_opening_time.setEnabled(false);
+                p_closing_time.setEnabled(false);
+                p_24_hours.setEnabled(false);
             }
             //feedback preference click listener
 

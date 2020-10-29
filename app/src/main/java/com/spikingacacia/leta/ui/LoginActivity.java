@@ -731,6 +731,7 @@ public class LoginActivity extends AppCompatActivity
                     serverAccount.setDateadded(accountObject.getString("dateadded"));
                     serverAccount.setDatechanged(accountObject.getString("datechanged"));
                     serverAccount.setDateToday(accountObject.getString("today"));
+                    serverAccount.setmFirebaseTokenId(accountObject.getString("firebase_token_id"));
                     //waiter information
                     serverAccount.setWaiter_id(accountObject.getInt("waiter_id"));
                     serverAccount.setWaiter_email(accountObject.getString("waiter_email"));

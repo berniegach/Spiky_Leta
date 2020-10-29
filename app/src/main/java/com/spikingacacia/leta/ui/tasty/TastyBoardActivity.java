@@ -18,6 +18,7 @@ import android.view.View;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.spikingacacia.leta.R;
+import com.spikingacacia.leta.ui.LoginActivity;
 import com.spikingacacia.leta.ui.charts.TrafficGraphFragment;
 import com.spikingacacia.leta.ui.database.TastyBoard;
 import com.spikingacacia.leta.ui.main.MainActivity;
@@ -43,6 +44,9 @@ public class TastyBoardActivity extends AppCompatActivity implements
                 addNewTastyBoard();
             }
         });
+        //check if we have the waiter logged on
+        if(LoginActivity.getServerAccount().getPersona()==2)
+            fab.hide();
         Fragment fragment= TastyBoardFragment.newInstance(1);
         FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.base,fragment,"list");

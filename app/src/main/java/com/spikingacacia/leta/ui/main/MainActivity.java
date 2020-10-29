@@ -257,84 +257,7 @@ public class MainActivity extends AppCompatActivity implements
         // call superclass to save any view hierarchy
         super.onSaveInstanceState(outState);
     }
-   /* @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        MenuItem menu_waiters = menu.findItem(R.id.action_waiter);
-        MenuItem menu_qr_codes = menu.findItem(R.id.action_qr_codes);
-        MenuItem menu_wallet = menu.findItem(R.id.action_wallet);
-        MenuItem menu_tasty_board = menu.findItem(R.id.action_tasty_board);
-        if(LoginActivity.getServerAccount().getPersona()==2)
-        {
-            menu_waiters.setVisible(false);
-            menu_qr_codes.setVisible(false);
-            menu_wallet.setVisible(false);
-            menu_tasty_board.setVisible(false);
-        }
-        return true;
-    }*/
 
-
-    /*@Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if(id == R.id.action_waiter)
-        {
-            Intent intent=new Intent(MainActivity.this, WaitersActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            startActivity(intent);
-        }
-        else if(id == R.id.action_qr_codes)
-        {
-            Intent intent=new Intent(MainActivity.this, QrCodeActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            startActivity(intent);
-        }
-        else if(id == R.id.action_wallet)
-        {
-            Intent intent=new Intent(MainActivity.this, WalletActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            startActivity(intent);
-        }
-        else if(id == R.id.action_arrange)
-        {
-            Intent intent=new Intent(MainActivity.this, ArrangeMenuActivity.class);
-            startActivity(intent);
-        }
-        else if( id == R.id.action_tasty_board)
-        {
-            Intent intent=new Intent(MainActivity.this, TastyBoardActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            startActivity(intent);
-        }
-        else if( id == R.id.action_sign_out)
-        {
-            mGoogleSignInClient.signOut().addOnCompleteListener(MainActivity.this, new OnCompleteListener<Void>()
-            {
-                @Override
-                public void onComplete(@NonNull Task<Void> task)
-                {
-                    Log.d(TAG,"gmail signed out");
-                    finishAffinity();
-                }
-            });
-        }
-        else if (id == R.id.action_settings)
-        {
-            proceedToSettings();
-            return true;
-        }
-
-
-
-        return super.onOptionsItemSelected(item);
-    }*/
     @Override
     public void onBackPressed()
     {
@@ -373,11 +296,14 @@ public class MainActivity extends AppCompatActivity implements
                             Log.e(TAG, "getInstanceId failed", task.getException());
                             return;
                         }
-
+                        //we have to make sure that the admin uses admin token and the waiter uses waiter token
                         // Get new Instance ID token
                         String token = task.getResult().getToken();
                         if(!LoginActivity.getServerAccount().getmFirebaseTokenId().contentEquals(token))
-                            new MyFirebaseMessagingService.UpdateTokenTask(token).execute((Void)null);
+                            if(LoginActivity.getServerAccount().getPersona()==1)
+                                new MyFirebaseMessagingService.UpdateTokenTask(token).execute((Void)null);
+                            else
+                                new MyFirebaseMessagingService.UpdateTokenTaskWaiter(token).execute((Void)null);
                     }
                 });
     }

@@ -132,7 +132,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
      */
     private void sendRegistrationToServer(String token)
     {
-        new UpdateTokenTask(token).execute((Void)null);
+        if(LoginActivity.getServerAccount().getPersona()==1)
+            new UpdateTokenTask(token).execute((Void)null);
+        else
+            new UpdateTokenTaskWaiter(token).execute((Void)null);
     }
 
     /**
@@ -188,6 +191,62 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
             //building parameters
             List<NameValuePair> info=new ArrayList<NameValuePair>();
             info.add(new BasicNameValuePair("email",LoginActivity.getServerAccount().getEmail()));
+            info.add(new BasicNameValuePair("token", token));
+            //getting all account details by making HTTP request
+            JSONObject jsonObject= jsonParser.makeHttpRequest(url_update_account,"POST",info);
+            try
+            {
+                int success=jsonObject.getInt(TAG_SUCCESS);
+                if(success==1)
+                {
+                    return true;
+                }
+                else
+                {
+                    String message=jsonObject.getString(TAG_MESSAGE);
+                    Log.e(TAG_MESSAGE,""+message);
+                    return false;
+                }
+            }
+            catch (JSONException e)
+            {
+                Log.e("JSON",""+e.getMessage());
+                return false;
+            }
+        }
+        @Override
+        protected void onPostExecute(final Boolean success)
+        {
+            if(success)
+            {
+                Log.d(TAG, "update done");
+                //settingsChanged=false;
+            }
+            else
+            {
+                Log.e(TAG, "error");
+            }
+
+        }
+    }
+    public static class UpdateTokenTaskWaiter extends AsyncTask<Void, Void, Boolean>
+    {
+        private String url_update_account= LoginActivity.base_url+"update_buyer_firebase_token_id.php";
+        private JSONParser jsonParser;
+        private String TAG_SUCCESS="success";
+        private String TAG_MESSAGE="message";
+        private String token;
+        public UpdateTokenTaskWaiter(String token)
+        {
+            this.token = token;
+            jsonParser = new JSONParser();
+        }
+        @Override
+        protected Boolean doInBackground(Void... params)
+        {
+            //building parameters
+            List<NameValuePair> info=new ArrayList<NameValuePair>();
+            info.add(new BasicNameValuePair("email",LoginActivity.getServerAccount().getWaiter_email()));
             info.add(new BasicNameValuePair("token", token));
             //getting all account details by making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_update_account,"POST",info);
