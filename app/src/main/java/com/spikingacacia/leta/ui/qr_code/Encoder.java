@@ -43,52 +43,17 @@ public class Encoder
     public Encoder()
     {
     }
-    public static Bitmap encode( Context context, String text, String table_number)
-    {
-        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-        try {
-            String link = "https://play.google.com/store/apps/details?id=com.spikingacacia.spikyletabuyer";
-            BitMatrix bitMatrixDownloadLink;
-            BitMatrix bitMatrixTable;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
-            {
-                Bitmap bitmapBack = getBitmap(context, R.drawable.ic_qr_code_back);
-                double W = bitmapBack.getWidth();
-                bitMatrixDownloadLink = multiFormatWriter.encode(link, BarcodeFormat.QR_CODE, (int) (0.19*W),(int) (0.19*W));
-                bitMatrixTable = multiFormatWriter.encode(text, BarcodeFormat.QR_CODE,(int) (0.33*W),(int) (0.33*W));
-            }
-            else
-            {
-                bitMatrixDownloadLink = multiFormatWriter.encode(link, BarcodeFormat.QR_CODE,555,555);
-                bitMatrixTable = multiFormatWriter.encode(text, BarcodeFormat.QR_CODE,965,965);
-            }
-
-            //create the bitmaps
-            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-            Bitmap bitmapDownloadLink = barcodeEncoder.createBitmap(bitMatrixDownloadLink);
-            Bitmap bitmapTable = barcodeEncoder.createBitmap(bitMatrixTable);
-            //get an overlaid bitmap
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
-                bitmapTable = overlay(context, bitmapDownloadLink, bitmapTable, table_number);
-            return bitmapTable;
-        }
-        catch (WriterException e)
-        {
-            Log.e(TAG,""+e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
-    }
-    public static Bitmap encode2( Context context, String text, String table_number)
+    public static Bitmap encode(Context context, String text, String table_number)
     {
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         try {
             BitMatrix bitMatrixTable;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
             {
-                Bitmap bitmapBack = getBitmap(context, R.drawable.ic_leta_qr_code_back);
+                //Bitmap bitmapBack = getBitmap(context, R.drawable.ic_leta_qr_code_back);
+                Bitmap bitmapBack = getBitmap(context, R.drawable.leta_qr_back);
                 double W = bitmapBack.getWidth();
-                bitMatrixTable = multiFormatWriter.encode(text, BarcodeFormat.QR_CODE,(int) (0.5*W),(int) (0.5*W));
+                bitMatrixTable = multiFormatWriter.encode(text, BarcodeFormat.QR_CODE,(int) (0.3*W),(int) (0.3*W));
             }
             else
             {
@@ -113,42 +78,18 @@ public class Encoder
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private static Bitmap overlay(Context context, Bitmap bitmapTable, String table_number)
     {
-        Bitmap bitmapBack = getBitmap(context, R.drawable.ic_leta_qr_code_back);
+        //Bitmap bitmapBack = getBitmap(context, R.drawable.ic_leta_qr_code_back);
+        Bitmap bitmapBack = getBitmap(context, R.drawable.leta_qr_back);
 
         Bitmap bmOverlayBack = Bitmap.createBitmap(bitmapBack.getWidth(), bitmapBack.getHeight(), bitmapBack.getConfig());
         long W = bitmapBack.getWidth();
         long H = bitmapBack.getHeight();
-        long x1 = W/2;
-        long y1 = H/2-x1/2;
+        long x1 = W - bitmapTable.getWidth()/2*3;
+        long y1 = H/2 - bitmapTable.getHeight()/2;
         Canvas canvas = new Canvas(bmOverlayBack);
 
         canvas.drawBitmap(bitmapBack, new Matrix(),null);
         canvas.drawBitmap(bitmapTable,x1,y1,null);
-        // draw table number text
-        Paint paint = new Paint();
-        //canvas.drawPaint(paint);
-        paint.setColor(Color.BLACK);
-        paint.setTextSize(70);
-        canvas.drawText(table_number, 30, 100, paint);
-        return bmOverlayBack;
-    }
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private static Bitmap overlay(Context context, Bitmap bitmapLink,  Bitmap bitmapTable, String table_number)
-    {
-        Bitmap bitmapBack = getBitmap(context, R.drawable.ic_qr_code_back);
-
-        Bitmap bmOverlayBack = Bitmap.createBitmap(bitmapBack.getWidth(), bitmapBack.getHeight(), bitmapBack.getConfig());
-        long W = bitmapBack.getWidth();
-        long H = bitmapBack.getHeight();
-        long x1 = W/2-bitmapTable.getWidth()/2;
-        long y1 = H/2;
-        long x2 = W-W/2+W/4-bitmapLink.getWidth()/2;
-        long y2 = H-H/2-H/4-bitmapLink.getHeight()/3;
-        Canvas canvas = new Canvas(bmOverlayBack);
-
-        canvas.drawBitmap(bitmapBack, new Matrix(),null);
-        canvas.drawBitmap(bitmapTable,x1,y1,null);
-        //canvas.drawBitmap(bitmapLink,x2,y2,null);
         // draw table number text
         Paint paint = new Paint();
         //canvas.drawPaint(paint);

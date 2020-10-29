@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Created by Benard Gachanja on 10/29/20 7:50 PM
+  ~ Copyright (c) 2020 . Spiking Acacia.  All rights reserved.
+  ~ Last modified 10/29/20 7:50 PM
+  -->
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="@android:color/white">
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+<ScrollView
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Follow the following steps to acquire QR Codes that your customers can scan in order to access your menu"
+            android:padding="5dp"
+            android:textStyle="bold"/>
+        <ImageView
+            android:id="@+id/qr_code"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_qr_code"
+            android:layout_gravity="center"/>
+        <!-- 1. Define number -->
+        <View
+            android:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="10dp"
+            android:background="@android:color/darker_gray"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:text="1"
+                android:textSize="25sp" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hint="Number of QR codes to print"
+                app:helperText="Enter the number of tables you have in your establishment or the number of QR codes you require
+. This QR codes will later identify a unique place in which when the customer scans the QR code you will know where the request came from.">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tables"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+        </LinearLayout>
+        <!-- 2. Assign -->
+        <View
+            android:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="10dp"
+            android:background="@android:color/darker_gray"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:text="2"
+                android:textSize="25sp" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Assign the number of QR codes specified above to unique QR codes"/>
+                <Button
+                    android:id="@+id/assign"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:text="Assign"
+                    android:layout_gravity="center"/>
+            </LinearLayout>
+        </LinearLayout>
+        <!-- 3. Print -->
+        <View
+            android:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="10dp"
+            android:background="@android:color/darker_gray"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:text="3"
+                android:textSize="25sp" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Save the generated QR codes images in your device. They are saved in a folder called 'Leta'"/>
+                <Button
+                    android:id="@+id/print"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:text="Save"
+                    android:layout_gravity="center"/>
+            </LinearLayout>
+        </LinearLayout>
+        <!-- 4. View -->
+        <View
+            android:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="10dp"
+            android:background="@android:color/darker_gray"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:text="4"
+                android:textSize="25sp" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="5dp"
+                android:text="Print and place the QR codes images in a place where the customer can access them easily like on a table surface"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
+</FrameLayout>
