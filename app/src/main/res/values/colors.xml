@@ -6,11 +6,11 @@
   -->
 
 <resources>
-    <color name="colorPrimary">#000000</color>
-    <color name="colorPrimaryDark">#000000</color>
-    <!--<color name="colorAccent">#ff4e50</color>-->
-    <color name="colorAccent">#000000</color>
-    <color name="lighter_gray">#EBECF0</color>
-
-
+    <color name="colorPrimary">#d8c3b7</color>
+    <color name="colorPrimaryDark">#775643</color>
+    <color name="colorAccent">#d8c3b7</color>
+    <color name="dark_gray">#414042</color>
+    <color name="colorButtonBackgroundTint_1">#e8d7cd</color>
+    <color name="colorButtonBackgroundTint_2">#d9a98e</color>
+    <color name="colorIcons">#B14C26</color>
 </resources>

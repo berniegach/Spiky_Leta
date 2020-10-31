@@ -159,6 +159,8 @@ public class EditItemActivity extends AppCompatActivity
             chip.setTag(categories.getId());
             chip.setClickable(true);
             chip.setCheckable(true);
+            chip.setChipBackgroundColorResource(R.color.colorButtonBackgroundTint_1);
+            chip.setCheckedIconTintResource(R.color.colorIcons);
             chipGroup.addView(chip);
             if(dMenu.getCategoryId() == categories.getId())
                 chip.setChecked(true);
@@ -174,6 +176,8 @@ public class EditItemActivity extends AppCompatActivity
             chip.setText(groups.getTitle());
             chip.setTag(groups.getId());
             chip.setClickable(true);
+            chip.setChipBackgroundColorResource(R.color.colorButtonBackgroundTint_1);
+            chip.setCheckedIconTintResource(R.color.colorIcons);
             chip.setCheckable(true);
             chipGroupGroup.addView(chip);
             if( dMenu.getCategoryId() == groups.getCategoryId() && dMenu.getGroupId() == groups.getId())
@@ -205,6 +209,8 @@ public class EditItemActivity extends AppCompatActivity
                         chip_group.setTag(groups.getId());
                         chip_group.setClickable(true);
                         chip_group.setCheckable(true);
+                        chip_group.setChipBackgroundColorResource(R.color.colorButtonBackgroundTint_1);
+                        chip_group.setCheckedIconTintResource(R.color.colorIcons);
                         chipGroupGroup.addView(chip_group);
                     }
 

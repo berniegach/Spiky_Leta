@@ -76,6 +76,8 @@ public class ArrangeMenuActivity extends AppCompatActivity
             Chip chip = new Chip(this);
             chip.setText(categories.getTitle());
             chip.setTag(categories.getIdIndex());
+            chip.setChipBackgroundColorResource(R.color.colorButtonBackgroundTint_1);
+            chip.setCheckedIconTintResource(R.color.colorIcons);
             //chip.setClickable(true);
             //chip.setCheckable(true);
             chipGroupCategeories.addView(chip);
@@ -213,6 +215,7 @@ public class ArrangeMenuActivity extends AppCompatActivity
             Chip chip = new Chip(this);
             chip.setText(groups.getTitle());
             chip.setTag(groups.getIdIndex());
+            chip.setChipBackgroundColorResource(R.color.colorButtonBackgroundTint_1);
             //chip.setClickable(true);
             //chip.setCheckable(true);
             chipGroupGroups.addView(chip);

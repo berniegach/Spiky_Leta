@@ -57,6 +57,7 @@ android:background="@android:color/white">
                 android:text="1"
                 android:textSize="25sp" />
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:id="@+id/textInputLayout"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -103,11 +104,13 @@ android:background="@android:color/white">
                     android:layout_height="wrap_content"
                     android:text="Assign the number of QR codes specified above to unique QR codes"/>
                 <Button
+                    style="@style/MainButtonStyle"
                     android:id="@+id/assign"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:enabled="false"
                     android:text="Assign"
+                    android:textAllCaps="false"
                     android:layout_gravity="center"/>
             </LinearLayout>
         </LinearLayout>
@@ -139,6 +142,7 @@ android:background="@android:color/white">
                     android:layout_height="wrap_content"
                     android:text="Save the generated QR codes images in your device. They are saved in a folder called 'Leta'"/>
                 <Button
+                    style="@style/MainButtonStyle"
                     android:id="@+id/print"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"

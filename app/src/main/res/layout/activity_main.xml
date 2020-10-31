@@ -34,7 +34,7 @@
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
         app:title="Main"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:theme="@style/ThemeOverlay.AppCompat.Light"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
     <ProgressBar
         android:id="@+id/progress"
@@ -57,6 +57,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        app:itemTextColor="@color/colorPrimaryDark"
+        app:itemIconTint="@drawable/bottom_navigation_selector"
         android:background="?android:attr/windowBackground"
         app:menu="@menu/bottom_nav_menu" />
 

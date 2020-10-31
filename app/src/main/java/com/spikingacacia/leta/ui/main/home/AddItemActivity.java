@@ -148,6 +148,8 @@ public class AddItemActivity extends AppCompatActivity
             chip.setTag(categories.getId());
             chip.setClickable(true);
             chip.setCheckable(true);
+            chip.setChipBackgroundColorResource(R.color.colorButtonBackgroundTint_1);
+            chip.setCheckedIconTintResource(R.color.colorIcons);
             chipGroup.addView(chip);
         }
         chipGroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener()
@@ -173,6 +175,8 @@ public class AddItemActivity extends AppCompatActivity
                         chip_group.setTag(groups.getId());
                         chip_group.setClickable(true);
                         chip_group.setCheckable(true);
+                        chip_group.setChipBackgroundColorResource(R.color.colorButtonBackgroundTint_1);
+                        chip_group.setCheckedIconTintResource(R.color.colorIcons);
                         chipGroupGroup.addView(chip_group);
                     }
 

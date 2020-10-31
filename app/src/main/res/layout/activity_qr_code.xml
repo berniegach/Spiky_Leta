@@ -41,6 +41,7 @@ customers order food while they are in your restaurant"
 
             </com.google.android.material.card.MaterialCardView>
             <Button
+                style="@style/MainButtonStyle"
                 android:id="@+id/table_qrs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -48,6 +49,7 @@ customers order food while they are in your restaurant"
                 android:textAllCaps="false"/>
 
             <Button
+                style="@style/MainButtonStyle"
                 android:id="@+id/table_talkers"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -56,6 +56,7 @@
         android:layout_marginTop="20dp"
         android:gravity="center">
         <Button
+            style="@style/MainButtonStyle"
             android:id="@+id/b_available"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
@@ -64,6 +65,7 @@
             android:textAllCaps="false" />
 
         <Button
+            style="@style/MainButtonStyle"
             android:id="@+id/b_total"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
@@ -83,6 +85,7 @@
         app:layout_constraintTop_toBottomOf="@+id/layout" />
 
     <Button
+        style="@style/MainButtonStyle"
         android:id="@+id/b_withdraw"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
@@ -93,6 +96,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
+        style="@style/MainButtonStyle"
         android:id="@+id/b_transactions"
         android:layout_width="200dp"
         android:layout_height="wrap_content"

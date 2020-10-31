@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|center_vertical"
         android:layout_margin="16dp"
-        android:backgroundTint="@android:color/black"
+        app:backgroundTint="@color/colorButtonBackgroundTint_2"
         app:icon="@drawable/ic_baseline_add_w"
         app:iconTint="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"

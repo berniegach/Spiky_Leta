@@ -39,6 +39,7 @@ side as accompaniments and for free ones their prices is included in the main pr
         tools:listitem="@layout/fragment_item_list_dialog_list_dialog_item" />
 
     <Button
+        style="@style/MainButtonStyle"
         android:id="@+id/b_update"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

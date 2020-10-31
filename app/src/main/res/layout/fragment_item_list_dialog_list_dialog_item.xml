@@ -5,14 +5,15 @@
   ~ Last modified 10/10/20 7:06 PM
   -->
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:weightSum="11">
     <com.google.android.material.checkbox.MaterialCheckBox
+        app:buttonTint="@color/checkbox_colors_selector"
         android:id="@+id/checkbox"
         android:layout_width="0dp"
         android:layout_weight="5"
@@ -27,6 +28,8 @@
         android:textAppearance="?attr/textAppearanceBody2"
         android:text="0"/>
     <CheckBox
+        app:buttonTint="@color/checkbox_colors_selector"
+        android:theme="@style/MainCheckBoxStyle"
         android:enabled="false"
         android:id="@+id/check_free"
         android:layout_width="0dp"

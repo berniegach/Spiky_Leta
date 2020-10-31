@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Created by Benard Gachanja on 10/31/20 5:35 PM
+  ~ Copyright (c) 2020 . Spiking Acacia. All rights reserved.
+  ~ Last modified 10/31/20 4:54 PM
+  -->
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/colorButtonBackgroundTint_1" android:state_enabled="false"/>
+    <item android:color="@color/colorButtonBackgroundTint_2"/>
+</selector>

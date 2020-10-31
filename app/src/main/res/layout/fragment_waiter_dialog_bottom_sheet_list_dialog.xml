@@ -22,10 +22,12 @@
         android:text="Enter the runner's email address"
         android:gravity="center"/>
     <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="8"
         android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
         android:hint="example@gmail.com"
         app:helperText="This is the email address the runner used when signing in the order customer app">
 
@@ -37,6 +39,7 @@
 
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.button.MaterialButton
+        style="@style/MainButtonStyle"
         android:id="@+id/button_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

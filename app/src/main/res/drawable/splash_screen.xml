@@ -8,7 +8,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android"
     android:opacity="opaque">
 
-    <item android:drawable="@android:color/black" />
+    <item android:drawable="@color/colorPrimary" />
 
     <item
         android:width="250dp"

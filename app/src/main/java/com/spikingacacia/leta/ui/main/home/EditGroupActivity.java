@@ -80,6 +80,8 @@ public class EditGroupActivity extends AppCompatActivity
             chip.setTag(categories.getId());
             chip.setClickable(true);
             chip.setCheckable(true);
+            chip.setChipBackgroundColorResource(R.color.colorButtonBackgroundTint_1);
+            chip.setCheckedIconTintResource(R.color.colorIcons);
             if(group.getCategoryId() == categories.getId())
                 chip.setChecked(true);
             chipGroup.addView(chip);

@@ -115,9 +115,8 @@ public class WalletHomeFragment extends Fragment
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                 {
-                    v.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.black)));
+                    v.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorButtonBackgroundTint_2)));
                 }
-                ((Button)v).setTextColor(getResources().getColor(android.R.color.white));
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                 {
                     b_total.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.white)));
@@ -135,9 +134,8 @@ public class WalletHomeFragment extends Fragment
             {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                 {
-                    v.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.black)));
+                    v.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorButtonBackgroundTint_2)));
                 }
-                ((Button)v).setTextColor(getResources().getColor(android.R.color.white));
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                 {
                     b_available.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.white)));
@@ -232,9 +230,8 @@ public class WalletHomeFragment extends Fragment
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
-            b_available.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.black)));
+            b_available.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorButtonBackgroundTint_2)));
         }
-        b_available.setTextColor(getResources().getColor(android.R.color.white));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
             b_total.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(android.R.color.white)));

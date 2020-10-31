@@ -205,6 +205,11 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
             }
         });
         list = new ArrayList<>();
+        if(LoginActivity.getServerAccount().getPersona()==2)
+        {
+            b_add_category.setVisibility(View.GONE);
+            b_add_group.setVisibility(View.GONE);
+        }
         return view;
     }
     @Override
@@ -411,17 +416,23 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
             chip.setTag(categories.getId());
             chip.setClickable(true);
             chip.setCheckable(true);
+            chip.setChipBackgroundColorResource(R.color.colorButtonBackgroundTint_1);
+            chip.setCheckedIconTintResource(R.color.colorIcons);
             chipGroupCategeories.addView(chip);
-            chip.setOnLongClickListener(new View.OnLongClickListener()
+            if(LoginActivity.getServerAccount().getPersona()==1)
             {
-                @Override
-                public boolean onLongClick(View v)
+                chip.setOnLongClickListener(new View.OnLongClickListener()
                 {
-                    if(mListener!=null)
-                        mListener.onEditCategory(categories);
-                    return false;
-                }
-            });
+                    @Override
+                    public boolean onLongClick(View v)
+                    {
+                        if(mListener!=null)
+                            mListener.onEditCategory(categories);
+                        return false;
+                    }
+                });
+            }
+
         }
     }
     private void addGroupChipLayouts(List<Groups>list)
@@ -435,17 +446,23 @@ public class menuFragment extends Fragment implements ItemEditOptionsDialogFragm
             chip.setTag(groups.getCategoryId()+":"+groups.getId());
             chip.setClickable(true);
             chip.setCheckable(true);
+            chip.setChipBackgroundColorResource(R.color.colorButtonBackgroundTint_1);
+            chip.setCheckedIconTintResource(R.color.colorIcons);
             chipGroupGroups.addView(chip);
-            chip.setOnLongClickListener(new View.OnLongClickListener()
+            if(LoginActivity.getServerAccount().getPersona()==1)
             {
-                @Override
-                public boolean onLongClick(View v)
+                chip.setOnLongClickListener(new View.OnLongClickListener()
                 {
-                    if(mListener!=null)
-                        mListener.onEditGroup(groups);
-                    return false;
-                }
-            });
+                    @Override
+                    public boolean onLongClick(View v)
+                    {
+                        if(mListener!=null)
+                            mListener.onEditGroup(groups);
+                        return false;
+                    }
+                });
+            }
+
         }
     }
 

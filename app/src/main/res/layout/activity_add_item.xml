@@ -45,40 +45,42 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="250dp">
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center"
+                        app:cardCornerRadius="3dp"
+                        app:cardElevation="1dp">
                         <ImageView
                             android:id="@+id/image"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:scaleType="centerCrop"
                             android:src="@drawable/ic_baseline_image" />
+                    </com.google.android.material.card.MaterialCardView>
 
-                        <LinearLayout
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+                        <ImageButton
+                            android:id="@+id/camera"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent">
-                            <ImageButton
-                                android:id="@+id/camera"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/ic_baseline_photo_camera"
-                                android:layout_marginEnd="20dp"/>
+                            style="@style/MainImageButtonStyle"
+                            android:src="@drawable/ic_baseline_photo_camera"
+                            android:layout_marginEnd="20dp"/>
 
-                            <ImageButton
-                                android:id="@+id/gallery"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/ic_baseline_photo_library" />
+                        <ImageButton
+                            style="@style/MainImageButtonStyle"
+                            android:id="@+id/gallery"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_baseline_photo_library" />
 
-                        </LinearLayout>
-
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
                     <!-- category-->
                     <HorizontalScrollView
                         android:layout_width="match_parent"
@@ -113,6 +115,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         android:hint="Item *"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:elevation="6dp">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -126,6 +129,8 @@
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+
                         android:layout_margin="10dp"
                         android:hint="Description *">
 
@@ -161,6 +166,7 @@
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="8"
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                                     android:layout_marginEnd="10dp"
                                     android:hint="Size *">
 
@@ -174,6 +180,7 @@
                                 <com.google.android.material.textfield.TextInputLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                                     android:layout_weight="8"
                                     android:hint="Price *">
 
@@ -191,7 +198,7 @@
                                     android:layout_width="0dp"
                                     android:layout_weight="4"
                                     android:layout_height="50dp"
-                                    android:backgroundTint="@android:color/transparent"
+                                    app:backgroundTint="@android:color/transparent"
                                     android:src="@drawable/ic_add" />
 
                             </LinearLayout>
@@ -209,6 +216,7 @@
                 android:gravity="center">
 
                 <Button
+                    style="@style/MainButtonStyle"
                     android:id="@+id/button_add"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

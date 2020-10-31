@@ -65,8 +65,9 @@
         android:layout_marginStart="10dp"
         android:layout_marginBottom="20dp"
         app:layout_constraintStart_toStartOf="parent"
-        android:backgroundTint="@android:color/transparent"
         app:layout_constraintTop_toBottomOf="@+id/image"
+        android:backgroundTint="@color/toggle_colors_selector"
+        android:textColor="@color/toggle_text_colors_selector"
         android:textOn="In stock"
         android:textOff="Out of stock"
         android:textAllCaps="false"/>

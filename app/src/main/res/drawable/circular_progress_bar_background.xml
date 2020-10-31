@@ -11,6 +11,6 @@
     android:innerRadiusRatio="2.5"
     android:thickness="4dp"
     android:useLevel="false">
-    <solid android:color="@color/lighter_gray"/>
+    <solid android:color="@android:color/darker_gray"/>
 
 </shape>
