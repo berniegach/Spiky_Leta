@@ -12,29 +12,24 @@ import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,7 +41,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.spikingacacia.leta.R;
 import com.spikingacacia.leta.ui.JSONParser;
@@ -81,11 +75,11 @@ public class AddItemActivity extends AppCompatActivity
     static final int REQUEST_IMAGE_CAPTURE = 3;
     // permission request codes need to be < 256
     private static final int RC_HANDLE_CAMERA_PERM = 2;
+    private static  final int CROP_BITMAP = 4;
     private ProgressBar progressBar;
     private View mainView;
     private ImageView imageView;
     private LinearLayout layoutAddSizes;
-    private String imagePath;
     private Bitmap bitmap;
     private String sizes;
     private String prices;
@@ -93,6 +87,7 @@ public class AddItemActivity extends AppCompatActivity
     private String TAG = "add_item_a";
     private  Uri imageUri;
     private String mCameraFileName;
+    private ImageButton editImageButton;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -111,6 +106,7 @@ public class AddItemActivity extends AppCompatActivity
         Button button_add = findViewById(R.id.button_add);
         ImageButton b_gallery = findViewById(R.id.gallery);
         ImageButton b_camera = findViewById(R.id.camera);
+        editImageButton = findViewById(R.id.edit_image);
 
         //image
         b_camera.setEnabled(checkCameraHardware(this));
@@ -252,7 +248,27 @@ public class AddItemActivity extends AppCompatActivity
 
             }
         });
+        //edit the image
+        editImageButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+               startCropIntent();
+            }
+        });
     }
+    private void startCropIntent()
+    {
+        Intent cropIntent = new Intent("com.android.camera.action.CROP");
+        cropIntent.setDataAndType(imageUri,"image/*");
+        cropIntent.putExtra("crop","true");
+        cropIntent.putExtra("aspectX",1);
+        cropIntent.putExtra("aspectY",1);
+        cropIntent.putExtra("return-data",true);
+        startActivityForResult(cropIntent,CROP_BITMAP);
+    }
+
     /**
      * Handles the requesting of the camera permission.  This includes
      * showing a "Snackbar" message of why the permission is needed then
@@ -335,7 +351,7 @@ public class AddItemActivity extends AppCompatActivity
         intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
 
         Date date = new Date();
-        DateFormat df = new SimpleDateFormat("dd-MM-yy");
+        DateFormat df = new SimpleDateFormat("dd-MM-yy-hh-mm-ss");
 
         String file_name = "Leta-"+df.format(date) + ".jpg";
         final String root = Environment.getExternalStorageDirectory().toString();
@@ -387,14 +403,11 @@ public class AddItemActivity extends AppCompatActivity
         super.onActivityResult(requestCode,resultCode,data);
         if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null)
         {
-            final Uri uri = data.getData();
+            imageUri = data.getData();
             try
             {
 
-                imagePath = getPath(uri);
-                Log.d("path",""+imagePath);
-
-                bitmap = MediaStore.Images.Media.getBitmap(getBaseContext().getContentResolver(), uri);
+                bitmap = MediaStore.Images.Media.getBitmap(getBaseContext().getContentResolver(), imageUri);
                 imageView.setImageBitmap(bitmap);
                 bitmapChanged = true;
             }
@@ -405,56 +418,51 @@ public class AddItemActivity extends AppCompatActivity
         }
         else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK)
         {
+            imageUri = null;
             if (data != null)
             {
                 imageUri = data.getData();
                 imageView.setImageURI(imageUri);
-                Log.d(TAG,"IMAGE IMAGE 1");
             }
-            if (imageUri == null && mCameraFileName != null) {
+            if (imageUri == null && mCameraFileName != null)
+            {
                 imageUri = Uri.fromFile(new File(mCameraFileName));
                 try
                 {
                     bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
                     imageView.setImageBitmap(bitmap);
                     bitmapChanged = true;
+                    editImageButton.setVisibility(View.VISIBLE);
 
                 } catch (IOException e)
                 {
-                    e.printStackTrace();
+                    Log.e(TAG,""+e.getMessage());
                 }
             }
             File file = new File(mCameraFileName);
-            if (!file.exists()) {
+            if (!file.exists())
+            {
                 file.mkdir();
             }
         }
-    }
-    private String getPath(Uri uri)
-    {
-        if(uri==null)
-            return null;
-        String res=null;
-
-        if (DocumentsContract.isDocumentUri(getBaseContext(), uri))
+        else if(requestCode == CROP_BITMAP && resultCode == RESULT_OK)
         {
-            //emulator
-            String[] path = uri.getPath().split(":");
-            res = path[1];
-            Log.i("debinf ProdAct", "Real file path on Emulator: "+res);
-        }
-        else {
-            String[] proj = {MediaStore.Images.Media.DATA};
-            Cursor cursor = getBaseContext().getContentResolver().query(uri, proj, null, null, null);
-            if (cursor.moveToFirst()) {
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                res = cursor.getString(column_index);
+            imageUri = data.getData();
+            try
+            {
+
+                bitmap = MediaStore.Images.Media.getBitmap(getBaseContext().getContentResolver(), imageUri);
+                imageView.setImageBitmap(bitmap);
+                bitmapChanged = true;
+                editImageButton.setVisibility(View.GONE);
             }
-            cursor.close();
+            catch (Exception e)
+            {
+                Log.e("bitmap crop", "" + e.getMessage());
+            }
         }
-        return res;
     }
-    private void uploadBitmap(final Bitmap bitmap2, final int insert_id)
+    private void uploadBitmap( final int insert_id)
     {
         String url_upload_profile_pic= LoginActivity.base_url+"upload_inventory_pic.php";
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url_upload_profile_pic,
@@ -590,7 +598,7 @@ public class AddItemActivity extends AppCompatActivity
 
                 Log.d("adding new item", "done...");
                 if(bitmapChanged)
-                    uploadBitmap(bitmap, insert_id);
+                    uploadBitmap(insert_id);
                 else
                 {
                     Toast.makeText(getBaseContext(),"Successful",Toast.LENGTH_SHORT).show();

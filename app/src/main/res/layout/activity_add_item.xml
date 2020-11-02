@@ -79,6 +79,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_baseline_photo_library" />
+                        <ImageButton
+                            android:id="@+id/edit_image"
+                            android:visibility="gone"
+                            style="@style/MainImageButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_baseline_edit"
+                            android:layout_marginStart="20dp"/>
 
                     </LinearLayout>
                     <!-- category-->

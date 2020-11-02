@@ -85,6 +85,7 @@ public class EditItemActivity extends AppCompatActivity
     static final int REQUEST_IMAGE_CAPTURE = 3;
     // permission request codes need to be < 256
     private static final int RC_HANDLE_CAMERA_PERM = 2;
+    private static  final int CROP_BITMAP = 4;
     private ImageLoader imageLoader = AppController.getInstance().getImageLoader();
     private DMenu dMenu;
     private ProgressBar progressBar;
@@ -99,6 +100,7 @@ public class EditItemActivity extends AppCompatActivity
     private String TAG = "edit_item_a";
     private  Uri imageUri;
     private String mCameraFileName;
+    private ImageButton editImageButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -123,6 +125,7 @@ public class EditItemActivity extends AppCompatActivity
         Button button_delete = findViewById(R.id.button_delete);
         ImageButton b_gallery = findViewById(R.id.gallery);
         ImageButton b_camera = findViewById(R.id.camera);
+        editImageButton = findViewById(R.id.edit_image);
 
         //image
         b_camera.setEnabled(checkCameraHardware(this));
@@ -322,6 +325,25 @@ public class EditItemActivity extends AppCompatActivity
                         }).create().show();
             }
         });
+        //edit the image
+        editImageButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startCropIntent();
+            }
+        });
+    }
+    private void startCropIntent()
+    {
+        Intent cropIntent = new Intent("com.android.camera.action.CROP");
+        cropIntent.setDataAndType(imageUri,"image/*");
+        cropIntent.putExtra("crop","true");
+        cropIntent.putExtra("aspectX",1);
+        cropIntent.putExtra("aspectY",1);
+        cropIntent.putExtra("return-data",true);
+        startActivityForResult(cropIntent,CROP_BITMAP);
     }
     /**
      * Handles the requesting of the camera permission.  This includes
@@ -511,6 +533,7 @@ public class EditItemActivity extends AppCompatActivity
         }
         else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK)
         {
+            imageUri = null;
             if (data != null)
             {
                 imageUri = data.getData();
@@ -523,6 +546,7 @@ public class EditItemActivity extends AppCompatActivity
                     bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
                     imageView.setImageBitmap(bitmap);
                     bitmapChanged = true;
+                    editImageButton.setVisibility(View.VISIBLE);
 
                 } catch (IOException e)
                 {
@@ -532,6 +556,22 @@ public class EditItemActivity extends AppCompatActivity
             File file = new File(mCameraFileName);
             if (!file.exists()) {
                 file.mkdir();
+            }
+        }
+        else if(requestCode == CROP_BITMAP && resultCode == RESULT_OK)
+        {
+            imageUri = data.getData();
+            try
+            {
+
+                bitmap = MediaStore.Images.Media.getBitmap(getBaseContext().getContentResolver(), imageUri);
+                imageView.setImageBitmap(bitmap);
+                bitmapChanged = true;
+                editImageButton.setVisibility(View.GONE);
+            }
+            catch (Exception e)
+            {
+                Log.e("bitmap crop", "" + e.getMessage());
             }
         }
     }
@@ -559,7 +599,7 @@ public class EditItemActivity extends AppCompatActivity
         }
         return res;
     }
-    private void uploadBitmap(final Bitmap bitmap2, final int insert_id)
+    private void uploadBitmap( final int insert_id)
     {
         String url_upload_profile_pic= LoginActivity.base_url+"upload_inventory_pic.php";
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url_upload_profile_pic,
@@ -700,7 +740,7 @@ public class EditItemActivity extends AppCompatActivity
 
                 Log.d("adding new item", "done...");
                 if(bitmapChanged)
-                    uploadBitmap(bitmap, dMenu.getId());
+                    uploadBitmap(dMenu.getId());
                 else
                 {
                     Toast.makeText(getBaseContext(),"Successful",Toast.LENGTH_SHORT).show();
