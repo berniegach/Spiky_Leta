@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static android.os.Environment.DIRECTORY_PICTURES;
 import static com.spikingacacia.leta.ui.LoginActivity.base_url;
 
 /**
@@ -209,7 +210,7 @@ public class QrCodesFragment extends Fragment
     }
     private void save_bitmap(Bitmap bitmap, String file_name)
     {
-        final String root = Environment.getExternalStorageDirectory().toString();
+        final String root = Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES).toString();
         File myDir = new File(root + "/Leta/QR/");
         myDir.mkdirs();
         File file = new File(myDir, file_name);
@@ -218,8 +219,6 @@ public class QrCodesFragment extends Fragment
             file.delete();
         try
         {
-            Log.d("AJKGSS","W "+bitmap.getWidth());
-            Log.d("AJKGSS","H "+bitmap.getHeight());
             FileOutputStream out = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             bitmap.setDensity(200);

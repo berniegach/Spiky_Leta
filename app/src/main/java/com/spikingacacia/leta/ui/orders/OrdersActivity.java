@@ -177,8 +177,6 @@ public class OrdersActivity extends AppCompatActivity
             if(LoginActivity.getServerAccount().getPersona()==2)
                 waiter_email= LoginActivity.getServerAccount().getWaiter_email();
             jsonParser = new JSONParser();
-            Log.d(TAG,"WAITER EMAIL"+waiter_email);
-            Log.d(TAG,"STATUS "+status);
         }
         @Override
         protected void onPreExecute()

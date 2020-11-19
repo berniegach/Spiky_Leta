@@ -86,6 +86,18 @@
                 app:key="c_delivery"
                 android:title="Delivery"
                 android:summaryOn="Yes, I'm able to handle my own delivery"/>
+            <SeekBarPreference
+                android:enabled="false"
+                app:key="delivery_radius"
+                app:defaultValue="5"
+                android:max="15"
+                android:min="1"
+                app:title="Delivery radius"
+                app:seekBarIncrement="1"
+                app:showSeekBarValue="true"
+                app:updatesContinuously="true"
+                app:adjustable="true"
+                app:summary="Deliver only to customers within this radius in (km)" />
         </PreferenceCategory>
 
     </PreferenceCategory>

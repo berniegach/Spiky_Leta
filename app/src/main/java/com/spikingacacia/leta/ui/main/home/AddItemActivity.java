@@ -68,6 +68,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.os.Environment.DIRECTORY_PICTURES;
 import static com.spikingacacia.leta.ui.LoginActivity.base_url;
 
 public class AddItemActivity extends AppCompatActivity
@@ -354,7 +355,7 @@ public class AddItemActivity extends AppCompatActivity
         DateFormat df = new SimpleDateFormat("dd-MM-yy-hh-mm-ss");
 
         String file_name = "Leta-"+df.format(date) + ".jpg";
-        final String root = Environment.getExternalStorageDirectory().toString();
+        final String root = Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES).toString();
         File myDir = new File(root + "/Leta/Pics/");
         myDir.mkdirs();
         File outFile = new File(myDir, file_name);

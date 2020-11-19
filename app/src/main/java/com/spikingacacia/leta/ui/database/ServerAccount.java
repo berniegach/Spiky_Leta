@@ -39,12 +39,14 @@ public class ServerAccount implements Serializable
     private String mFirebaseTokenId;
     private String openingTime;
     private String closingTime;
+    private int deliveryRadius;
 
     public ServerAccount(){}
 
     public ServerAccount(int persona, int id, String email, String password, String username, String sellerType, String country, int online, int deliver, String diningOptions, String location, int orderRadius, int orderFormat,
                          int numberOfTables, String imageType, String dateadded, String datechanged, String dateToday,
-                         int waiter_id, String waiter_email, String waiter_names, String waiterImageType, String mCode, double commision, String mpesaMobile, String firebaseTokenId, String openingTime, String closingTime)
+                         int waiter_id, String waiter_email, String waiter_names, String waiterImageType, String mCode, double commision, String mpesaMobile, String firebaseTokenId, String openingTime, String closingTime,
+                         int deliveryRadius)
     {
         this.persona=persona;
         this.id = id;
@@ -74,6 +76,7 @@ public class ServerAccount implements Serializable
         this.mFirebaseTokenId = firebaseTokenId;
         this.openingTime = openingTime;
         this.closingTime = closingTime;
+        this.deliveryRadius = deliveryRadius;
     }
     public int getPersona()
     {
@@ -320,5 +323,15 @@ public class ServerAccount implements Serializable
     public void setClosingTime(String closingTime)
     {
         this.closingTime = closingTime;
+    }
+
+    public int getDeliveryRadius()
+    {
+        return deliveryRadius;
+    }
+
+    public void setDeliveryRadius(int deliveryRadius)
+    {
+        this.deliveryRadius = deliveryRadius;
     }
 }

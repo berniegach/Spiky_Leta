@@ -49,6 +49,7 @@ customers order food while they are in your restaurant"
                 android:textAllCaps="false"/>
 
             <Button
+                android:visibility="gone"
                 android:enabled="false"
                 style="@style/MainButtonStyle"
                 android:id="@+id/table_talkers"

@@ -92,6 +92,7 @@ public class SettingsActivity extends AppCompatActivity
             final CheckBoxPreference preference_c_sit_in = findPreference("c_sit_in");
             final CheckBoxPreference preference_c_take_away = findPreference("c_take_away");
             final CheckBoxPreference preference_c_delivery = findPreference("c_delivery");
+            final SeekBarPreference pref_delivery_radius = findPreference("delivery_radius");
             final ListPreference seller_type_preference = findPreference("seller_type");
             //operating time
             final Preference p_opening_time = findPreference("opening_time");
@@ -108,6 +109,7 @@ public class SettingsActivity extends AppCompatActivity
                 preference_c_sit_in.setEnabled(false);
                 preference_c_take_away.setEnabled(false);
                 preference_c_delivery.setEnabled(false);
+                pref_delivery_radius.setEnabled(false);
                 seller_type_preference.setEnabled(false);
                 p_opening_time.setEnabled(false);
                 p_closing_time.setEnabled(false);
@@ -142,6 +144,20 @@ public class SettingsActivity extends AppCompatActivity
                     int range=(int)newValue;
                     pref_order_radius.setValue(range);
                     tempServerAccount.setOrderRadius(range);
+                    updateSettings();
+                    return false;
+                }
+            });
+            //delivery radius
+            pref_delivery_radius.setValue(LoginActivity.getServerAccount().getDeliveryRadius());
+            pref_delivery_radius.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+            {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue)
+                {
+                    int range=(int)newValue;
+                    pref_delivery_radius.setValue(range);
+                    tempServerAccount.setDeliveryRadius(range);
                     updateSettings();
                     return false;
                 }
@@ -236,6 +252,7 @@ public class SettingsActivity extends AppCompatActivity
             preference_c_sit_in.setChecked(dining_options[0] == 1);
             preference_c_take_away.setChecked(dining_options[1] == 1);
             preference_c_delivery.setChecked(dining_options[2] == 1);
+            pref_delivery_radius.setEnabled(dining_options[2] == 1);
            preference_c_sit_in.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
            {
                @Override
@@ -285,6 +302,7 @@ public class SettingsActivity extends AppCompatActivity
                        ((CheckBoxPreference)preference).setChecked( true);
                        return false;
                    }
+                   pref_delivery_radius.setEnabled( ((CheckBoxPreference)preference).isChecked());
                    tempServerAccount.setDiningOptions(options);
                    updateSettings();
                    return false;
@@ -467,7 +485,7 @@ public class SettingsActivity extends AppCompatActivity
     }
     public static class UpdateAccount extends AsyncTask<Void, Void, Boolean>
     {
-        private String url_update_account= LoginActivity.base_url+"update_seller_account_2.php";
+        private String url_update_account= LoginActivity.base_url+"update_seller_account_3.php";
         private JSONParser jsonParser;
         private String TAG_SUCCESS="success";
         private String TAG_MESSAGE="message";
@@ -496,6 +514,7 @@ public class SettingsActivity extends AppCompatActivity
             info.add(new BasicNameValuePair("m_code", tempServerAccount.getmCode()));
             info.add(new BasicNameValuePair("opening_time", tempServerAccount.getOpeningTime()));
             info.add(new BasicNameValuePair("closing_time", tempServerAccount.getClosingTime()));
+            info.add(new BasicNameValuePair("delivery_radius", String.valueOf(tempServerAccount.getDeliveryRadius())));
             //getting all account details by making HTTP request
             JSONObject jsonObject= jsonParser.makeHttpRequest(url_update_account,"POST",info);
             try
